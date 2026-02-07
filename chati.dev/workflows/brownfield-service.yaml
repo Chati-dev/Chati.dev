@@ -1,0 +1,81 @@
+# Brownfield Service Workflow
+# Backend/API enhancements for existing projects
+
+workflow:
+  id: brownfield-service
+  name: Brownfield Service Enhancement
+  version: "1.0.0"
+  type: brownfield
+  project_types: [api-enhancement, service-modernization, backend-refactoring]
+  description: >
+    Pipeline for backend/API changes in existing projects.
+    Same as brownfield-fullstack but Architect focuses on
+    API design, data model, and service architecture.
+    UX agent runs in minimal mode (API documentation only).
+
+phases:
+  - phase: 0
+    name: Deep Discovery
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: full-discovery
+        creates: [chati.dev/artifacts/0-WU/wu-full-report.md]
+
+  - phase: 1
+    name: Problem Definition
+    category: CLARITY
+    sequence:
+      - agent: brief
+        action: problem-extraction
+        creates: [chati.dev/artifacts/1-Brief/brief-report.md]
+
+  - phase: 2
+    name: Architecture & Specification
+    category: CLARITY
+    sequence:
+      - agent: architect
+        action: assess-architecture
+        creates: [chati.dev/artifacts/3-Architecture/architecture.md]
+        notes: "Focus on API design, data model, service patterns"
+      - agent: detail
+        action: create-prd
+        creates: [chati.dev/artifacts/2-PRD/prd.md]
+        template: brownfield-prd-tmpl.yaml
+
+  - phase: 3
+    name: Execution Planning
+    category: CLARITY
+    sequence:
+      - agent: phases
+        action: create-roadmap
+        creates: [chati.dev/artifacts/5-Phases/phases.md]
+      - agent: tasks
+        action: create-tasks
+        creates: [chati.dev/artifacts/6-Tasks/tasks.md]
+
+  - phase: 4
+    name: Planning Quality Gate
+    category: CLARITY
+    sequence:
+      - agent: qa-planning
+        action: validate-traceability
+        creates: [chati.dev/artifacts/7-QA-Planning/qa-planning-report.md]
+
+  - phase: 5
+    name: Implementation
+    category: BUILD
+    sequence:
+      - agent: dev
+        action: implement-tasks
+      - agent: qa-implementation
+        action: validate-code
+        creates: [chati.dev/artifacts/8-Validation/qa-implementation-report.md]
+
+  - phase: 6
+    name: Deployment
+    category: DEPLOY
+    sequence:
+      - agent: devops
+        action: deploy
+        creates: [chati.dev/artifacts/8-Validation/deploy-report.md]

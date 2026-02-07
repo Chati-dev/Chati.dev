@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "chati.dev Config",
+  "description": "Schema for chati.dev/config.yaml - framework version and installation tracking",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Current chati.dev version (semver)"
+    },
+    "installed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Initial installation timestamp"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "installer_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Version of the installer that created this installation"
+    },
+    "project_type": {
+      "enum": ["greenfield", "brownfield"],
+      "description": "Project type selected during installation"
+    },
+    "language": {
+      "enum": ["en", "pt", "es", "fr"],
+      "description": "User interaction language"
+    },
+    "ides": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDEs configured during installation"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+# Decision Heuristics Framework
+# Used by: Agents when making architectural or design decisions
+# Reference: chati.dev/constitution.md Article I
+
+heuristics:
+  - context: "Technology selection"
+    guideline: "Prefer mature, well-documented technologies unless requirements demand otherwise"
+    agent: architect
+    rationale: "Mature tech reduces risk, improves hiring, and has better community support"
+
+  - context: "Database choice"
+    guideline: "Match data model to access patterns. Relational for structured data with joins, document for flexible schemas, graph for relationship-heavy queries"
+    agent: architect
+    rationale: "Wrong DB choice causes performance and maintenance issues that are expensive to fix"
+
+  - context: "Component granularity"
+    guideline: "A component should do one thing. If describing it requires 'and', split it"
+    agent: ux
+    rationale: "Single-responsibility components are easier to test, maintain, and reuse"
+
+  - context: "Task sizing"
+    guideline: "A task should be completable in 1-4 hours. If larger, split into sub-tasks"
+    agent: tasks
+    rationale: "Small tasks provide better progress visibility and reduce risk of sunk effort"
+
+  - context: "MVP scope"
+    guideline: "Include only Must Have requirements. Everything else waits for Phase 2+"
+    agent: phases
+    rationale: "Shipping fast validates assumptions before investing in features nobody wants"
+
+  - context: "Error handling"
+    guideline: "Handle errors at system boundaries. Trust internal code. Provide actionable error messages to users"
+    agent: dev
+    rationale: "Over-defensive code adds complexity. Boundary validation catches real-world input issues"
+
+  - context: "State management"
+    guideline: "Start with the simplest approach. Only add complexity when performance or UX demands it"
+    agent: architect
+    rationale: "Premature state management abstraction adds learning curve and maintenance burden"
+
+  - context: "API design"
+    guideline: "Be consistent in naming, error format, and pagination. Document by example"
+    agent: architect
+    rationale: "Consistent APIs reduce integration errors and improve developer experience"
+
+  - context: "Security model"
+    guideline: "Implement authentication before any other feature. Security added later is always weaker"
+    agent: architect
+    rationale: "Retrofitting security creates gaps and requires rework of existing features"
+
+  - context: "Design System"
+    guideline: "Define tokens first, use them everywhere. Never hardcode visual values in components"
+    agent: ux
+    rationale: "Tokens enable consistent theming, dark mode, and brand updates without touching component code"
+
+  - context: "Testing strategy"
+    guideline: "Test behavior, not implementation. Focus on user outcomes, not internal function calls"
+    agent: dev
+    rationale: "Implementation-detail tests break on refactoring and provide false security"
+
+  - context: "Documentation"
+    guideline: "Document decisions (why), not mechanics (how). Code should be self-documenting for the how"
+    agent: devops
+    rationale: "Why-documentation ages well. How-documentation becomes stale as code changes"

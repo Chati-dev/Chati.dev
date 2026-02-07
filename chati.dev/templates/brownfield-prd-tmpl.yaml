@@ -1,0 +1,103 @@
+# PRD Template — Brownfield Projects
+# Used by: Detail Agent (brownfield flow)
+# Language: English (Constitution Article VII)
+
+template:
+  name: Brownfield Product Requirements Document
+  version: "1.0.0"
+  type: brownfield
+
+sections:
+  - id: executive_summary
+    title: "1. Executive Summary"
+    description: "Product overview including current state and proposed changes"
+    required: true
+
+  - id: current_state
+    title: "2. Current State Analysis"
+    description: "Summary of existing system from WU analysis"
+    required: true
+    subsections:
+      - "Existing Architecture"
+      - "Technical Debt Summary"
+      - "Integration Points"
+    source: wu-full-report.md
+
+  - id: goals_metrics
+    title: "3. Goals & Success Metrics"
+    description: "What changes we want to achieve, measured against current baseline"
+    required: true
+    format: table
+    columns: [Goal, Current Baseline, Target, Metric]
+
+  - id: target_users
+    title: "4. Target Users"
+    description: "Existing and new user segments affected by changes"
+    required: true
+
+  - id: scope_boundaries
+    title: "5. Scope Boundaries"
+    description: "What will change vs what stays the same"
+    required: true
+    subsections:
+      - "Changes (In Scope)"
+      - "Preserved (No Changes)"
+      - "Out of Scope"
+
+  - id: architecture_impact
+    title: "6. Architecture Impact"
+    description: "How proposed changes affect existing architecture"
+    required: true
+    source: architecture.md
+
+  - id: functional_requirements
+    title: "7. Functional Requirements"
+    description: "New and modified requirements"
+    required: true
+    categories:
+      - "New Requirements"
+      - "Modified Requirements"
+      - "Deprecated Features"
+    fields:
+      - id: "FR-XXX"
+      - type: "new | modified | deprecated"
+      - title: "Short description"
+      - description: "Detailed specification"
+      - priority: "Must Have | Should Have | Could Have | Won't Have"
+      - brief_reference: "Which Brief problem this addresses"
+      - acceptance_criteria: "Given-When-Then format"
+      - migration_notes: "How to transition from current behavior (if modified)"
+
+  - id: nonfunctional_requirements
+    title: "8. Non-Functional Requirements"
+    required: true
+
+  - id: migration_strategy
+    title: "9. Migration Strategy"
+    description: "How to transition from current state to new state"
+    required: true
+    subsections:
+      - "Data Migration"
+      - "Feature Flags"
+      - "Rollback Plan"
+      - "Backward Compatibility"
+
+  - id: risks_mitigations
+    title: "10. Risks & Mitigations"
+    required: true
+
+  - id: dependencies_constraints
+    title: "11. Dependencies & Constraints"
+    required: true
+
+  - id: traceability
+    title: "Traceability Matrix"
+    required: true
+    format: table
+    columns: [Brief Problem, PRD Requirements, Existing Code Impact]
+
+validation:
+  - "All Brief problems have corresponding requirements"
+  - "All modified requirements have migration notes"
+  - "Migration strategy includes rollback plan"
+  - "No placeholders ([TODO], [TBD])"

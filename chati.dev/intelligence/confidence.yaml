@@ -1,0 +1,42 @@
+# Intelligence Layer — Agent Confidence Calibration
+# Tracks agent performance across technologies and patterns
+# Updated after each execution
+# NEVER overwritten during upgrades
+
+confidence:
+  dev:
+    overall: 0.90
+    by_technology:
+      react: 0.92
+      nextjs: 0.88
+      typescript: 0.93
+      python: 0.85
+      node: 0.91
+    by_pattern:
+      authentication: 0.90
+      crud_operations: 0.95
+      form_handling: 0.92
+      api_design: 0.88
+    last_calibrated: "2026-02-07"
+
+  architect:
+    overall: 0.88
+    by_technology:
+      react: 0.90
+      nextjs: 0.87
+      postgresql: 0.85
+      mongodb: 0.82
+    by_pattern:
+      monolith: 0.92
+      microservices: 0.80
+      serverless: 0.78
+    last_calibrated: "2026-02-07"
+
+  qa-implementation:
+    overall: 0.92
+    by_category:
+      test_execution: 0.95
+      security_scan: 0.90
+      code_review: 0.88
+      acceptance_verification: 0.93
+    last_calibrated: "2026-02-07"

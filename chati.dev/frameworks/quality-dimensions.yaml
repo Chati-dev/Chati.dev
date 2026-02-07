@@ -1,0 +1,59 @@
+# Quality Dimensions Framework
+# Used by: QA agents for comprehensive quality assessment
+# Reference: chati.dev/constitution.md Article II
+
+dimensions:
+  - name: completeness
+    description: "All requirements are addressed in implementation"
+    weight: 0.25
+    measured_by: [qa-planning, qa-implementation]
+    indicators:
+      - "Every PRD requirement maps to a task"
+      - "Every task has acceptance criteria"
+      - "Every acceptance criterion has a corresponding test"
+
+  - name: consistency
+    description: "No contradictions across artifacts or code"
+    weight: 0.20
+    measured_by: [qa-planning]
+    indicators:
+      - "Brief problems match PRD requirements"
+      - "Architecture decisions align with PRD scope"
+      - "Code patterns match architecture document"
+
+  - name: testability
+    description: "Every requirement can be verified through automated tests"
+    weight: 0.20
+    measured_by: [qa-planning, tasks]
+    indicators:
+      - "Acceptance criteria are binary (pass/fail)"
+      - "Given-When-Then format enables test automation"
+      - "No subjective criteria ('looks good', 'works well')"
+
+  - name: maintainability
+    description: "Code follows patterns, is documented, and can be extended"
+    weight: 0.15
+    measured_by: [qa-implementation, dev]
+    indicators:
+      - "Consistent naming conventions"
+      - "No code duplication"
+      - "Design System tokens used (no hardcoded values)"
+      - "Clear separation of concerns"
+
+  - name: security
+    description: "No vulnerabilities, proper authentication/authorization"
+    weight: 0.20
+    measured_by: [qa-implementation, architect]
+    indicators:
+      - "OWASP Top 10 addressed"
+      - "Input validation at all boundaries"
+      - "No hardcoded secrets"
+      - "Proper auth/authz model"
+
+scoring:
+  method: weighted_average
+  threshold: 0.80
+  per_dimension_minimum: 0.60
+  verdict:
+    pass: "weighted_average >= 0.80 AND no dimension below 0.60"
+    fail: "weighted_average < 0.80 OR any dimension below 0.60"

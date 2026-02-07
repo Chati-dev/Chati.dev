@@ -1,0 +1,108 @@
+# Greenfield Fullstack Workflow
+# Handles: web apps, SaaS, MVP, enterprise, prototypes
+# The single unified pipeline for all greenfield project types
+
+workflow:
+  id: greenfield-fullstack
+  name: Greenfield Fullstack Development
+  version: "1.0.0"
+  type: greenfield
+  project_types: [web-app, saas, enterprise, prototype, mvp, api, mobile-web]
+  description: >
+    Complete development pipeline for new projects. The Architect agent
+    adapts scope based on project needs (full-stack, service-only, or UI-only)
+    rather than requiring separate workflow definitions.
+
+phases:
+  - phase: 0
+    name: Discovery
+    category: CLARITY
+    sequence:
+      - agent: greenfield-wu
+        action: operational-discovery
+        creates: [chati.dev/artifacts/0-WU/wu-operational-report.md]
+        notes: "Operational context only (no codebase to analyze)"
+
+  - phase: 1
+    name: Problem Definition
+    category: CLARITY
+    sequence:
+      - agent: brief
+        action: problem-extraction
+        creates: [chati.dev/artifacts/1-Brief/brief-report.md]
+        notes: "5-phase extraction process"
+
+  - phase: 2
+    name: Product Specification
+    category: CLARITY
+    sequence:
+      - agent: detail
+        action: create-prd
+        creates: [chati.dev/artifacts/2-PRD/prd.md]
+        template: prd-tmpl.yaml
+        notes: "Detail comes BEFORE Architect in greenfield"
+
+  - phase: 3
+    name: Technical Design
+    category: CLARITY
+    sequence:
+      - agent: architect
+        action: design-architecture
+        creates: [chati.dev/artifacts/3-Architecture/architecture.md]
+        template: fullstack-architecture-tmpl.yaml
+        notes: "Tech stack selection, data model, deployment strategy"
+      - agent: ux
+        action: define-experience
+        creates: [chati.dev/artifacts/4-UX/ux-specification.md]
+        notes: "UX follows Architect (needs to know the stack)"
+
+  - phase: 4
+    name: Execution Planning
+    category: CLARITY
+    sequence:
+      - agent: phases
+        action: create-roadmap
+        creates: [chati.dev/artifacts/5-Phases/phases.md]
+        notes: "MVP-first phase breakdown"
+      - agent: tasks
+        action: create-tasks
+        creates: [chati.dev/artifacts/6-Tasks/tasks.md]
+        template: task-tmpl.yaml
+        notes: "Atomic tasks with Given-When-Then criteria"
+
+  - phase: 5
+    name: Planning Quality Gate
+    category: CLARITY
+    sequence:
+      - agent: qa-planning
+        action: validate-traceability
+        creates: [chati.dev/artifacts/7-QA-Planning/qa-planning-report.md]
+        template: qa-gate-tmpl.yaml
+        notes: "Must score >= 95% to proceed to BUILD"
+
+  - phase: 6
+    name: Implementation
+    category: BUILD
+    sequence:
+      - agent: dev
+        action: implement-tasks
+        notes: "Interactive or autonomous (Ralph Wiggum) mode"
+      - agent: qa-implementation
+        action: validate-code
+        creates: [chati.dev/artifacts/8-Validation/qa-implementation-report.md]
+        template: qa-gate-tmpl.yaml
+        notes: "Tests + SAST + code review. Must pass to deploy"
+
+  - phase: 7
+    name: Deployment
+    category: DEPLOY
+    sequence:
+      - agent: devops
+        action: deploy
+        creates: [chati.dev/artifacts/8-Validation/deploy-report.md]
+        notes: "Git operations, deployment, documentation"
+
+transitions:
+  clarity_to_build: "QA-Planning score >= 95%"
+  build_to_deploy: "QA-Implementation APPROVED"
+  deploy_to_completed: "DevOps deployment verified"

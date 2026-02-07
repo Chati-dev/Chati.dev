@@ -1,0 +1,85 @@
+# Task Template
+# Used by: Tasks Agent
+# Language: English (Constitution Article VII)
+
+template:
+  name: Task Definition
+  version: "1.0.0"
+
+fields:
+  - name: id
+    type: string
+    pattern: "T{phase}.{sequence}"
+    example: "T1.1"
+    required: true
+
+  - name: title
+    type: string
+    description: "Short, action-oriented title"
+    min_length: 5
+    required: true
+
+  - name: description
+    type: string
+    description: "What needs to be implemented"
+    required: true
+
+  - name: phase
+    type: string
+    description: "Parent phase"
+    required: true
+
+  - name: requirement_ref
+    type: string
+    description: "PRD requirement ID (FR-XXX)"
+    required: true
+
+  - name: priority
+    type: enum
+    values: [critical, high, medium, low]
+    required: true
+
+  - name: size
+    type: enum
+    values: [XS, S, M, L]
+    descriptions:
+      XS: "< 1 hour"
+      S: "1-2 hours"
+      M: "2-4 hours"
+      L: "4-8 hours"
+    required: true
+    note: "XL (8h+) must be split into smaller tasks"
+
+  - name: dependencies
+    type: array
+    items: string
+    description: "Task IDs that must complete before this task"
+    required: false
+
+  - name: acceptance_criteria
+    type: array
+    items:
+      type: object
+      fields:
+        - given: "Initial context/state"
+        - when: "Action performed"
+        - then: "Expected outcome (verifiable)"
+    min_items: 1
+    required: true
+
+  - name: definition_of_done
+    type: array
+    items: string
+    description: "Checklist of completion requirements"
+    default:
+      - "Code implemented"
+      - "Tests written and passing"
+      - "Design System tokens used"
+      - "No lint errors"
+      - "Self-critique completed (5.5 + 6.5)"
+
+validation:
+  - "Size must not be XL (split into sub-tasks)"
+  - "At least 1 Given-When-Then acceptance criterion"
+  - "Requirement reference must exist in PRD"
+  - "No placeholders ([TODO], [TBD])"

@@ -1,0 +1,51 @@
+# Intelligence Layer — Known Gotchas
+# Agents READ from this file before implementation
+# Agents APPEND new entries after discovering pitfalls
+# QA agents VALIDATE entries before they become permanent
+# NEVER overwritten during upgrades
+
+gotchas:
+  - id: G001
+    technology: react
+    pattern: "useEffect with missing dependency array"
+    severity: high
+    description: "useEffect without dependency array runs on every render, causing performance issues and potential infinite loops"
+    mitigation: "Always specify dependency array. Use eslint-plugin-react-hooks to catch missing dependencies"
+    discovered_by: dev
+    discovered_at: "2026-02-07"
+
+  - id: G002
+    technology: nextjs
+    pattern: "Server component importing client-only library"
+    severity: critical
+    description: "Importing a client-only library (window, document, localStorage) in a server component causes build failure"
+    mitigation: "Use 'use client' directive or dynamic import with { ssr: false }"
+    discovered_by: qa-implementation
+    discovered_at: "2026-02-07"
+
+  - id: G003
+    technology: typescript
+    pattern: "any type suppressing real errors"
+    severity: medium
+    description: "Using 'any' type hides legitimate type errors that would be caught at compile time"
+    mitigation: "Use 'unknown' with type narrowing, or define proper types. Configure tsconfig strict: true"
+    discovered_by: dev
+    discovered_at: "2026-02-07"
+
+  - id: G004
+    technology: css
+    pattern: "Hardcoded color values instead of design tokens"
+    severity: high
+    description: "Hardcoded hex/rgb values bypass the Design System, making theming and dark mode impossible"
+    mitigation: "Always use CSS custom properties (var(--color-xxx)). Never hardcode visual values"
+    discovered_by: ux
+    discovered_at: "2026-02-07"
+
+  - id: G005
+    technology: api
+    pattern: "Missing input validation on API endpoints"
+    severity: critical
+    description: "API endpoints without input validation are vulnerable to injection attacks and unexpected data"
+    mitigation: "Validate all inputs at API boundaries using schema validation (zod, joi, yup)"
+    discovered_by: qa-implementation
+    discovered_at: "2026-02-07"

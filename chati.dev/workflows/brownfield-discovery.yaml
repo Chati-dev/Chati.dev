@@ -1,0 +1,75 @@
+# Brownfield Discovery Workflow
+# Deep technical analysis of existing codebase (standalone)
+
+workflow:
+  id: brownfield-discovery
+  name: Brownfield Deep Discovery
+  version: "1.0.0"
+  type: brownfield
+  project_types: [technical-audit, tech-debt-assessment, migration-planning]
+  description: >
+    Standalone discovery workflow for deep analysis of an existing codebase.
+    Can be used independently (not as part of a full development pipeline)
+    for technical audits, tech debt assessment, or migration planning.
+
+phases:
+  - phase: 0
+    name: Context Detection
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: context-detection
+        notes: "Automated scan of project structure, stack, tools"
+
+  - phase: 1
+    name: Architecture Analysis
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: architecture-scout
+        notes: "Scout call to Architect for patterns, tech debt"
+
+  - phase: 2
+    name: UX Analysis
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: ux-scout
+        notes: "Scout call to UX for design tokens, components"
+
+  - phase: 3
+    name: QA Analysis
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: qa-scout
+        notes: "Scout call to QA for test coverage, CI/CD"
+
+  - phase: 4
+    name: Integration Mapping
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: integration-mapping
+        notes: "External APIs, services, databases"
+
+  - phase: 5
+    name: Technical Debt Assessment
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: tech-debt-assessment
+        notes: "Categorize by severity: critical, high, medium, low"
+
+  - phase: 6
+    name: Synthesis
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: compile-report
+        creates: [chati.dev/artifacts/0-WU/wu-full-report.md]
+        notes: "Consolidate all findings into comprehensive report"
+
+output:
+  primary: chati.dev/artifacts/0-WU/wu-full-report.md
+  duration: "1-4 hours depending on codebase size"

@@ -1,0 +1,101 @@
+# Architecture Template — Fullstack Projects
+# Used by: Architect Agent
+# Language: English (Constitution Article VII)
+
+template:
+  name: Fullstack Architecture Document
+  version: "1.0.0"
+  type: fullstack
+
+sections:
+  - id: overview
+    title: "1. Architecture Overview"
+    description: "High-level system description and architecture diagram"
+    required: true
+
+  - id: tech_stack
+    title: "2. Tech Stack"
+    description: "Selected technologies with version and justification"
+    required: true
+    format: table
+    columns: [Layer, Technology, Version, Justification]
+    layers:
+      - Frontend
+      - Backend
+      - Database
+      - Authentication
+      - Hosting
+      - CI/CD
+      - Testing
+
+  - id: system_components
+    title: "3. System Components"
+    description: "Component diagram with responsibilities and interactions"
+    required: true
+
+  - id: api_design
+    title: "4. API Design"
+    description: "Endpoint patterns, authentication, error handling"
+    required: true
+    subsections:
+      - "API Style (REST/GraphQL/tRPC)"
+      - "Authentication Flow"
+      - "Error Response Format"
+      - "Pagination Strategy"
+      - "Rate Limiting"
+
+  - id: data_model
+    title: "5. Data Model"
+    description: "Database schema with entities, relationships, and constraints"
+    required: true
+    subsections:
+      - "Entity-Relationship Diagram"
+      - "Table Definitions"
+      - "Indexes"
+      - "RLS Policies"
+      - "Migration Strategy"
+
+  - id: auth_model
+    title: "6. Authentication & Authorization"
+    description: "Auth model, roles, permissions, session management"
+    required: true
+
+  - id: deployment
+    title: "7. Deployment Architecture"
+    description: "Infrastructure, environments, CI/CD pipeline"
+    required: true
+    subsections:
+      - "Environments (dev, staging, production)"
+      - "Infrastructure Diagram"
+      - "CI/CD Pipeline"
+      - "Environment Variables"
+
+  - id: security
+    title: "8. Security Model"
+    description: "OWASP considerations, input validation, secrets management"
+    required: true
+
+  - id: scalability
+    title: "9. Scalability Strategy"
+    description: "Current approach and future scaling path"
+    required: true
+
+  - id: decisions
+    title: "10. Architecture Decisions"
+    description: "Record of decisions with options considered and rationale"
+    required: true
+    format: table
+    columns: [Decision, Options Considered, Chosen, Rationale]
+
+  - id: traceability
+    title: "Traceability"
+    description: "Maps PRD requirements to architecture components"
+    required: true
+    format: table
+    columns: [PRD Requirement, Architecture Component]
+
+validation:
+  - "Every PRD requirement maps to an architecture component"
+  - "Every technology choice is justified"
+  - "Security model covers OWASP Top 10"
+  - "No placeholders ([TODO], [TBD])"

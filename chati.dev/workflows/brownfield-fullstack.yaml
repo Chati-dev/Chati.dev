@@ -1,0 +1,104 @@
+# Brownfield Fullstack Workflow
+# Handles: feature addition, refactoring, modernization
+
+workflow:
+  id: brownfield-fullstack
+  name: Brownfield Fullstack Development
+  version: "1.0.0"
+  type: brownfield
+  project_types: [feature-addition, refactoring, modernization, enhancement]
+  description: >
+    Development pipeline for existing projects. Key difference from greenfield:
+    Architect comes BEFORE Detail to understand existing constraints first.
+    brownfield-wu ALWAYS runs Deep Discovery with 3 scout calls.
+
+phases:
+  - phase: 0
+    name: Deep Discovery
+    category: CLARITY
+    sequence:
+      - agent: brownfield-wu
+        action: full-discovery
+        creates: [chati.dev/artifacts/0-WU/wu-full-report.md]
+        notes: >
+          Both axes (technical + operational). ALWAYS runs Deep Discovery
+          with 3 scout calls: Architect, UX, QA in scout mode.
+
+  - phase: 1
+    name: Problem Definition
+    category: CLARITY
+    sequence:
+      - agent: brief
+        action: problem-extraction
+        creates: [chati.dev/artifacts/1-Brief/brief-report.md]
+        notes: "Informed by existing codebase context from WU"
+
+  - phase: 2
+    name: Architecture Assessment
+    category: CLARITY
+    sequence:
+      - agent: architect
+        action: assess-architecture
+        creates: [chati.dev/artifacts/3-Architecture/architecture.md]
+        template: fullstack-architecture-tmpl.yaml
+        notes: >
+          Architect comes BEFORE Detail in brownfield.
+          Assesses existing architecture, proposes changes.
+
+  - phase: 3
+    name: Product Specification
+    category: CLARITY
+    sequence:
+      - agent: detail
+        action: create-prd
+        creates: [chati.dev/artifacts/2-PRD/prd.md]
+        template: brownfield-prd-tmpl.yaml
+        notes: "PRD informed by architectural constraints"
+      - agent: ux
+        action: define-experience
+        creates: [chati.dev/artifacts/4-UX/ux-specification.md]
+        notes: "Includes Design System audit of existing code"
+
+  - phase: 4
+    name: Execution Planning
+    category: CLARITY
+    sequence:
+      - agent: phases
+        action: create-roadmap
+        creates: [chati.dev/artifacts/5-Phases/phases.md]
+      - agent: tasks
+        action: create-tasks
+        creates: [chati.dev/artifacts/6-Tasks/tasks.md]
+        template: task-tmpl.yaml
+
+  - phase: 5
+    name: Planning Quality Gate
+    category: CLARITY
+    sequence:
+      - agent: qa-planning
+        action: validate-traceability
+        creates: [chati.dev/artifacts/7-QA-Planning/qa-planning-report.md]
+        template: qa-gate-tmpl.yaml
+
+  - phase: 6
+    name: Implementation
+    category: BUILD
+    sequence:
+      - agent: dev
+        action: implement-tasks
+      - agent: qa-implementation
+        action: validate-code
+        creates: [chati.dev/artifacts/8-Validation/qa-implementation-report.md]
+
+  - phase: 7
+    name: Deployment
+    category: DEPLOY
+    sequence:
+      - agent: devops
+        action: deploy
+        creates: [chati.dev/artifacts/8-Validation/deploy-report.md]
+
+transitions:
+  clarity_to_build: "QA-Planning score >= 95%"
+  build_to_deploy: "QA-Implementation APPROVED"
+  deploy_to_completed: "DevOps deployment verified"

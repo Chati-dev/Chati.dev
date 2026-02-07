@@ -1,0 +1,30 @@
+# Auto detect text files and ensure LF line endings
+* text=auto eol=lf
+
+# Markdown
+*.md text linguist-documentation=false
+*.md diff=markdown
+
+# YAML
+*.yaml text
+*.yml text
+
+# JSON
+*.json text
+
+# JavaScript
+*.js text
+
+# Shell
+*.sh text eol=lf
+
+# Binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.tgz binary
+
+# Force GitHub language statistics
+*.md linguist-detectable=true
+*.js linguist-detectable=true

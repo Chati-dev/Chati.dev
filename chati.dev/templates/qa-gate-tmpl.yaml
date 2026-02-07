@@ -1,0 +1,96 @@
+# QA Gate Template
+# Used by: QA-Planning and QA-Implementation Agents
+# Language: English (Constitution Article VII)
+
+template:
+  name: Quality Gate Report
+  version: "1.0.0"
+
+sections:
+  - id: header
+    fields:
+      - gate_type: "planning | implementation"
+      - result: "APPROVED | NEEDS CORRECTION | ESCALATED"
+      - score: "0-100"
+      - timestamp: "ISO 8601"
+
+  - id: planning_gate
+    applicable_to: planning
+    checks:
+      - name: "Brief -> PRD Traceability"
+        description: "Every Brief problem has a PRD requirement"
+        penalty_on_fail: -10
+
+      - name: "PRD -> Phases Traceability"
+        description: "Every PRD requirement appears in a phase"
+        penalty_on_fail: -10
+
+      - name: "Phases -> Tasks Traceability"
+        description: "Every phase has at least one task"
+        penalty_on_fail: -10
+
+      - name: "Tasks -> Criteria Traceability"
+        description: "Every task has Given-When-Then acceptance criteria"
+        penalty_on_fail: -5
+
+      - name: "Brief-PRD Consistency"
+        description: "No PRD requirements without Brief origin"
+        penalty_on_fail: -15
+
+      - name: "Placeholder Check"
+        description: "No [TODO], [TBD], [PLACEHOLDER] in artifacts"
+        penalty_on_fail: -5
+        per_occurrence: true
+
+      - name: "Agent Criteria Quality"
+        description: "Each agent defined rigorous, binary criteria"
+        penalty_on_fail: -10
+
+  - id: implementation_gate
+    applicable_to: implementation
+    checks:
+      - name: "Test Execution"
+        description: "All tests pass"
+        weight: 0.30
+        threshold: "100% pass rate"
+
+      - name: "Code Coverage"
+        description: "Line and branch coverage"
+        weight: 0.20
+        threshold: ">= 80%"
+
+      - name: "Security Scan (SAST)"
+        description: "No critical or high vulnerabilities"
+        weight: 0.25
+        threshold: "0 critical, 0 high"
+
+      - name: "Code Review"
+        description: "Architecture adherence, patterns, quality"
+        weight: 0.15
+
+      - name: "Acceptance Criteria"
+        description: "All Given-When-Then criteria verified"
+        weight: 0.10
+
+  - id: correction_loop
+    max_loops: 3
+    protocol:
+      - step: "Identify failing check"
+      - step: "Send correction to responsible agent"
+      - step: "Agent corrects"
+      - step: "Re-validate"
+      - step: "If still failing after max_loops -> escalate to user"
+
+  - id: escalation
+    options:
+      - "1. Manually address the gaps"
+      - "2. Override and proceed (with documented risk)"
+      - "3. Return to a specific agent for rework"
+
+scoring:
+  start: 100
+  threshold: 95
+  decision:
+    approved: ">= 95"
+    correction: "< 95 (enter silent loop)"
+    escalated: "< 95 after max loops"

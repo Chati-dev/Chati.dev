@@ -1,0 +1,32 @@
+# Intelligence Layer — Successful Patterns
+# Recorded after successful execution
+# Agents reference these when implementing similar features
+# NEVER overwritten during upgrades
+
+patterns:
+  - id: P001
+    context: "Authentication implementation"
+    pattern: "JWT + refresh token with httpOnly cookies"
+    outcome: "Passed QA-Implementation on first attempt"
+    score: 98
+    agent: dev
+    recorded_at: "2026-02-07"
+    notes: "Secure by default. httpOnly prevents XSS token theft. Refresh token handles session extension"
+
+  - id: P002
+    context: "Form validation"
+    pattern: "Schema-based validation (zod) shared between frontend and backend"
+    outcome: "Zero validation inconsistencies between client and server"
+    score: 97
+    agent: dev
+    recorded_at: "2026-02-07"
+    notes: "Single source of truth for validation rules. Eliminates frontend/backend sync issues"
+
+  - id: P003
+    context: "Error handling"
+    pattern: "Boundary-based error handling with typed error classes"
+    outcome: "Clean error propagation, helpful user messages"
+    score: 96
+    agent: dev
+    recorded_at: "2026-02-07"
+    notes: "Validate at boundaries, trust internal code. Custom error classes enable type-safe error handling"

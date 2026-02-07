@@ -1,0 +1,48 @@
+# Migration: v1.0.0 -> v1.1.0
+# Template for future migrations
+
+migration:
+  from: "1.0.0"
+  to: "1.1.0"
+  description: "Template migration — no changes for initial version"
+  breaking: false
+
+steps: []
+  # Example steps for future migrations:
+  #
+  # - type: create_directory
+  #   path: "chati.dev/new-directory/"
+  #   idempotent: true
+  #
+  # - type: create_file
+  #   path: "chati.dev/new-directory/new-file.yaml"
+  #   content: "key: value\n"
+  #   skip_if_exists: true
+  #
+  # - type: update_yaml
+  #   path: ".chati/session.yaml"
+  #   operation: add_field
+  #   field: "new_field"
+  #   default: "default_value"
+  #   skip_if_exists: true
+  #
+  # - type: update_yaml
+  #   path: "chati.dev/config.yaml"
+  #   operation: set
+  #   field: "version"
+  #   value: "1.1.0"
+
+rollback: []
+  # - type: update_yaml
+  #   path: "chati.dev/config.yaml"
+  #   operation: set
+  #   field: "version"
+  #   value: "1.0.0"
+
+notes: |
+  Migration rules:
+  - Migrations run sequentially (never skip versions)
+  - Every migration is idempotent (safe to run multiple times)
+  - Backup is created BEFORE any migration
+  - Automatic rollback on failure
+  - User artifacts (chati.dev/artifacts/, chati.dev/intelligence/) are NEVER modified

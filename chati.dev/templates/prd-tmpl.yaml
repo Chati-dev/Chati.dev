@@ -1,0 +1,94 @@
+# PRD Template — Greenfield Projects
+# Used by: Detail Agent
+# Language: English (Constitution Article VII)
+
+template:
+  name: Product Requirements Document
+  version: "1.0.0"
+  type: greenfield
+
+sections:
+  - id: executive_summary
+    title: "1. Executive Summary"
+    description: "2-3 paragraphs describing the product, its purpose, and value proposition"
+    required: true
+
+  - id: goals_metrics
+    title: "2. Goals & Success Metrics"
+    description: "Measurable goals with specific metrics and targets"
+    required: true
+    format: table
+    columns: [Goal, Metric, Target, Timeline]
+
+  - id: target_users
+    title: "3. Target Users"
+    description: "User personas or segments with characteristics and primary needs"
+    required: true
+    source: brief-report.md
+
+  - id: scope_boundaries
+    title: "4. Scope Boundaries"
+    description: "Explicit in-scope and out-of-scope items"
+    required: true
+    subsections:
+      - "In Scope"
+      - "Out of Scope"
+
+  - id: architecture_overview
+    title: "5. High-Level Architecture Overview"
+    description: "System components and their relationships (high-level, not detailed)"
+    required: true
+
+  - id: functional_requirements
+    title: "6. Functional Requirements"
+    description: "Detailed requirements with ID, description, priority, and acceptance criteria"
+    required: true
+    format: structured
+    fields:
+      - id: "FR-XXX"
+      - title: "Short description"
+      - description: "Detailed specification"
+      - priority: "Must Have | Should Have | Could Have | Won't Have"
+      - brief_reference: "Which Brief problem this addresses"
+      - acceptance_criteria: "Given-When-Then format"
+
+  - id: nonfunctional_requirements
+    title: "7. Non-Functional Requirements"
+    description: "Performance, security, accessibility, scalability requirements"
+    required: true
+    categories:
+      - Performance
+      - Security
+      - Accessibility
+      - Scalability
+      - Reliability
+
+  - id: business_rules
+    title: "8. Business Rules"
+    description: "Domain-specific rules that govern behavior"
+    required: true
+
+  - id: risks_mitigations
+    title: "9. Risks & Mitigations"
+    description: "Identified risks with probability, impact, and mitigation strategies"
+    required: true
+    format: table
+    columns: [Risk, Probability, Impact, Mitigation]
+
+  - id: dependencies_constraints
+    title: "10. Dependencies & Constraints"
+    description: "External dependencies, technology constraints, team limitations"
+    required: true
+
+  - id: traceability
+    title: "Traceability Matrix"
+    description: "Maps Brief problems to PRD requirements"
+    required: true
+    format: table
+    columns: [Brief Problem, PRD Requirements]
+
+validation:
+  - "All Brief problems have corresponding requirements"
+  - "All requirements have acceptance criteria"
+  - "No placeholders ([TODO], [TBD])"
+  - "Traceability matrix is complete"

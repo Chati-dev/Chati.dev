@@ -1,0 +1,34 @@
+{
+  "name": "chati-dev-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "chati.dev — AI-Powered Multi-Agent Development Framework",
+  "author": "chati.dev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ogabrielalonso/chati-dev.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "init": "npm -w packages/chati-dev run init",
+    "status": "npm -w packages/chati-dev run status",
+    "test": "echo \"See packages/chati-dev for tests\""
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "multi-agent",
+    "development",
+    "framework",
+    "orchestration",
+    "cli",
+    "claude"
+  ]
+}
