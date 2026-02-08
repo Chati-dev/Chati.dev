@@ -103,6 +103,23 @@ phases:
         notes: "Git operations, deployment, documentation"
 
 transitions:
-  clarity_to_build: "QA-Planning score >= 95%"
-  build_to_deploy: "QA-Implementation APPROVED"
-  deploy_to_completed: "DevOps deployment verified"
+  clarity_to_build:
+    trigger: "qa-planning.score >= 95"
+    type: automatic
+    action: "Update project.state = build"
+  build_to_validate:
+    trigger: "dev.status == completed"
+    type: automatic
+    action: "Update project.state = validate"
+  validate_to_deploy:
+    trigger: "qa-implementation.status == approved"
+    type: automatic
+    action: "Update project.state = deploy"
+  deploy_to_completed:
+    trigger: "devops.status == completed"
+    type: automatic
+    action: "Update project.state = completed"
+  backward_to_clarity:
+    trigger: "qa-implementation.issue_type in [spec, architecture]"
+    type: backward
+    action: "Update project.state = clarity, route to responsible agent"

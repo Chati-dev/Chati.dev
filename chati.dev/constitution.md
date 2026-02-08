@@ -234,5 +234,30 @@ Example of BAD criteria:
 
 ---
 
-*chati.dev Constitution v1.0.0 — 10 Articles + Preamble*
+## Article XI: Mode Governance
+
+The pipeline operates in three execution modes that control agent permissions. Modes are derived from `project.state` in session.yaml.
+
+### Mode Definitions
+
+| Mode | States | Read Scope | Write Scope |
+|------|--------|------------|-------------|
+| **clarity** | clarity | Entire project (codebase + chati.dev/) | `chati.dev/` and `.chati/` only |
+| **build** | build, validate | Entire project | Entire project |
+| **deploy** | deploy | Entire project | Entire project + infra/CI operations |
+
+### Enforcement Rules
+
+1. In `clarity` mode, agents MAY read any file in the project (essential for brownfield-wu)
+2. In `clarity` mode, agents MUST NOT write/edit files outside `chati.dev/` and `.chati/`
+3. Transition to `build` requires QA-Planning score >= 95% (Article II)
+4. Transition to `deploy` requires QA-Implementation APPROVED
+5. Backward transition from `build` to `clarity` is permitted when QA-Implementation classifies an issue as `spec` or `architecture` (not `code`)
+6. Mode overrides require explicit user confirmation and are logged in session.yaml
+
+**Enforcement: BLOCK** — Write operations outside permitted scope are rejected.
+
+---
+
+*chati.dev Constitution v1.0.0 — 11 Articles + Preamble*
 *All agents are bound by this Constitution. Violations are enforced per article.*

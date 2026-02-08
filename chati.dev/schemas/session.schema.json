@@ -60,7 +60,7 @@
           "type": "object",
           "required": ["status", "score", "criteria_count"],
           "properties": {
-            "status": { "enum": ["pending", "in_progress", "completed"] },
+            "status": { "enum": ["pending", "in_progress", "completed", "skipped", "needs_revalidation"] },
             "score": { "type": "number", "minimum": 0, "maximum": 100 },
             "criteria_count": { "type": "integer", "minimum": 0 },
             "completed_at": { "type": ["string", "null"], "format": "date-time" }
@@ -96,6 +96,27 @@
           "to_agent": { "type": "string" },
           "reason": { "type": "string" },
           "resolved": { "type": "boolean" }
+        }
+      }
+    },
+    "mode_transitions": {
+      "type": "array",
+      "description": "Audit trail of all mode transitions",
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "from", "to", "trigger"],
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "from": { "enum": ["clarity", "build", "validate", "deploy", "completed"] },
+          "to": { "enum": ["clarity", "build", "validate", "deploy", "completed"] },
+          "trigger": { "type": "string", "description": "What caused the transition (agent completion, override, backward)" },
+          "type": { "enum": ["automatic", "backward", "override"], "description": "Transition classification" },
+          "skipped_agents": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Agents skipped (override only)"
+          },
+          "reason": { "type": "string", "description": "User reason (override only) or QA finding (backward only)" }
         }
       }
     }

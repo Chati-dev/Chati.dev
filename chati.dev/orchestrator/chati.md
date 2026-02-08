@@ -143,6 +143,119 @@ When an agent completes (score >= 95%):
 
 ---
 
+## Mode Enforcement Protocol
+
+### Scope Validation
+
+Before any agent writes a file, the orchestrator validates the operation against the current mode:
+
+```
+If project.state == "clarity":
+  ALLOW write to: chati.dev/**, .chati/**
+  BLOCK write to: everything else
+  ALLOW read: everything (essential for brownfield-wu codebase analysis)
+
+If project.state == "build" OR "validate":
+  ALLOW write to: everything
+  ALLOW read: everything
+
+If project.state == "deploy":
+  ALLOW write to: everything
+  ALLOW read: everything
+  ALLOW infra operations (CI/CD, deployment)
+```
+
+### Autonomous Mode Transitions
+
+Mode transitions are AUTOMATIC based on quality gate results. The orchestrator executes the transition when the trigger condition is met.
+
+```
+clarity -> build:
+  TRIGGER: qa-planning agent completes with score >= 95%
+  ACTION:
+    1. Update project.state = "build"
+    2. Log transition in session.yaml mode_transitions:
+       - timestamp: "{now}"
+         from: clarity
+         to: build
+         trigger: "qa-planning completed with score {score}%"
+         type: automatic
+    3. Notify user: "Planning approved. Entering BUILD mode."
+    4. Route to dev agent
+
+build -> validate:
+  TRIGGER: dev agent completes all assigned tasks
+  ACTION:
+    1. Update project.state = "validate"
+    2. Log transition in mode_transitions
+    3. Route to qa-implementation agent
+
+validate -> deploy:
+  TRIGGER: qa-implementation agent APPROVED
+  ACTION:
+    1. Update project.state = "deploy"
+    2. Log transition in mode_transitions
+    3. Notify user: "Code validated. Entering DEPLOY mode."
+    4. Route to devops agent
+
+deploy -> completed:
+  TRIGGER: devops agent completes deployment
+  ACTION:
+    1. Update project.state = "completed"
+    2. Log transition in mode_transitions
+    3. Present final project summary
+```
+
+### Backward Transitions
+
+```
+build/validate -> clarity:
+  TRIGGER: qa-implementation classifies issue as:
+    - issue_type: "spec" (requirement gap, ambiguity, conflict)
+    - issue_type: "architecture" (design flaw, missing component)
+  ACTION:
+    1. Update project.state = "clarity"
+    2. Log backward transition in mode_transitions:
+       - type: backward
+         reason: "{QA finding description}"
+    3. Identify target agent:
+       - issue_type "spec" -> route to detail agent
+       - issue_type "architecture" -> route to architect agent
+    4. Mark downstream agents as "needs_revalidation" in session.yaml
+    5. Route to target agent with QA findings as context
+    6. After fix: re-run qa-planning before returning to build
+
+  NOT TRIGGERED when issue_type is:
+    - "code" (implementation bug) -> fix in build mode
+    - "test" (missing/failing tests) -> fix in build mode
+    - "security" (vulnerability) -> fix in build mode
+```
+
+### Mode Override (via Deviation Protocol)
+
+When user requests to skip phases (e.g., "I need to code this NOW"):
+
+```
+1. Orchestrator detects intent to change mode
+2. Inform user of current state and what will be skipped:
+   "You're in CLARITY mode. Skipping to BUILD will bypass:
+    - {list of pending CLARITY agents}
+    Artifacts from these agents will not be generated."
+3. Request explicit confirmation
+4. If confirmed:
+   - Update project.state to requested mode
+   - Log override in mode_transitions:
+     - type: override
+       skipped_agents: [list of skipped agents]
+       reason: "{user's stated reason}"
+   - Mark skipped agents as "skipped" in session.yaml (not "completed")
+   - Continue with target agent
+5. After override session completes, suggest:
+   "You skipped CLARITY phases. Want to go back and complete planning?"
+```
+
+---
+
 ## Deviation Protocol (Protocol 5.7)
 
 ```
@@ -302,7 +415,7 @@ To activate autonomous mode:
 ## Constitution Enforcement
 
 The orchestrator enforces the Constitution (chati.dev/constitution.md):
-- **BLOCK** enforcement: Halt agent on violation (Articles I, II, III, IV, VII, VIII, X)
+- **BLOCK** enforcement: Halt agent on violation (Articles I, II, III, IV, VII, VIII, X, XI)
 - **GUIDE** enforcement: Correct behavior without halting (Articles V, IX)
 - **WARN** enforcement: Generate warning in QA (Article VI)
 

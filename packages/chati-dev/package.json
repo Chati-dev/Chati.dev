@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "AI-Powered Multi-Agent Development Framework — 13 agents, 7 IDEs, 4 languages",
   "type": "module",
   "bin": {
