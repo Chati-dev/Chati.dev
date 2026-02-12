@@ -121,7 +121,7 @@ async function main() {
       console.log('  - Constitution (10 Articles + Preamble)');
       console.log('  - Dashboard TUI');
       console.log('  - Upgrade system with migrations');
-      console.log('  - 7 IDE support');
+      console.log('  - 6 IDE support');
       console.log('  - 4-language i18n (EN/PT/ES/FR)');
       break;
     }

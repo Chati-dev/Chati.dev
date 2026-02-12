@@ -1,5 +1,5 @@
 /**
- * IDE Configuration Mapping (7 IDEs)
+ * IDE Configuration Mapping (6 IDEs)
  * Defines where chati.dev agents are deployed per IDE
  */
 export const IDE_CONFIGS = {
@@ -38,15 +38,6 @@ export const IDE_CONFIGS = {
     rulesFile: '.cursorrules',
     mcpConfigFile: null,
     formatNotes: 'Cursor rules format',
-  },
-  'windsurf': {
-    name: 'Windsurf',
-    description: 'AI-powered development environment',
-    recommended: false,
-    configPath: '.windsurf/rules/',
-    rulesFile: '.windsurfrules',
-    mcpConfigFile: null,
-    formatNotes: 'Windsurf rules format',
   },
   'gemini-cli': {
     name: 'Gemini CLI',

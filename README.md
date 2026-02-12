@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Agents](https://img.shields.io/badge/agents-13-purple.svg)](#architecture)
-[![IDEs](https://img.shields.io/badge/IDEs-7-orange.svg)](#supported-ides)
+[![IDEs](https://img.shields.io/badge/IDEs-6-orange.svg)](#supported-ides)
 [![Languages](https://img.shields.io/badge/i18n-EN%20%7C%20PT%20%7C%20ES%20%7C%20FR-informational.svg)](#internationalization)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-Contributor%20Covenant-blue.svg)](CODE_OF_CONDUCT.md)
@@ -37,7 +37,7 @@ CLARITY (planning)  →  Quality Gate  →  BUILD  →  Quality Gate  →  DEPLO
 
 **3. Persistent Context** — Session state persists across IDE restarts. Every decision, artifact, and score is tracked in `.chati/session.yaml`. No context is ever lost.
 
-**4. IDE-Agnostic** — Works with 7 IDEs through a thin router pattern. The framework lives in `chati.dev/`, not in IDE-specific config.
+**4. IDE-Agnostic** — Works with 6 IDEs through a thin router pattern. The framework lives in `chati.dev/`, not in IDE-specific config.
 
 ## Quick Start
 
@@ -51,7 +51,7 @@ The installer wizard will guide you through:
 
 1. **Language** — Choose EN, PT, ES, or FR
 2. **Project type** — Greenfield (new) or Brownfield (existing codebase)
-3. **IDE selection** — Pick from 7 supported IDEs
+3. **IDE selection** — Pick from 6 supported IDEs
 4. **MCP configuration** — Set up required integrations
 5. **Confirmation** — Review and install
 
@@ -148,7 +148,6 @@ Every agent follows 8 universal protocols:
 | VS Code | Full support |
 | AntiGravity | Full support |
 | Cursor | Full support |
-| Windsurf | Full support |
 | Gemini CLI | Full support |
 | GitHub Copilot | Full support |
 

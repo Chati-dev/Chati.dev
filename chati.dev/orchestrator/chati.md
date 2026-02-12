@@ -26,19 +26,50 @@ When the user invokes `/chati`, execute this sequence:
 5. Detect language from session.yaml -> respond in that language
 ```
 
-### Step 2: Determine State
+### Step 2: Check Subcommands
+
+Before determining state, check if the user passed a subcommand:
+
+```
+/chati exit | /chati stop | /chati quit:
+  -> Execute Exit Protocol (see Session Lock Protocol section)
+  -> Do NOT proceed further
+
+/chati status:
+  -> Display status dashboard (see /chati status section)
+  -> Stay locked, do NOT exit
+
+/chati resume:
+  -> Load continuation from .chati/continuation/latest.md (if exists)
+  -> Resume session with full context recovery
+  -> Re-activate session lock
+
+/chati help:
+  -> Display available commands:
+     /chati              Start or resume session
+     /chati status       Show project dashboard
+     /chati resume       Resume from continuation file
+     /chati exit         Save and exit session
+     /chati help         Show this help
+  -> Stay locked
+
+(no subcommand or unrecognized):
+  -> Continue to Step 3 (Determine State)
+```
+
+### Step 3: Determine State
 
 **If session.yaml is empty or project.name is empty:**
 ```
--> First run. Go to Step 3 (New Project Setup)
+-> First run. Go to Step 4 (New Project Setup)
 ```
 
 **If session.yaml has active project:**
 ```
--> Resume session. Go to Step 4 (Session Resume)
+-> Resume session. Go to Step 5 (Session Resume)
 ```
 
-### Step 3: New Project Setup
+### Step 4: New Project Setup
 
 #### 3a. Detect Project Type
 ```
@@ -78,7 +109,7 @@ If greenfield -> Read chati.dev/agents/clarity/greenfield-wu.md -> Activate
 If brownfield -> Read chati.dev/agents/clarity/brownfield-wu.md -> Activate
 ```
 
-### Step 4: Session Resume
+### Step 5: Session Resume
 ```
 1. Read session.yaml -> identify current_agent, project.state, last_handoff
 2. Read latest handoff from chati.dev/artifacts/handoffs/
@@ -412,10 +443,125 @@ To activate autonomous mode:
 
 ---
 
+## Session Lock Protocol
+
+Once `/chati` is invoked and a session is active, the orchestrator LOCKS the session. ALL subsequent user messages are routed through the orchestrator and the active agent. The user never "falls out" of the chati.dev system.
+
+### Lock Activation
+
+```
+When /chati is invoked:
+  1. Load session state (Step 1-2 above)
+  2. SET session lock = ACTIVE
+  3. Update CLAUDE.md with Session Lock block (see template below)
+  4. ALL subsequent messages are intercepted by the orchestrator
+  5. Messages are routed to current_agent
+```
+
+### Session Lock Block (CLAUDE.md)
+
+When the session is active, CLAUDE.md MUST contain this block:
+
+```markdown
+## ⚠️ Session Lock — ACTIVE
+
+**chati.dev session is ACTIVE.** You MUST follow these rules for EVERY message:
+
+1. Read `chati.dev/orchestrator/chati.md` and follow its routing logic
+2. Route ALL user messages through the current agent: `{current_agent}`
+3. NEVER respond outside of the chati.dev framework
+4. NEVER act as generic Claude — you ARE the chati.dev orchestrator
+5. If the user asks something unrelated to the current agent's scope,
+   handle it via the Deviation Protocol (Section 5.7), do NOT exit the system
+6. The ONLY way to exit is via explicit exit commands (see below)
+```
+
+This block is injected into CLAUDE.md when the session starts and removed when the user exits.
+
+### Message Routing (while locked)
+
+```
+User sends message:
+  │
+  ├─ Is it an exit command? (see Exit Commands below)
+  │   YES -> Execute Exit Protocol
+  │   NO  -> Continue
+  │
+  ├─ Is it a /chati subcommand? (/chati status, /chati help, etc.)
+  │   YES -> Execute subcommand, stay locked
+  │   NO  -> Continue
+  │
+  ├─ Is it relevant to current agent's scope?
+  │   YES -> Route to current agent
+  │   NO  -> Handle via Deviation Protocol (5.7)
+  │         -> Orchestrator re-routes to appropriate agent
+  │         -> Stay locked
+  │
+  └─ NEVER drop to raw/generic mode
+```
+
+### Exit Commands
+
+The session lock is ONLY released by explicit user intent:
+
+```
+Explicit commands (any language):
+  /chati exit
+  /chati stop
+  /chati quit
+
+Natural language (detected by orchestrator):
+  EN: "exit chati", "stop chati", "I want to leave", "quit the system"
+  PT: "sair do chati", "quero sair", "parar o chati"
+  ES: "salir de chati", "quiero salir", "parar el chati"
+  FR: "quitter chati", "je veux sortir", "arrêter chati"
+
+NOT exit triggers (stay locked):
+  - "stop" (without "chati" — could mean stop current task)
+  - "wait" / "pause" (temporary, not exit)
+  - "go back" / "voltar" (navigation within pipeline)
+  - "cancel" (cancel current action, not exit system)
+  - Closing the IDE (session persists in session.yaml for resume)
+```
+
+### Exit Protocol
+
+```
+When exit is triggered:
+  1. Save current agent state to session.yaml
+  2. Generate session digest (for Memory Layer):
+     - Decisions made this session
+     - Current progress and partial work
+     - Pending items
+  3. Update CLAUDE.md:
+     - REMOVE Session Lock block
+     - UPDATE project status with current state
+     - ADD resume instructions:
+       "Session paused at {agent}. Type /chati to resume."
+  4. Confirm to user in their language:
+     EN: "Session saved. Type /chati anytime to resume."
+     PT: "Sessão salva. Digite /chati para retomar."
+     ES: "Sesión guardada. Escribe /chati para reanudar."
+     FR: "Session sauvée. Tapez /chati pour reprendre."
+  5. Session data PERSISTS — nothing is lost
+```
+
+### Resume After Exit
+
+```
+When user types /chati after a previous exit:
+  -> Normal Step 5 (Session Resume) flow
+  -> Session Lock is RE-ACTIVATED
+  -> CLAUDE.md lock block is RE-INJECTED
+  -> User is back in the system seamlessly
+```
+
+---
+
 ## Constitution Enforcement
 
 The orchestrator enforces the Constitution (chati.dev/constitution.md):
-- **BLOCK** enforcement: Halt agent on violation (Articles I, II, III, IV, VII, VIII, X, XI)
+- **BLOCK** enforcement: Halt agent on violation (Articles I, II, III, IV, VII, VIII, X, XI, XV)
 - **GUIDE** enforcement: Correct behavior without halting (Articles V, IX)
 - **WARN** enforcement: Generate warning in QA (Article VI)
 

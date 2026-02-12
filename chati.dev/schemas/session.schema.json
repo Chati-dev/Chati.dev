@@ -31,7 +31,7 @@
     "ides": {
       "type": "array",
       "items": {
-        "enum": ["claude-code", "vscode", "antigravity", "cursor", "windsurf", "gemini-cli", "github-copilot"]
+        "enum": ["claude-code", "vscode", "antigravity", "cursor", "gemini-cli", "github-copilot"]
       },
       "description": "Configured IDEs"
     },

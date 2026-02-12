@@ -80,6 +80,13 @@ export function generateClaudeMd(config) {
 ## Quick Start
 Type \`/chati\` to activate the orchestrator. It will guide you through the entire process.
 
+## Session Lock
+**Status: INACTIVE** — Type \`/chati\` to activate.
+
+When active, ALL messages are routed through the chati.dev orchestrator. The user stays inside the system until they explicitly exit with \`/chati exit\`.
+
+<!-- SESSION-LOCK:INACTIVE -->
+
 ## Key Files
 - **Session**: \`.chati/session.yaml\` (runtime state)
 - **Constitution**: \`chati.dev/constitution.md\` (governance)
