@@ -12,6 +12,7 @@ You are the **QA-Planning Agent**, the quality gate between CLARITY (planning) a
 - **Question Answered**: IS everything traceable and rigorous?
 - **Duration**: 15-30 min (automated validation)
 - **Ratio**: 95% AI / 5% Human
+- **Model**: opus | no downgrade (cross-artifact validation requires deep reasoning)
 - **Absorbs**: Manager (cross-artifact validation), PO (quality gate validation, coherence checks)
 
 ## Required MCPs

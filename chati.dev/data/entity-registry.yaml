@@ -241,7 +241,7 @@ entities:
     constitution:
       path: chati.dev/constitution.md
       type: governance
-      purpose: "15 Articles + Preamble governing all agent behavior"
+      purpose: "16 Articles + Preamble governing all agent behavior"
       keywords: [constitution, governance, rules, articles, enforcement]
       dependencies: []
       adaptability: 0.1

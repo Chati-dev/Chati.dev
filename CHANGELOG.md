@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-02-12
+
+### Added
+
+- **Model Governance (Article XVI)**: Per-agent model selection — opus for deep reasoning, sonnet for structured tasks, haiku for lightweight detection
+- **Model metadata** in all 13 agent definitions (Identity section: `Model` field with default + upgrade conditions)
+- **Model Selection Protocol** in orchestrator — evaluates complexity and recommends model per agent transition
+- **Session schema**: `model_selections[]` array for cost tracking and audit trail
+- Constitution now has **16 articles** (was 15) — added Article XVI (Model Governance)
+
+### Changed
+
+- All references updated from 15 → 16 articles across README, CONTRIBUTING, i18n (4 languages), entity registry, intelligence specs, validator, and tests
+- SECURITY.md version table updated (1.4.x current)
+
 ## [1.3.3] - 2026-02-12
 
 ### Fixed

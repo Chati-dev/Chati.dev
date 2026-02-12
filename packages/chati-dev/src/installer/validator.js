@@ -59,7 +59,7 @@ export async function validateInstallation(targetDir) {
   if (existsSync(constitutionPath)) {
     const content = readFileSync(constitutionPath, 'utf-8');
     const articleCount = (content.match(/^## Article/gm) || []).length;
-    results.constitution.pass = articleCount >= 15;
+    results.constitution.pass = articleCount >= 16;
     results.constitution.details.push({ articleCount });
   }
   results.total += 1;

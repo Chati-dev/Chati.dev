@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "AI-Powered Multi-Agent Orchestration System — 13 agents, 6 IDEs, 4 languages",
   "type": "module",
   "bin": {

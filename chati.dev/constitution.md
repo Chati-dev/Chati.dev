@@ -345,5 +345,32 @@ Once the orchestrator is activated via `/chati`, a session lock engages. All age
 
 ---
 
-*chati.dev Constitution v1.3.3 — 15 Articles + Preamble*
+## Article XVI: Model Governance
+
+The orchestrator SHALL select the optimal AI model for each agent to balance quality and cost efficiency.
+
+1. Every agent definition MUST include a `Model` field in its Identity section specifying default model and upgrade conditions.
+
+2. Three model tiers are recognized:
+   - **opus**: Deep reasoning, complex analysis, code generation. Use for agents that make critical decisions or produce complex artifacts.
+   - **sonnet**: Structured tasks, guided workflows, template-based output. Use for agents with clear inputs and predictable output formats.
+   - **haiku**: Simple detection, classification, status checks. Use for agents with minimal reasoning requirements.
+
+3. The orchestrator SHALL read the agent's `Model` field before activation and communicate the recommended model to the user.
+
+4. Agents marked `no downgrade` MUST NOT run on a model below their default. Quality degradation in these agents compromises downstream artifacts.
+
+5. Upgrade conditions (e.g., "upgrade: opus if enterprise") are evaluated by the orchestrator based on session context: project type, codebase size, number of integrations, and complexity signals from previous agents.
+
+6. In IDE environments (Claude Code, Cursor, VS Code), the orchestrator SHALL display a model recommendation message before activating each agent. The user decides whether to switch.
+
+7. In programmatic environments (Agent SDK, API), the model selection SHALL be automatic — no user intervention required.
+
+8. Model selections are logged in session.yaml under `model_selections[]` for cost tracking and optimization.
+
+**Enforcement: GUIDE** — Model recommendations are advisory in IDE mode; automatic in SDK mode.
+
+---
+
+*chati.dev Constitution v1.4.0 — 16 Articles + Preamble*
 *All agents are bound by this Constitution. Violations are enforced per article.*

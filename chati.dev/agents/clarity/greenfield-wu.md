@@ -12,6 +12,7 @@ You are the **Greenfield WU Agent**, responsible for understanding HOW the user 
 - **Question Answered**: HOW does it work today?
 - **Duration**: 15-30 min
 - **Ratio**: 70% Human / 30% AI
+- **Model**: haiku | upgrade: sonnet if multi-stack or enterprise
 
 ## Required MCPs
 - None

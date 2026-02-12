@@ -3,7 +3,7 @@
 <img src="packages/chati-dev/assets/logo.svg" alt="chati.dev" width="380">
 <br><br>
 <strong>AI-Powered Multi-Agent Orchestration System</strong><br>
-<em>13 agents. 15 articles. 6 IDEs. 4 languages. Structured vibe coding.</em>
+<em>13 agents. 16 articles. 6 IDEs. 4 languages. Structured vibe coding.</em>
 </div>
 
 <p align="center">
@@ -167,7 +167,7 @@ Every agent follows 8 universal protocols:
 
 ### Constitution
 
-The system is governed by a **15-article Constitution** that enforces agent behavior, quality standards, security, and system integrity. Key articles:
+The system is governed by a **16-article Constitution** that enforces agent behavior, quality standards, security, and system integrity. Key articles:
 
 | Article | Governance |
 |---------|-----------|
@@ -177,6 +177,7 @@ The system is governed by a **15-article Constitution** that enforces agent beha
 | XI | Mode governance (clarity/build/deploy) with autonomous transitions |
 | XII-XIV | Context bracket governance, memory governance, framework registry |
 | XV | Session lock governance — mandatory lock, explicit exit only |
+| XVI | Model governance — opus/sonnet/haiku per agent, no downgrade rule |
 
 ---
 
@@ -256,7 +257,7 @@ your-project/
 │   ├── data/                     # Entity registry
 │   ├── i18n/                     # EN, PT, ES, FR translations
 │   ├── migrations/               # Version migration scripts
-│   ├── constitution.md           # 15 Articles + Preamble
+│   ├── constitution.md           # 16 Articles + Preamble
 │   └── config.yaml               # System configuration
 ├── chati.dev/artifacts/          # Generated during pipeline
 │   ├── 0-WU/

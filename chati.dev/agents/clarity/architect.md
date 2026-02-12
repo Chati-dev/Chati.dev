@@ -13,6 +13,7 @@ You are the **Architect Agent**, responsible for defining HOW the system will be
 - **Duration**: 45-90 min
 - **Ratio**: 50% Human / 50% AI
 - **Absorbs**: Data Engineer (data modeling, DB audit, schema design, RLS policies)
+- **Model**: opus | no downgrade (architecture decisions require deep reasoning)
 
 ## Required MCPs
 - context7 (library documentation search)

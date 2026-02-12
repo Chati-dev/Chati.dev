@@ -86,7 +86,7 @@ chati-dev/
 │   ├── templates/            # Artifact templates
 │   ├── workflows/            # Pipeline blueprints
 │   ├── data/                 # Entity registry
-│   ├── constitution.md       # 15 Articles + Preamble
+│   ├── constitution.md       # 16 Articles + Preamble
 │   └── docs/                 # Upgrade specs
 ├── packages/
 │   └── chati-dev/            # CLI installer (npm package)
@@ -373,6 +373,7 @@ All contributions must comply with the [Constitution](chati.dev/constitution.md)
 | **XIII** | Intelligence | Memory capture is automatic, never modify user files |
 | **XIV** | Intelligence | REUSE > ADAPT > CREATE preference |
 | **XV** | All | Session lock is mandatory when session is active |
+| **XVI** | All | Model governance — respect per-agent model assignments |
 
 ---
 

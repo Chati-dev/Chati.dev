@@ -32,9 +32,9 @@ describe('registry-manager', () => {
       writeFileSync(join(chatiDir, 'schemas', s), '{"$schema": "https://json-schema.org/draft/2020-12/schema"}');
     }
 
-    // Create constitution with 15 articles
+    // Create constitution with 16 articles
     let constitution = '# Constitution\n';
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 16; i++) {
       constitution += `## Article ${i}: Title\nContent.\n\n`;
     }
     writeFileSync(join(chatiDir, 'constitution.md'), constitution);

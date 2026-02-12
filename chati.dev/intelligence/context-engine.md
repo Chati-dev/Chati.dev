@@ -25,7 +25,7 @@ The orchestrator injects context through 5 hierarchical layers:
 
 | Layer | Name | Source | When Active |
 |-------|------|--------|-------------|
-| **L0** | Constitution | `chati.dev/constitution.md` (Articles I-XV) | ALWAYS (non-negotiable) |
+| **L0** | Constitution | `chati.dev/constitution.md` (Articles I-XVI) | ALWAYS (non-negotiable) |
 | **L1** | Mode + Global | `config.yaml` + mode governance (clarity/build/deploy) | ALWAYS |
 | **L2** | Agent Scope | `chati.dev/agents/{agent}/` — mission, inputs, outputs, criteria | When agent is active |
 | **L3** | Pipeline State | `.chati/session.yaml` — pipeline position, scores, backlog | When session is active |
@@ -49,7 +49,7 @@ The orchestrator produces a structured XML block injected into agent prompts:
 ```xml
 <chati-context bracket="MODERATE">
   <constitution>
-    Articles I-XV governing agent behavior.
+    Articles I-XVI governing agent behavior.
     Key: Self-validation required. Loop until quality threshold.
     Guided options (1,2,3). Persistent session state.
     Two-layer handoff. Language protocol. Deviation protocol.

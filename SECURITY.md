@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---------|-----------|
-| 1.3.x | :white_check_mark: Current |
-| 1.2.x | :white_check_mark: |
+| 1.4.x | :white_check_mark: Current |
+| 1.3.x | :white_check_mark: |
+| 1.2.x | :warning: Security fixes only |
 | 1.1.x | :warning: Security fixes only |
 | 1.0.x | :warning: Security fixes only |
 | < 1.0 | :x: Not supported |
@@ -90,6 +91,7 @@ If you discover a security vulnerability in chati.dev, please report it responsi
 | **XI** | Mode governance restricts write scope. Clarity mode cannot modify project code. |
 | **XIII** | Memory Layer never auto-modifies user files. Proposals require explicit approval. |
 | **XV** | Session Lock prevents accidental system escape. Exit requires explicit intent. |
+| **XVI** | Model governance — no downgrade from assigned model. Cost tracking logged in session. |
 
 ---
 

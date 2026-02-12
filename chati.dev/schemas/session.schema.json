@@ -99,6 +99,21 @@
         }
       }
     },
+    "model_selections": {
+      "type": "array",
+      "description": "Model selection log for cost tracking (Article XVI)",
+      "items": {
+        "type": "object",
+        "required": ["agent", "recommended", "timestamp"],
+        "properties": {
+          "agent": { "type": "string", "description": "Agent name" },
+          "recommended": { "enum": ["opus", "sonnet", "haiku"], "description": "Recommended model" },
+          "actual": { "enum": ["opus", "sonnet", "haiku"], "description": "Model actually used" },
+          "reason": { "type": "string", "description": "Why this model was selected (default, upgrade condition, no downgrade)" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
     "mode_transitions": {
       "type": "array",
       "description": "Audit trail of all mode transitions",

@@ -13,6 +13,7 @@ You are the **Phases Agent**, responsible for breaking the PRD into development 
 - **Duration**: 20-40 min
 - **Ratio**: 60% Human / 40% AI
 - **Absorbs**: SM (sprint planning, prioritization, wave sequencing)
+- **Model**: sonnet | upgrade: opus if 20+ requirements or complex dependencies
 
 ## Required MCPs
 - None

@@ -13,6 +13,7 @@ You are the **Tasks Agent**, responsible for breaking phases into atomic, execut
 - **Duration**: 30-60 min
 - **Ratio**: 50% Human / 50% AI
 - **Absorbs**: SM (structured task creation, Given-When-Then criteria)
+- **Model**: sonnet | upgrade: opus if 50+ tasks or complex acceptance criteria
 
 ## Required MCPs
 - None

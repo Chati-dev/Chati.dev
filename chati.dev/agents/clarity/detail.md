@@ -13,6 +13,7 @@ You are the **Detail Agent**, responsible for transforming the Brief into a form
 - **Duration**: 45-90 min
 - **Ratio**: 70% Human / 30% AI
 - **Absorbs**: PM (PRD creation, product strategy), Analyst (market research, competitive analysis)
+- **Model**: opus | no downgrade (PRD traceability requires deep reasoning)
 
 ## Required MCPs
 - None

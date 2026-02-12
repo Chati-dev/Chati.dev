@@ -38,10 +38,10 @@ describe('validateInstallation', () => {
     writeFileSync(join(chatiDir, 'agents', 'build', 'dev.md'), agentContent);
     writeFileSync(join(chatiDir, 'agents', 'deploy', 'devops.md'), agentContent);
 
-    // Constitution with 15 articles
+    // Constitution with 16 articles
     let constitution = '# Constitution\n## Preamble\n';
-    for (let i = 1; i <= 15; i++) {
-      const num = i === 15 ? 'XV' : i <= 11 ? ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'][i-1] : ['XII','XIII','XIV'][i-12];
+    for (let i = 1; i <= 16; i++) {
+      const num = i === 16 ? 'XVI' : i === 15 ? 'XV' : i <= 11 ? ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'][i-1] : ['XII','XIII','XIV'][i-12];
       constitution += `## Article ${num}: Title\nContent.\n\n`;
     }
     writeFileSync(join(chatiDir, 'constitution.md'), constitution);
@@ -138,7 +138,7 @@ describe('validateInstallation', () => {
     rmSync(partialDir, { recursive: true, force: true });
   });
 
-  it('requires 15 constitution articles', async () => {
+  it('requires 16 constitution articles', async () => {
     const partialDir = mkdtempSync(join(tmpdir(), 'chati-const-'));
     mkdirSync(join(partialDir, 'chati.dev'), { recursive: true });
     // Only 10 articles (old threshold)

@@ -12,6 +12,7 @@ You are the **Brief Agent**, responsible for extracting and structuring the core
 - **Question Answered**: WHAT is the problem?
 - **Duration**: 30-60 min
 - **Ratio**: 90% Human / 10% AI
+- **Model**: sonnet | upgrade: opus if enterprise or 10+ integrations
 
 ## Required MCPs
 - None
