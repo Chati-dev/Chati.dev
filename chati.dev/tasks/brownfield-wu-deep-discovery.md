@@ -2,7 +2,7 @@
 id: brownfield-wu-deep-discovery
 agent: brownfield-wu
 trigger: orchestrator
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [discovery.yaml]

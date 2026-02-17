@@ -1,7 +1,7 @@
 /**
- * @fileoverview G1 — Planning Complete Gate
+ * @fileoverview G1 — Plan Complete Gate
  *
- * Pre-BUILD gate that validates the PLANNING phase is fully completed.
+ * Pre-BUILD gate that validates the PLAN phase is fully completed.
  * Checks that all required artifacts exist and QA-Planning has approved.
  */
 
@@ -31,7 +31,7 @@ export class PlanningCompleteGate extends GateBase {
   }
 
   /**
-   * Collect evidence by checking filesystem for PLANNING artifacts.
+   * Collect evidence by checking filesystem for PLAN artifacts.
    *
    * @param {string} projectDir
    * @returns {object} Evidence about artifact presence, session state, and handoff
@@ -99,7 +99,7 @@ export class PlanningCompleteGate extends GateBase {
     const allCriteria = [
       ...REQUIRED_ARTIFACTS.map(a => `${a.label} exists`),
       'QA-Planning handoff with passing score',
-      'Session shows planning completed',
+      'Session shows plan completed',
     ];
 
     const criteriaResults = [];
@@ -130,16 +130,16 @@ export class PlanningCompleteGate extends GateBase {
 
     // Check session state
     if (evidence.sessionState) {
-      const planningAgents = ['brief', 'detail', 'architect', 'ux', 'phases', 'tasks', 'qa-planning'];
-      const completed = planningAgents.filter(a =>
+      const planAgents = ['brief', 'detail', 'architect', 'ux', 'phases', 'tasks', 'qa-planning'];
+      const completed = planAgents.filter(a =>
         evidence.sessionState.completedAgents.includes(a)
       );
 
-      if (completed.length === planningAgents.length) {
-        criteriaResults.push('Session shows planning completed');
+      if (completed.length === planAgents.length) {
+        criteriaResults.push('Session shows plan completed');
       } else {
-        const missing = planningAgents.filter(a => !completed.includes(a));
-        warnings.push(`Incomplete planning agents: ${missing.join(', ')}`);
+        const missing = planAgents.filter(a => !completed.includes(a));
+        warnings.push(`Incomplete plan agents: ${missing.join(', ')}`);
       }
     }
 

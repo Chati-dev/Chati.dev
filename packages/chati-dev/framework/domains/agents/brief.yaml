@@ -45,3 +45,17 @@ rules:
   - id: br-05
     text: "MUST validate that success metrics are measurable and specific"
     priority: normal
+
+  - id: br-06
+    text: >
+      MUST select elicitation methods from chati.dev/patterns/elicitation-library.yaml
+      based on project context (type, user level, complexity). Auto-selection rules
+      in the library determine primary and secondary methods.
+    priority: high
+
+  - id: br-07
+    text: >
+      MUST use at least 3 different elicitation methods across the 5 extraction phases.
+      Single-method extraction produces shallow requirements. Recommended: brain-dump +
+      five-whys + playback as minimum set.
+    priority: high

@@ -2,7 +2,7 @@
 id: brief-constraint-identify
 agent: brief
 trigger: brief-stakeholder-map
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [constraints.yaml]

@@ -8,7 +8,7 @@ import { AGENT_PIPELINE, getNextAgent } from './agent-selector.js';
 /**
  * Pipeline phases in order.
  */
-export const PIPELINE_PHASES = ['planning', 'build', 'deploy'];
+export const PIPELINE_PHASES = ['discover', 'plan', 'build', 'deploy'];
 
 /**
  * Agent status values.
@@ -35,7 +35,7 @@ const QA_IMPLEMENTATION_THRESHOLD = 95;
  * @returns {object} Pipeline state
  */
 export function initPipeline(options = {}) {
-  const { isGreenfield = true, mode = 'planning' } = options;
+  const { isGreenfield = true, mode = 'discover' } = options;
 
   const agents = {};
   for (const agentDef of AGENT_PIPELINE) {
@@ -112,6 +112,20 @@ export function advancePipeline(pipelineState, completedAgent, results = {}) {
     const transitionCheck = checkPhaseTransition(newState);
 
     if (transitionCheck.canAdvance) {
+      // User Preview gate: when QA-Implementation passes in build phase,
+      // don't advance to deploy yet — let user preview first.
+      if (completedAgent === 'qa-implementation' && newState.phase === 'build') {
+        return {
+          state: newState,
+          nextAction: 'user_preview',
+          nextAgent: null,
+          needsModeSwitch: false,
+          previewContext: {
+            qaScore: newState.agents['qa-implementation'].score,
+          },
+        };
+      }
+
       // QA passed - advance to next phase
       const currentPhaseIndex = PIPELINE_PHASES.indexOf(newState.phase);
       if (currentPhaseIndex < PIPELINE_PHASES.length - 1) {
@@ -257,7 +271,17 @@ export function checkPhaseTransition(pipelineState) {
   const { phase, agents } = pipelineState;
 
   // Check based on current phase
-  if (phase === 'planning') {
+  if (phase === 'discover') {
+    // DISCOVER -> PLAN transition: all discover agents must be completed
+    // (brief must be done to advance to plan)
+    return {
+      canAdvance: true,
+      reason: 'Discover phase agents completed',
+      requiredScore: null,
+    };
+  }
+
+  if (phase === 'plan') {
     // Need QA-Planning to be completed with score >= 95
     const qaPlanning = agents['qa-planning'];
     if (!qaPlanning) {
@@ -489,4 +513,77 @@ export function markAgentInProgress(pipelineState, agentName) {
   newState.currentAgent = agentName;
 
   return newState;
+}
+
+/**
+ * Confirm user preview decision and advance pipeline accordingly.
+ * Called by the orchestrator after the user evaluates the local preview.
+ *
+ * @param {object} pipelineState - Current state (phase must be 'build')
+ * @param {'approve_keep'|'approve_kill'|'adjust'|'rethink'} decision
+ * @returns {{ state: object, nextAction: string, nextAgent: string|null, needsModeSwitch: boolean, serverAction?: string }}
+ */
+export function confirmPreview(pipelineState, decision) {
+  const newState = { ...pipelineState };
+
+  if (decision === 'approve_keep' || decision === 'approve_kill') {
+    const nextPhase = 'deploy';
+
+    newState.modeTransitions.push({
+      from: 'build',
+      to: nextPhase,
+      trigger: 'user_preview_approved',
+      timestamp: new Date().toISOString(),
+      reason: `User approved preview (server: ${decision === 'approve_keep' ? 'kept alive' : 'killed'})`,
+    });
+
+    newState.phase = nextPhase;
+
+    newState.history.push({
+      agent: 'orchestrator',
+      action: 'preview_approved',
+      timestamp: new Date().toISOString(),
+      decision,
+    });
+
+    return {
+      state: newState,
+      nextAction: 'advance_phase',
+      nextAgent: getFirstAgentInPhase(newState, nextPhase),
+      needsModeSwitch: true,
+      serverAction: decision === 'approve_kill' ? 'kill' : 'keep',
+    };
+  }
+
+  if (decision === 'adjust') {
+    newState.history.push({
+      agent: 'orchestrator',
+      action: 'preview_adjust',
+      timestamp: new Date().toISOString(),
+    });
+
+    return {
+      state: newState,
+      nextAction: 'continue',
+      nextAgent: 'dev',
+      needsModeSwitch: false,
+    };
+  }
+
+  if (decision === 'rethink') {
+    newState.history.push({
+      agent: 'orchestrator',
+      action: 'preview_rethink',
+      timestamp: new Date().toISOString(),
+    });
+
+    return {
+      state: newState,
+      nextAction: 'deviation',
+      nextAgent: null,
+      needsModeSwitch: false,
+    };
+  }
+
+  throw new Error(`Invalid preview decision: ${decision}`);
 }

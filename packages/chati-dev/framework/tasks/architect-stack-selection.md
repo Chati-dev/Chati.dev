@@ -2,7 +2,7 @@
 id: architect-stack-selection
 agent: architect
 trigger: architect-design
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [stack-selection.yaml]

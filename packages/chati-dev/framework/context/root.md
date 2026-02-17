@@ -1,7 +1,7 @@
 # Chati.dev System Context
 
 ## Framework
-- **Version**: 2.0.1
+- **Version**: 2.1.0
 - **Agents**: 13 (12 specialized + orchestrator)
 - **Constitution**: 17 Articles + Preamble
 - **Quality**: 5 pipeline gates + 4-tier validation
@@ -15,9 +15,10 @@
 
 ## Pipeline
 ```
-PLANNING: WU -> Brief -> Detail -> Architect -> UX -> Phases -> Tasks -> QA-Planning
-BUILD:   Dev -> QA-Implementation
-DEPLOY:  DevOps
+DISCOVER: WU -> Brief
+PLAN:     Detail -> Architect -> UX -> Phases -> Tasks -> QA-Planning
+BUILD:    Dev -> QA-Implementation
+DEPLOY:   DevOps
 ```
 
 ## How to Use

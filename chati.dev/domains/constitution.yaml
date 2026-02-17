@@ -9,7 +9,7 @@ summary: >
   context brackets, memory governance, registry governance,
   session lock, model governance.
 
-articleCount: 16
+articleCount: 17
 
 rules:
   - id: art-i
@@ -21,7 +21,7 @@ rules:
     priority: critical
 
   - id: art-iii
-    text: "Memory and context must be managed through designated systems (PRISM, RECALL)."
+    text: "Memory and context must be managed through designated systems (PRISM)."
     priority: high
 
   - id: art-iv
@@ -75,3 +75,7 @@ rules:
   - id: art-xvi
     text: "Model governance: respect per-agent model assignments. No downgrade from assigned model."
     priority: high
+
+  - id: art-xvii
+    text: "Execution mode governance: autonomous requires gate >= 90%. Safety net with circuit breaker (3 failures)."
+    priority: critical

@@ -16,7 +16,7 @@ The registry catalogs every artifact in the system:
 metadata:
   version: "1.0.0"
   last_updated: "2026-02-12T00:00:00Z"
-  entity_count: 48
+  entity_count: 50
   checksum_algorithm: sha256
 
 entities:
@@ -28,7 +28,7 @@ entities:
       keywords: [routing, session, deviation, handoff]
       dependencies: [constitution, session-schema, config]
       adaptability: 0.2
-  # ... (all 48 entities)
+  # ... (all 50 entities)
 ```
 
 ### Entity Fields

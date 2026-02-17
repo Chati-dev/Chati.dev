@@ -2,7 +2,7 @@
 id: greenfield-wu-scaffold-detection
 agent: greenfield-wu
 trigger: greenfield-wu-analyze-empty
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [scaffold-report.yaml]

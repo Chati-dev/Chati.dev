@@ -31,7 +31,7 @@ metadata:
 entities:
   agents:
     fake-agent:
-      path: chati.dev/agents/planning/fake-agent.md
+      path: chati.dev/agents/discover/fake-agent.md
       type: agent
       purpose: "Does not exist"
       keywords: [fake]

@@ -18,14 +18,15 @@ describe('registry-manager', () => {
     mkdirSync(join(chatiDir, 'data'), { recursive: true });
     mkdirSync(join(chatiDir, 'schemas'), { recursive: true });
     mkdirSync(join(chatiDir, 'orchestrator'), { recursive: true });
-    mkdirSync(join(chatiDir, 'agents', 'planning'), { recursive: true });
+    mkdirSync(join(chatiDir, 'agents', 'discover'), { recursive: true });
+    mkdirSync(join(chatiDir, 'agents', 'plan'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'quality'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'build'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'deploy'), { recursive: true });
 
     // Create files referenced by registry
     writeFileSync(join(chatiDir, 'orchestrator', 'chati.md'), '# Orchestrator');
-    writeFileSync(join(chatiDir, 'agents', 'planning', 'brief.md'), '# Brief');
+    writeFileSync(join(chatiDir, 'agents', 'discover', 'brief.md'), '# Brief');
 
     // Create schemas
     for (const s of ['session.schema.json', 'config.schema.json', 'task.schema.json', 'context.schema.json', 'memory.schema.json']) {
@@ -40,8 +41,11 @@ describe('registry-manager', () => {
     writeFileSync(join(chatiDir, 'constitution.md'), constitution);
 
     // Create agents
-    for (const a of ['greenfield-wu', 'brownfield-wu', 'brief', 'detail', 'architect', 'ux', 'phases', 'tasks']) {
-      writeFileSync(join(chatiDir, 'agents', 'planning', `${a}.md`), '# Agent');
+    for (const a of ['greenfield-wu', 'brownfield-wu', 'brief']) {
+      writeFileSync(join(chatiDir, 'agents', 'discover', `${a}.md`), '# Agent');
+    }
+    for (const a of ['detail', 'architect', 'ux', 'phases', 'tasks']) {
+      writeFileSync(join(chatiDir, 'agents', 'plan', `${a}.md`), '# Agent');
     }
     writeFileSync(join(chatiDir, 'agents', 'quality', 'qa-planning.md'), '# Agent');
     writeFileSync(join(chatiDir, 'agents', 'quality', 'qa-implementation.md'), '# Agent');
@@ -61,7 +65,7 @@ entities:
       keywords: [routing]
       adaptability: 0.2
     brief:
-      path: chati.dev/agents/planning/brief.md
+      path: chati.dev/agents/discover/brief.md
       type: agent
       purpose: "Extract requirements"
       keywords: [requirements]

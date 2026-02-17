@@ -2,7 +2,7 @@
 id: detail-expand-prd
 agent: detail
 trigger: brief
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [prd-draft.yaml]

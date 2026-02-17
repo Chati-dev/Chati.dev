@@ -2,7 +2,7 @@
 id: ux-wireframe
 agent: ux
 trigger: detail
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: true
 outputs: [wireframes.yaml]

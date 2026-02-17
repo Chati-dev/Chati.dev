@@ -21,7 +21,8 @@ function formatScore(score, status) {
  */
 function formatState(state) {
   const stateMap = {
-    planning: brand('PLANNING'),
+    discover: brand('DISCOVER'),
+    plan: brand('PLAN'),
     build: yellow('BUILD'),
     validate: bold('VALIDATE'),
     deploy: green('DEPLOY'),

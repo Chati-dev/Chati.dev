@@ -28,9 +28,9 @@ describe('agent-selector', () => {
       assert.ok(wuAgents.some((a) => a.name === 'brownfield-wu'));
     });
 
-    it('should have parallel agents in planning-parallel group', () => {
+    it('should have parallel agents in plan-parallel group', () => {
       const parallelAgents = AGENT_PIPELINE.filter(
-        (a) => a.group === 'planning-parallel'
+        (a) => a.group === 'plan-parallel'
       );
       assert.equal(parallelAgents.length, 3);
       assert.ok(parallelAgents.every((a) => a.parallel === true));
@@ -38,10 +38,10 @@ describe('agent-selector', () => {
   });
 
   describe('selectAgent', () => {
-    it('should select greenfield-wu for new project planning', () => {
+    it('should select greenfield-wu for new project discovery', () => {
       const result = selectAgent({
-        intent: INTENT_TYPES.PLANNING,
-        mode: 'planning',
+        intent: INTENT_TYPES.DISCOVER,
+        mode: 'discover',
         isGreenfield: true,
         completedAgents: [],
       });
@@ -52,8 +52,8 @@ describe('agent-selector', () => {
 
     it('should select brownfield-wu for existing project', () => {
       const result = selectAgent({
-        intent: INTENT_TYPES.PLANNING,
-        mode: 'planning',
+        intent: INTENT_TYPES.DISCOVER,
+        mode: 'discover',
         isGreenfield: false,
         completedAgents: [],
       });
@@ -85,7 +85,7 @@ describe('agent-selector', () => {
     it('should continue from current agent on resume', () => {
       const result = selectAgent({
         intent: INTENT_TYPES.RESUME,
-        mode: 'planning',
+        mode: 'discover',
         currentAgent: 'greenfield-wu',
         completedAgents: ['greenfield-wu'],
       });
@@ -96,8 +96,8 @@ describe('agent-selector', () => {
 
     it('should identify parallel group for parallel agents', () => {
       const result = selectAgent({
-        intent: INTENT_TYPES.PLANNING,
-        mode: 'planning',
+        intent: INTENT_TYPES.DISCOVER,
+        mode: 'plan',
         currentAgent: 'brief',
         completedAgents: ['greenfield-wu', 'brief'],
       });
@@ -108,7 +108,7 @@ describe('agent-selector', () => {
     });
 
     it('should handle no incomplete agents', () => {
-      const allPlanningAgents = [
+      const allDiscoverAndPlanAgents = [
         'greenfield-wu',
         'brief',
         'detail',
@@ -120,9 +120,9 @@ describe('agent-selector', () => {
       ];
 
       const result = selectAgent({
-        intent: INTENT_TYPES.PLANNING,
-        mode: 'planning',
-        completedAgents: allPlanningAgents,
+        intent: INTENT_TYPES.DISCOVER,
+        mode: 'plan',
+        completedAgents: allDiscoverAndPlanAgents,
       });
 
       assert.equal(result.agent, null);
@@ -191,10 +191,14 @@ describe('agent-selector', () => {
   });
 
   describe('isAgentAllowedInMode', () => {
-    it('should allow planning agents in planning mode', () => {
-      assert.equal(isAgentAllowedInMode('greenfield-wu', 'planning'), true);
-      assert.equal(isAgentAllowedInMode('brief', 'planning'), true);
-      assert.equal(isAgentAllowedInMode('qa-planning', 'planning'), true);
+    it('should allow discover agents in discover phase', () => {
+      assert.equal(isAgentAllowedInMode('greenfield-wu', 'discover'), true);
+      assert.equal(isAgentAllowedInMode('brief', 'discover'), true);
+    });
+
+    it('should allow plan agents in plan phase', () => {
+      assert.equal(isAgentAllowedInMode('detail', 'plan'), true);
+      assert.equal(isAgentAllowedInMode('qa-planning', 'plan'), true);
     });
 
     it('should allow build agents in build mode', () => {
@@ -206,21 +210,21 @@ describe('agent-selector', () => {
       assert.equal(isAgentAllowedInMode('devops', 'deploy'), true);
     });
 
-    it('should not allow planning agents in build mode', () => {
+    it('should not allow discover agents in build mode', () => {
       assert.equal(isAgentAllowedInMode('brief', 'build'), false);
     });
 
-    it('should not allow build agents in planning mode', () => {
-      assert.equal(isAgentAllowedInMode('dev', 'planning'), false);
+    it('should not allow build agents in discover mode', () => {
+      assert.equal(isAgentAllowedInMode('dev', 'discover'), false);
     });
 
     it('should return false for unknown agent', () => {
-      assert.equal(isAgentAllowedInMode('unknown-agent', 'planning'), false);
+      assert.equal(isAgentAllowedInMode('unknown-agent', 'discover'), false);
     });
   });
 
   describe('getParallelGroups', () => {
-    it('should identify planning-parallel group', () => {
+    it('should identify plan-parallel group', () => {
       const groups = getParallelGroups(['greenfield-wu', 'brief']);
       assert.equal(groups.length, 1);
       assert.equal(groups[0].length, 3);
@@ -260,7 +264,7 @@ describe('agent-selector', () => {
       const def = getAgentDefinition('brief');
       assert.ok(def);
       assert.equal(def.name, 'brief');
-      assert.equal(def.phase, 'planning');
+      assert.equal(def.phase, 'discover');
     });
 
     it('should return null for unknown agent', () => {
@@ -270,10 +274,16 @@ describe('agent-selector', () => {
   });
 
   describe('getPhaseAgents', () => {
-    it('should return planning agents', () => {
-      const agents = getPhaseAgents('planning');
+    it('should return discover agents', () => {
+      const agents = getPhaseAgents('discover');
       assert.ok(agents.length > 0);
-      assert.ok(agents.every((a) => a.phase === 'planning'));
+      assert.ok(agents.every((a) => a.phase === 'discover'));
+    });
+
+    it('should return plan agents', () => {
+      const agents = getPhaseAgents('plan');
+      assert.ok(agents.length > 0);
+      assert.ok(agents.every((a) => a.phase === 'plan'));
     });
 
     it('should return build agents', () => {

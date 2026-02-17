@@ -15,7 +15,7 @@ workflow:
 phases:
   - phase: 0
     name: Context Detection
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: context-detection
@@ -23,7 +23,7 @@ phases:
 
   - phase: 1
     name: Architecture Analysis
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: architecture-scout
@@ -31,7 +31,7 @@ phases:
 
   - phase: 2
     name: UX Analysis
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: ux-scout
@@ -39,7 +39,7 @@ phases:
 
   - phase: 3
     name: QA Analysis
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: qa-scout
@@ -47,7 +47,7 @@ phases:
 
   - phase: 4
     name: Integration Mapping
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: integration-mapping
@@ -55,7 +55,7 @@ phases:
 
   - phase: 5
     name: Technical Debt Assessment
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: tech-debt-assessment
@@ -63,7 +63,7 @@ phases:
 
   - phase: 6
     name: Synthesis
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: compile-report

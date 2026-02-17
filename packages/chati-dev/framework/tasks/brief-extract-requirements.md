@@ -2,7 +2,7 @@
 id: brief-extract-requirements
 agent: brief
 trigger: orchestrator
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [requirements-raw.yaml]

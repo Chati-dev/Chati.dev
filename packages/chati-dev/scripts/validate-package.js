@@ -21,7 +21,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  */
 const EXPECTED_BUNDLE_DIRS = [
   'orchestrator',
-  'agents/planning', 'agents/quality', 'agents/build', 'agents/deploy',
+  'agents/discover', 'agents/plan', 'agents/quality', 'agents/build', 'agents/deploy',
   'templates', 'workflows', 'quality-gates',
   'schemas', 'frameworks', 'intelligence', 'patterns',
   'hooks', 'domains',

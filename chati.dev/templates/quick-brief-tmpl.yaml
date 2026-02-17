@@ -1,0 +1,90 @@
+# Quick Brief Template
+# Used by: Brief Agent (quick-extraction mode via Quick Flow workflow)
+# Language: English (Constitution Article VII)
+
+template:
+  name: Quick Brief
+  version: "1.0.0"
+  description: >
+    Condensed brief for simple tasks (bug fixes, small features, config changes).
+    Single-pass extraction instead of the full 5-phase process.
+
+fields:
+  - name: description
+    type: string
+    description: "One-sentence description of the change"
+    required: true
+
+  - name: motivation
+    type: string
+    description: "Why this change is needed (bug report, user request, improvement)"
+    required: true
+
+  - name: scope
+    type: object
+    description: "Files and estimated scope of change"
+    required: true
+    fields:
+      - name: files_affected
+        type: array
+        description: "List of files expected to change"
+      - name: estimated_size
+        type: enum
+        values: [small, medium]
+        description: "small = 1-3 files, medium = 4-5 files"
+
+  - name: acceptance_criteria
+    type: array
+    description: "Given-When-Then acceptance criteria"
+    min_items: 1
+    required: true
+    item_format: "Given {precondition}, When {action}, Then {expected result}"
+
+  - name: constraints
+    type: array
+    description: "Any constraints or considerations"
+    required: false
+
+  - name: risk_assessment
+    type: object
+    description: "Quick risk check for quick-flow eligibility"
+    required: true
+    fields:
+      - name: complexity
+        type: enum
+        values: [low]
+        description: "Must be low for quick-flow"
+      - name: pipeline
+        type: string
+        value: "quick-flow"
+      - name: skipped_agents
+        type: array
+        value: [detail, architect, ux, phases, tasks, qa-planning]
+      - name: justification
+        type: string
+        description: "Why quick-flow is appropriate for this task"
+
+output_format: |
+  # Quick Brief — {description}
+
+  ## What
+  {One-sentence description of the change}
+
+  ## Why
+  {Motivation: bug report, user request, improvement}
+
+  ## Scope
+  - Files affected: {list}
+  - Estimated changes: {small/medium}
+
+  ## Acceptance Criteria
+  - Given {precondition}, When {action}, Then {expected result}
+
+  ## Constraints
+  - {Any constraints or considerations}
+
+  ## Risk Assessment
+  - Complexity: low
+  - Pipeline: quick-flow
+  - Skipped: Detail, Architect, UX, Phases, Tasks, QA-Planning
+  - Justification: {why quick-flow is appropriate}

@@ -2,7 +2,7 @@
 id: architect-db-design
 agent: architect
 trigger: architect-api-design
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [db-design.yaml]

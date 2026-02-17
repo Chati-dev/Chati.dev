@@ -35,7 +35,7 @@ export function buildProgressReport(pipelineState, options = {}) {
 
 /**
  * Format progress as a compact one-line status.
- * Example: "[PLANNING 3/8] brief ✅ → detail 🔄 (score: 92%)"
+ * Example: "[DISCOVER 2/3] brief ✅ → detail 🔄 (score: 92%)" or "[PLAN 3/6] phases 🔄 (score: 92%)"
  * @param {object} pipelineState
  * @returns {string}
  */
@@ -75,10 +75,23 @@ export function formatDetailedReport(pipelineState) {
   lines.push(`Stage: ${stage}`);
   lines.push('');
 
-  // PLANNING agents
-  lines.push('PLANNING:');
-  const planningAgents = getStageAgents('PLANNING');
-  planningAgents.forEach(agent => {
+  // DISCOVER agents
+  lines.push('DISCOVER:');
+  const discoverAgents = getStageAgents('DISCOVER');
+  discoverAgents.forEach(agent => {
+    const status = agentStatus[agent] || 'pending';
+    const icon = getStatusIcon(status);
+    const isActive = agent === pipelineState.current_agent;
+    const prefix = isActive ? '→ ' : '  ';
+    lines.push(`${prefix}${icon} ${agent}`);
+  });
+
+  lines.push('');
+
+  // PLAN agents
+  lines.push('PLAN:');
+  const planAgents = getStageAgents('PLAN');
+  planAgents.forEach(agent => {
     const status = agentStatus[agent] || 'pending';
     const icon = getStatusIcon(status);
     const isActive = agent === pipelineState.current_agent;
@@ -146,17 +159,8 @@ export function calculateCompletion(pipelineState) {
  */
 function getStageAgents(stage) {
   const stages = {
-    PLANNING: [
-      'greenfield-wu',
-      'brownfield-wu',
-      'brief',
-      'detail',
-      'architect',
-      'ux',
-      'phases',
-      'tasks',
-      'qa-planning',
-    ],
+    DISCOVER: ['greenfield-wu', 'brownfield-wu', 'brief'],
+    PLAN: ['detail', 'architect', 'ux', 'phases', 'tasks', 'qa-planning'],
     BUILD: ['dev', 'qa-implementation'],
     DEPLOY: ['devops'],
   };
@@ -170,7 +174,8 @@ function getStageAgents(stage) {
  */
 function getAllAgents() {
   return [
-    ...getStageAgents('PLANNING'),
+    ...getStageAgents('DISCOVER'),
+    ...getStageAgents('PLAN'),
     ...getStageAgents('BUILD'),
     ...getStageAgents('DEPLOY'),
   ];
@@ -222,6 +227,7 @@ function getStatusIcon(status) {
     failed: '❌',
     pending: '⏸',
     skipped: '⏭',
+    preview: '👁',
   };
 
   return icons[status] || '⏸';
@@ -249,7 +255,7 @@ function countTotalAgents(_pipelineState) {
 /**
  * Get progress summary by stage.
  * @param {object} pipelineState
- * @returns {{ planning: number, build: number, deploy: number }}
+ * @returns {{ discover: number, plan: number, build: number, deploy: number }}
  */
 export function getStageProgress(pipelineState) {
   const agentStatus = pipelineState.agent_status || {};
@@ -261,7 +267,8 @@ export function getStageProgress(pipelineState) {
   };
 
   return {
-    planning: getProgress('PLANNING'),
+    discover: getProgress('DISCOVER'),
+    plan: getProgress('PLAN'),
     build: getProgress('BUILD'),
     deploy: getProgress('DEPLOY'),
   };

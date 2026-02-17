@@ -2,7 +2,7 @@
 id: tasks-consolidate
 agent: tasks
 trigger: tasks-acceptance-write
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [tasks-final.yaml]

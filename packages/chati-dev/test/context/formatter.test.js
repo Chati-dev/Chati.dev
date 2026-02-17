@@ -16,7 +16,7 @@ describe('formatter', () => {
   const mockL1 = {
     layer: 'L1',
     rules: [{ id: 'g-1', text: 'English code', priority: 'high' }],
-    mode: 'planning',
+    mode: 'discover',
     modeRules: {
       writeScope: 'chati.dev/',
       allowedActions: ['read_any_file'],
@@ -67,7 +67,7 @@ describe('formatter', () => {
       l1: mockL1,
     });
 
-    assert.ok(xml.includes('<mode name="planning">'));
+    assert.ok(xml.includes('<mode name="discover">'));
     assert.ok(xml.includes('<write-scope>chati.dev/</write-scope>'));
   });
 

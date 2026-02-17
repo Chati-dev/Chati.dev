@@ -253,9 +253,9 @@ async function main() {
       console.log();
       console.log('v1.0.0 - Initial Release');
       console.log('  - 13 agents (orchestrator + 12 specialized)');
-      console.log('  - 5 workflow blueprints');
-      console.log('  - 5 templates');
-      console.log('  - Constitution (10 Articles + Preamble)');
+      console.log('  - 6 workflow blueprints');
+      console.log('  - 6 templates');
+      console.log('  - Constitution (17 Articles + Preamble)');
       console.log('  - Dashboard TUI');
       console.log('  - Upgrade system with migrations');
       console.log('  - 6 IDE support');

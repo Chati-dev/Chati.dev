@@ -59,7 +59,7 @@ export function parseTaskContent(content, source = 'unknown') {
         id: meta.id,
         agent: meta.agent,
         trigger: meta.trigger || 'orchestrator',
-        phase: meta.phase || 'planning',
+        phase: meta.phase || 'plan',
         requires_input: meta.requires_input === true || meta.requires_input === 'true',
         parallelizable: meta.parallelizable === true || meta.parallelizable === 'true',
         outputs: parseArray(meta.outputs),

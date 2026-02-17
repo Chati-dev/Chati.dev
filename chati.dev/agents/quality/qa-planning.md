@@ -121,7 +121,44 @@ For each agent that completed PLANNING:
      - Example: Brief said "Brief is well-written" (subjective, not binary)
 ```
 
-### Step 4: Calculate Score & Decide
+### Step 4: Adversarial Review (Mandatory)
+
+```
+RULE: Every planning validation MUST identify minimum 3 findings.
+Zero findings = suspiciously clean -> mandatory re-review.
+
+Process:
+1. After Steps 1-3, count total findings (flags, penalties, observations)
+2. IF findings < 3:
+   - Log: "Adversarial trigger: only {N} findings detected"
+   - Re-analyze with DEEPER scrutiny:
+     * Check for implicit assumptions not documented
+     * Look for missing non-functional requirements (performance, security, a11y)
+     * Verify edge cases are covered in acceptance criteria
+     * Challenge requirement prioritization
+   - Findings now include: suggestions, missing considerations, best-practice gaps
+3. IF findings still < 3 after deep re-review:
+   - Document explicitly WHY the planning is genuinely complete
+   - This documentation itself counts as a finding (type: attestation)
+
+Devil's Advocate Pass:
+  After traceability validation concludes APPROVED:
+  1. Assume the plan has a hidden flaw
+  2. Challenge:
+     - "What requirement is missing that will surface during BUILD?"
+     - "Which acceptance criterion is too vague to test objectively?"
+     - "What stakeholder need was mentioned but not traced to a task?"
+     - "Which architectural decision might not scale?"
+  3. Document the adversarial analysis in the report
+
+Findings Classification:
+  - GAP: Missing traceability link (blocks approval)
+  - WEAK: Subjective or vague criterion (should be fixed)
+  - SUGGESTION: Improvement opportunity (does not block)
+  - ATTESTATION: Explicit justification of completeness
+```
+
+### Step 5: Calculate Score & Decide
 
 ```
 Starting score: 100
@@ -134,10 +171,12 @@ Scoring:
 - Critical gap: -20 points
 - Placeholder: -5 points each
 - Agent defined weak criteria: -10 points
+- Adversarial review incomplete: -15 points
 
 Result:
-- Score >= 95: APPROVED -> GO to BUILD
+- Score >= 95 AND adversarial review complete: APPROVED -> GO to BUILD
 - Score < 95: Enter silent correction loop
+- Adversarial review incomplete: CANNOT approve (re-run Step 4)
 ```
 
 ---
@@ -207,6 +246,18 @@ Save to: `chati.dev/artifacts/7-QA-Planning/qa-planning-report.md`
 | File | Text | Line |
 |------|------|------|
 | {file} | {placeholder} | {line} |
+
+## Adversarial Review
+| # | Type | Area | Description | Severity |
+|---|------|------|-------------|----------|
+| 1 | {gap/weak/suggestion/attestation} | {traceability/criteria/scope} | {desc} | {blocks/should-fix/info} |
+
+### Devil's Advocate Analysis
+**Initial conclusion**: {APPROVED/NEEDS CORRECTION}
+**Adversarial challenges**:
+1. "What requirement is missing?" → {finding or "None — all Brief problems traced to tasks"}
+2. "Which criterion is too vague?" → {finding or "None — all GWT criteria are binary"}
+3. "What will surface during BUILD?" → {finding or "None — edge cases covered"}
 
 ## Correction History
 | Loop | Agent | Issue | Resolution |

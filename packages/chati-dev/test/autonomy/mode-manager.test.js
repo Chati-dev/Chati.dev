@@ -25,7 +25,7 @@ describe('mode-manager', () => {
   before(() => {
     tempDir = mkdtempSync(join(tmpdir(), 'chati-mode-test-'));
     initSession(tempDir, {
-      mode: 'planning',
+      mode: 'discover',
       isGreenfield: true,
       language: 'en',
     });

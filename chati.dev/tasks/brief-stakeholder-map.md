@@ -2,7 +2,7 @@
 id: brief-stakeholder-map
 agent: brief
 trigger: brief-validate-completeness
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [stakeholder-map.yaml]

@@ -9,7 +9,7 @@ const FIXTURES_DIR = join(import.meta.dirname, '..', 'fixtures', 'handoff-test')
 const SAMPLE_TASK = {
   id: 'brief-extract',
   agent: 'brief',
-  phase: 'planning',
+  phase: 'discover',
   criteria: ['Category A extracted', 'Category B extracted'],
   outputs: ['brief.yaml'],
   handoff_to: 'detail',

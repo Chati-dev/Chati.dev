@@ -14,7 +14,8 @@ describe('validateInstallation', () => {
     // Create minimal valid structure
     const chatiDir = join(tempDir, 'chati.dev');
     mkdirSync(join(chatiDir, 'orchestrator'), { recursive: true });
-    mkdirSync(join(chatiDir, 'agents', 'planning'), { recursive: true });
+    mkdirSync(join(chatiDir, 'agents', 'discover'), { recursive: true });
+    mkdirSync(join(chatiDir, 'agents', 'plan'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'quality'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'build'), { recursive: true });
     mkdirSync(join(chatiDir, 'agents', 'deploy'), { recursive: true });
@@ -30,8 +31,11 @@ describe('validateInstallation', () => {
     // Create agent files
     const agentContent = '# Agent\n## Protocol 5.1\nSelf-validation protocol.';
     writeFileSync(join(chatiDir, 'orchestrator', 'chati.md'), agentContent);
-    for (const a of ['greenfield-wu', 'brownfield-wu', 'brief', 'detail', 'architect', 'ux', 'phases', 'tasks']) {
-      writeFileSync(join(chatiDir, 'agents', 'planning', `${a}.md`), agentContent);
+    for (const a of ['greenfield-wu', 'brownfield-wu', 'brief']) {
+      writeFileSync(join(chatiDir, 'agents', 'discover', `${a}.md`), agentContent);
+    }
+    for (const a of ['detail', 'architect', 'ux', 'phases', 'tasks']) {
+      writeFileSync(join(chatiDir, 'agents', 'plan', `${a}.md`), agentContent);
     }
     writeFileSync(join(chatiDir, 'agents', 'quality', 'qa-planning.md'), agentContent);
     writeFileSync(join(chatiDir, 'agents', 'quality', 'qa-implementation.md'), agentContent);

@@ -2,7 +2,7 @@
 id: greenfield-wu-analyze-empty
 agent: greenfield-wu
 trigger: orchestrator
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [wu-analysis.yaml]

@@ -54,7 +54,7 @@ Verify mode-specific requirements are met:
 **For planning → build**:
 - QA-Planning agent completed
 - QA-Planning score >= 95%
-- All PLANNING agents complete or skipped
+- All DISCOVER/PLAN agents complete or skipped
 - No blocking issues
 
 **For build → validate**:
@@ -85,6 +85,17 @@ Assess readiness for transition:
 - Number of open questions
 - Blocker status
 - Return confidence: high (>90%), medium (70-90%), low (<70%)
+
+### 6.5. User Preview Gate (BUILD → DEPLOY only)
+When transitioning from BUILD to DEPLOY, the pipeline returns `nextAction: 'user_preview'` instead of advancing automatically. The orchestrator must:
+1. Execute `orchestrator-preview` task to launch a local dev server
+2. Collect user feedback (approve/adjust/rethink)
+3. Only proceed to DEPLOY after user explicitly approves
+4. Server lifecycle is user-controlled (never killed implicitly)
+
+See `orchestrator-preview.md` for the full preview flow.
+
+This step is skipped for transitions that don't involve BUILD → DEPLOY (e.g., PLAN → BUILD proceeds normally).
 
 ### 7. Execute or Suggest Transition
 Based on autonomous_gate and confidence:
@@ -128,7 +139,7 @@ If user wants to force transition despite low confidence:
 
 ### When Backward Transition is Needed
 If QA-Implementation finds fundamental spec problems:
-1. Identify which PLANNING agent needs to re-run
+1. Identify which DISCOVER/PLAN agent needs to re-run
 2. Mark affected agents as `needs_revalidation`
 3. Set mode to `planning`
 4. Route to earliest affected agent
@@ -182,7 +193,7 @@ mode_transition:
   from_state:
     mode: "planning"
     current_agent: "qa-planning"
-    pipeline_position: "PLANNING/qa-planning"
+    pipeline_position: "PLAN/qa-planning"
 
   to_state:
     mode: "build"
@@ -208,7 +219,7 @@ mode_transition:
     score: 95
     level: "high"
     factors:
-      - "All PLANNING agents completed"
+      - "All DISCOVER/PLAN agents completed"
       - "QA-Planning score excellent (97.5%)"
       - "Only 2 minor open questions"
       - "No blockers"
@@ -251,7 +262,7 @@ mode_transition:
     deviation_protocol: false
 
   user_notification: |
-    ✓ Mode Transition: PLANNING → BUILD
+    ✓ Mode Transition: PLAN → BUILD
 
     QA-Planning completed with score 97.5% (>= 95% required).
     Autonomous transition to BUILD mode approved.

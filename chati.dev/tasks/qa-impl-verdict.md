@@ -2,7 +2,7 @@
 id: qa-impl-verdict
 agent: qa-implementation
 trigger: qa-impl-performance-test
-phase: validate
+phase: build
 requires_input: false
 parallelizable: false
 outputs: [qa-verdict.yaml]
@@ -148,7 +148,7 @@ Issue the final QA verdict by synthesizing all QA implementation results (tests,
 version: 1.0.0
 created: YYYY-MM-DD
 agent: qa-implementation
-phase: validate
+phase: build
 
 verdict: PASS # PASS, FAIL, CONDITIONAL
 

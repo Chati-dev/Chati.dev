@@ -2,7 +2,7 @@
 id: qa-planning-test-strategy
 agent: qa-planning
 trigger: orchestrator
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [test-strategy.yaml]

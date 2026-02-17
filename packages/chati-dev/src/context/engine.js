@@ -43,7 +43,7 @@ export function runPrism(input) {
   // 2. Build context for layer processors
   const ctx = {
     domainsDir: input.domainsDir,
-    mode: input.mode || 'planning',
+    mode: input.mode || 'discover',
     bracket: bracket.bracket,
     agent: input.agent || null,
     workflow: input.workflow || null,

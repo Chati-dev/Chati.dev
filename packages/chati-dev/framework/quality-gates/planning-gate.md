@@ -1,7 +1,7 @@
 # Planning Quality Gate
 
 ## Purpose
-Validates traceability and consistency across all PLANNING artifacts before allowing transition to BUILD phase.
+Validates traceability and consistency across all PLAN artifacts before allowing transition to BUILD phase.
 
 ## When
 After Tasks agent completes, before Dev agent starts.

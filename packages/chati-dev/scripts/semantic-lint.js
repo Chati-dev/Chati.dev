@@ -87,7 +87,7 @@ function checkDomainAgentAlignment(frameworkDir, results) {
     }
 
     // Other agents: check all category dirs
-    const agentDirs = ['agents/planning', 'agents/quality', 'agents/build', 'agents/deploy'];
+    const agentDirs = ['agents/discover', 'agents/plan', 'agents/quality', 'agents/build', 'agents/deploy'];
     const found = agentDirs.some(dir =>
       existsSync(join(frameworkDir, dir, `${agentName}.md`))
     );
@@ -221,7 +221,7 @@ function checkWorkflowAgentRefs(frameworkDir, results) {
 
   // Collect known agent names
   const knownAgents = new Set(['orchestrator']);
-  const agentDirs = ['agents/planning', 'agents/quality', 'agents/build', 'agents/deploy'];
+  const agentDirs = ['agents/discover', 'agents/plan', 'agents/quality', 'agents/build', 'agents/deploy'];
   for (const dir of agentDirs) {
     const fullDir = join(frameworkDir, dir);
     if (!existsSync(fullDir)) continue;

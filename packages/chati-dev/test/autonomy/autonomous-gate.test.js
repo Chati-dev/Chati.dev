@@ -26,7 +26,7 @@ describe('autonomous-gate', () => {
   before(() => {
     tempDir = mkdtempSync(join(tmpdir(), 'chati-gate-test-'));
     initSession(tempDir, {
-      mode: 'planning',
+      mode: 'discover',
       isGreenfield: true,
       language: 'en',
     });

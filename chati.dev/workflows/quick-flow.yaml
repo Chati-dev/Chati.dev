@@ -1,0 +1,125 @@
+# Quick Flow Workflow
+# Fast-track pipeline for simple tasks: bug fixes, small features, config changes
+# Skips full DISCOVER/PLAN phases when complexity is low
+
+workflow:
+  id: quick-flow
+  name: Quick Flow — Fast Track Development
+  version: "1.0.0"
+  type: any
+  project_types: [bug-fix, small-feature, config-change, hotfix, refactor]
+  description: >
+    Condensed pipeline for tasks that don't need full discovery/planning.
+    Used when the orchestrator detects low complexity: clear requirements,
+    known codebase, small scope. Skips Detail, Architect, UX, Phases, Tasks,
+    and QA-Planning. Goes straight from Brief (quick) to Dev.
+
+detection:
+  # Orchestrator uses these signals to auto-detect quick-flow eligibility
+  triggers:
+    - "User explicitly requests quick fix or hotfix"
+    - "Single, well-defined requirement (can be stated in one sentence)"
+    - "Bug report with reproduction steps"
+    - "Configuration or environment change"
+    - "Small refactoring with clear scope"
+    - "User says 'just do it' or 'quick fix' or similar urgency signals"
+  disqualifiers:
+    - "New feature requiring architecture decisions"
+    - "Multiple interconnected requirements"
+    - "Greenfield project (no existing codebase)"
+    - "Enterprise or compliance context"
+    - "User explicitly requests full pipeline"
+    - "Scope involves more than 5 files"
+    - "Requires database schema changes"
+    - "Requires new API endpoints (>2)"
+
+  confidence_threshold: 0.8
+  user_confirmation: true
+
+phases:
+  - phase: 0
+    name: Quick Brief
+    category: DISCOVER
+    sequence:
+      - agent: brief
+        action: quick-extraction
+        creates: [chati.dev/artifacts/1-Brief/quick-brief.md]
+        notes: >
+          Condensed extraction: single-pass, no 5-phase process.
+          Capture: what, why, constraints, acceptance criteria.
+          Duration: 2-5 min max.
+        template: quick-brief-tmpl.yaml
+        config:
+          max_rounds: 2
+          require_approval: true
+
+  - phase: 1
+    name: Implementation
+    category: BUILD
+    sequence:
+      - agent: dev
+        action: implement-tasks
+        notes: >
+          Dev works directly from Quick Brief (no PRD, no architecture doc).
+          Scope is tight: fix the bug, add the small feature, make the change.
+          Self-critique checklist still applies.
+
+  - phase: 2
+    name: Validation
+    category: BUILD
+    sequence:
+      - agent: qa-implementation
+        action: validate-code
+        creates: [chati.dev/artifacts/8-Validation/qa-implementation-report.md]
+        notes: >
+          Full QA-Implementation validation still applies (no shortcuts on quality).
+          Adversarial review still mandatory.
+          Tests must pass, SAST must be clean.
+        config:
+          adversarial_review: true
+          minimum_findings: 3
+
+  - phase: 3
+    name: Deployment
+    category: DEPLOY
+    sequence:
+      - agent: devops
+        action: deploy
+        creates: [chati.dev/artifacts/8-Validation/deploy-report.md]
+        notes: "Standard deployment process"
+
+transitions:
+  quick_brief_to_build:
+    trigger: "brief.status == completed"
+    type: automatic
+    action: "Skip full PLAN phase, go directly to BUILD"
+    notes: "No Detail, Architect, UX, Phases, Tasks, or QA-Planning"
+  build_to_validate:
+    trigger: "dev.status == completed"
+    type: automatic
+    action: "Update project.state = validate"
+  validate_to_deploy:
+    trigger: "qa-implementation.status == approved"
+    type: automatic
+    action: "Update project.state = deploy"
+    notes: "User preview skipped for quick-flow (scope too small)"
+  deploy_to_completed:
+    trigger: "devops.status == completed"
+    type: automatic
+    action: "Update project.state = completed"
+
+escalation:
+  # If at any point the quick-flow feels insufficient, escalate to full pipeline
+  triggers:
+    - "Dev discovers the change is more complex than expected"
+    - "QA-Implementation finds architectural issues"
+    - "Scope creep detected (>5 files, new APIs, schema changes)"
+    - "Dev agent requests escalation"
+  action: >
+    Pause quick-flow, notify user:
+    "This task is more complex than initially estimated.
+    Recommend switching to full pipeline for proper planning.
+    Options:
+    1. Switch to full pipeline (Recommended)
+    2. Continue with quick-flow (document risk)
+    3. Abort and reassess"

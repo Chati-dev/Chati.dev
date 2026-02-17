@@ -2,7 +2,7 @@
 id: brownfield-wu-report
 agent: brownfield-wu
 trigger: brownfield-wu-migration-plan
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [wu-report.yaml]

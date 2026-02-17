@@ -2,7 +2,7 @@
 id: detail-consolidate
 agent: detail
 trigger: detail-acceptance-criteria
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [prd.yaml]

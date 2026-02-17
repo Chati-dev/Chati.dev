@@ -50,7 +50,7 @@ Find the most recent agent with `status: completed`:
 
 ### 4. Determine Next Agent
 Based on pipeline position and last completed agent:
-- **PLANNING pipeline**: greenfield-wu → brief → detail → architect → ux → phases → tasks → qa-planning
+- **DISCOVER → PLAN pipeline**: greenfield-wu → brief → detail → architect → ux → phases → tasks → qa-planning
 - **BUILD pipeline**: dev → qa-implementation
 - **DEPLOY pipeline**: devops
 - Handle special cases (skipped, needs_revalidation)
@@ -163,7 +163,7 @@ session_state:
     language: "Portugues"
   current_mode: "planning"
   pipeline_position:
-    phase: "PLANNING"
+    phase: "DISCOVER"
     last_completed_agent: "detail"
     next_agent: "architect"
     completion_percentage: 30

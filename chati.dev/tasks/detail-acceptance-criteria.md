@@ -2,7 +2,7 @@
 id: detail-acceptance-criteria
 agent: detail
 trigger: detail-edge-case-analysis
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [acceptance-criteria.yaml]

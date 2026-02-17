@@ -233,7 +233,7 @@ describe('replace-merger', () => {
 
   describe('shouldReplace', () => {
     it('returns true for agent files', () => {
-      assert.ok(shouldReplace('chati.dev/agents/planning/brief.md'));
+      assert.ok(shouldReplace('chati.dev/agents/discover/brief.md'));
     });
 
     it('returns true for schema files', () => {
@@ -257,7 +257,7 @@ describe('replace-merger', () => {
     });
 
     it('handles backslash path separators', () => {
-      assert.ok(shouldReplace('chati.dev\\agents\\planning\\brief.md'));
+      assert.ok(shouldReplace('chati.dev\\agents\\discover\\brief.md'));
     });
   });
 });
@@ -283,7 +283,7 @@ describe('merger router', () => {
     });
 
     it('returns replace for framework-owned agent files', () => {
-      assert.equal(getMergeStrategy('chati.dev/agents/planning/brief.md'), 'replace');
+      assert.equal(getMergeStrategy('chati.dev/agents/discover/brief.md'), 'replace');
     });
 
     it('returns replace for framework-owned schema files', () => {
@@ -313,7 +313,7 @@ describe('merger router', () => {
     });
 
     it('routes framework files to replace merger', () => {
-      const result = mergeFile('chati.dev/agents/planning/brief.md', 'old', 'new');
+      const result = mergeFile('chati.dev/agents/discover/brief.md', 'old', 'new');
       assert.equal(result, 'new');
     });
   });

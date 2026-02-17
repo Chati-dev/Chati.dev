@@ -16,7 +16,7 @@ workflow:
 phases:
   - phase: 0
     name: Deep Discovery
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brownfield-wu
         action: full-discovery
@@ -25,7 +25,7 @@ phases:
 
   - phase: 1
     name: Problem Definition
-    category: PLANNING
+    category: DISCOVER
     sequence:
       - agent: brief
         action: problem-extraction
@@ -33,7 +33,7 @@ phases:
 
   - phase: 2
     name: Architecture & Experience
-    category: PLANNING
+    category: PLAN
     sequence:
       - agent: architect
         action: assess-architecture
@@ -50,7 +50,7 @@ phases:
 
   - phase: 3
     name: Execution Planning
-    category: PLANNING
+    category: PLAN
     sequence:
       - agent: phases
         action: create-roadmap
@@ -61,7 +61,7 @@ phases:
 
   - phase: 4
     name: Planning Quality Gate
-    category: PLANNING
+    category: PLAN
     sequence:
       - agent: qa-planning
         action: validate-traceability
@@ -85,3 +85,39 @@ phases:
       - agent: devops
         action: deploy
         creates: [chati.dev/artifacts/8-Validation/deploy-report.md]
+
+transitions:
+  discover_to_plan:
+    trigger: "brief.status == completed"
+    type: automatic
+    action: "Update project.state = plan"
+  plan_to_build:
+    trigger: "qa-planning.score >= 95"
+    type: automatic
+    action: "Update project.state = build"
+  build_to_validate:
+    trigger: "dev.status == completed"
+    type: automatic
+    action: "Update project.state = validate"
+  validate_to_preview:
+    trigger: "qa-implementation.status == approved"
+    type: automatic
+    action: "Launch user preview (orchestrator-preview task)"
+    notes: "User must approve preview before advancing to deploy"
+  preview_to_deploy:
+    trigger: "user_preview.decision in [approve_keep, approve_kill]"
+    type: manual
+    action: "Update project.state = deploy"
+    notes: "User explicitly approves the preview"
+  deploy_to_completed:
+    trigger: "devops.status == completed"
+    type: automatic
+    action: "Update project.state = completed"
+  backward_to_plan:
+    trigger: "qa-implementation.issue_type in [spec, architecture]"
+    type: backward
+    action: "Update project.state = plan, route to responsible agent"
+  backward_to_discover:
+    trigger: "qa-implementation.issue_type in [requirements, scope]"
+    type: backward
+    action: "Update project.state = discover, route to brief or wu agent"

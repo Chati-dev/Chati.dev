@@ -41,7 +41,7 @@ describe('spawner', () => {
     });
 
     it('should serialize contextPayload into CHATI_CONTEXT', () => {
-      const payload = { phase: 'planning', data: { key: 'value' } };
+      const payload = { phase: 'discover', data: { key: 'value' } };
       const result = buildSpawnCommand({
         agent: 'brief',
         taskId: 'extract',

@@ -91,7 +91,7 @@ describe('validate-package', () => {
     // Create framework/ with all expected dirs and files
     const frameworkDir = join(completeDir, 'framework');
     const dirs = [
-      'orchestrator', 'agents/planning', 'agents/quality', 'agents/build', 'agents/deploy',
+      'orchestrator', 'agents/discover', 'agents/plan', 'agents/quality', 'agents/build', 'agents/deploy',
       'templates', 'workflows', 'quality-gates', 'schemas', 'frameworks',
       'intelligence', 'patterns', 'hooks', 'domains', 'i18n', 'migrations',
       'data', 'tasks', 'context',

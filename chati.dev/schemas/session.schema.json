@@ -11,7 +11,7 @@
       "properties": {
         "name": { "type": "string", "description": "Project name" },
         "type": { "enum": ["greenfield", "brownfield"], "description": "Project type" },
-        "state": { "enum": ["planning", "build", "validate", "deploy", "completed"], "description": "Current pipeline macro-phase" }
+        "state": { "enum": ["discover", "plan", "build", "validate", "deploy", "completed"], "description": "Current pipeline macro-phase" }
       }
     },
     "execution_mode": {
@@ -85,6 +85,39 @@
         }
       }
     },
+    "preview": {
+      "type": "object",
+      "description": "User preview state (active during BUILD → DEPLOY gate)",
+      "properties": {
+        "status": {
+          "enum": ["inactive", "running", "approved", "adjusting"],
+          "default": "inactive",
+          "description": "Preview server status"
+        },
+        "url": {
+          "type": ["string", "null"],
+          "description": "Local preview URL (e.g., http://localhost:3001)"
+        },
+        "port": {
+          "type": ["integer", "null"],
+          "description": "Port the preview server is running on"
+        },
+        "framework": {
+          "type": ["string", "null"],
+          "description": "Detected framework (nextjs, vite, angular, etc.)"
+        },
+        "logs_captured": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of log lines captured in buffer"
+        },
+        "adjustment_count": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of adjustment iterations"
+        }
+      }
+    },
     "last_handoff": { "type": "string" },
     "deviations": {
       "type": "array",
@@ -122,8 +155,8 @@
         "required": ["timestamp", "from", "to", "trigger"],
         "properties": {
           "timestamp": { "type": "string", "format": "date-time" },
-          "from": { "enum": ["planning", "build", "validate", "deploy", "completed"] },
-          "to": { "enum": ["planning", "build", "validate", "deploy", "completed"] },
+          "from": { "enum": ["discover", "plan", "build", "validate", "deploy", "completed"] },
+          "to": { "enum": ["discover", "plan", "build", "validate", "deploy", "completed"] },
           "trigger": { "type": "string", "description": "What caused the transition (agent completion, override, backward)" },
           "type": { "enum": ["automatic", "backward", "override"], "description": "Transition classification" },
           "skipped_agents": {

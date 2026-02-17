@@ -2,7 +2,7 @@
 id: brief-validate-completeness
 agent: brief
 trigger: brief-extract-requirements
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [validation-report.yaml]

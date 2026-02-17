@@ -32,7 +32,7 @@ describe('session-manager', () => {
 
       assert.equal(result.created, true);
       assert.ok(result.session);
-      assert.equal(result.session.mode, 'planning');
+      assert.equal(result.session.mode, 'discover');
       assert.equal(result.session.language, 'en');
       assert.equal(result.session.project_type, 'greenfield');
       assert.ok(result.session.started_at);
@@ -78,13 +78,13 @@ describe('session-manager', () => {
     it('should load existing session', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'load-test-'));
 
-      initSession(testDir, { mode: 'planning', language: 'en' });
+      initSession(testDir, { mode: 'discover', language: 'en' });
 
       const result = loadSession(testDir);
 
       assert.equal(result.loaded, true);
       assert.ok(result.session);
-      assert.equal(result.session.mode, 'planning');
+      assert.equal(result.session.mode, 'discover');
       assert.equal(result.error, null);
 
       rmSync(testDir, { recursive: true, force: true });
@@ -107,7 +107,7 @@ describe('session-manager', () => {
     it('should update session fields', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'update-test-'));
 
-      initSession(testDir, { mode: 'planning' });
+      initSession(testDir, { mode: 'discover' });
 
       const result = updateSession(testDir, {
         current_agent: 'brief',
@@ -145,10 +145,10 @@ describe('session-manager', () => {
     it('should record mode transition in history', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'transition-test-'));
 
-      initSession(testDir, { mode: 'planning' });
+      initSession(testDir, { mode: 'discover' });
 
       const result = recordModeTransition(testDir, {
-        from: 'planning',
+        from: 'discover',
         to: 'build',
         trigger: 'qa-planning-score',
         reason: 'QA-Planning score >= 95%',
@@ -159,7 +159,7 @@ describe('session-manager', () => {
       const session = loadSession(testDir);
       assert.equal(session.session.mode, 'build');
       assert.ok(session.session.mode_transitions.length > 0);
-      assert.equal(session.session.mode_transitions[0].from, 'planning');
+      assert.equal(session.session.mode_transitions[0].from, 'discover');
       assert.equal(session.session.mode_transitions[0].to, 'build');
 
       rmSync(testDir, { recursive: true, force: true });
@@ -234,11 +234,11 @@ describe('session-manager', () => {
     it('should include session metadata', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'metadata-test-'));
 
-      initSession(testDir, { mode: 'planning', language: 'pt' });
+      initSession(testDir, { mode: 'discover', language: 'pt' });
 
       const summary = getSessionSummary(testDir);
 
-      assert.equal(summary.mode, 'planning');
+      assert.equal(summary.mode, 'discover');
       assert.equal(summary.language, 'pt');
       assert.equal(summary.project_type, 'greenfield');
       assert.ok(summary.duration);

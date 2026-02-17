@@ -14,21 +14,22 @@ import {
   resetPipelineTo,
   isPipelineComplete,
   markAgentInProgress,
+  confirmPreview,
 } from '../../src/orchestrator/pipeline-manager.js';
 
 describe('pipeline-manager', () => {
   describe('PIPELINE_PHASES', () => {
-    it('should have 3 phases in order', () => {
-      assert.equal(PIPELINE_PHASES.length, 3);
-      assert.deepEqual(PIPELINE_PHASES, ['planning', 'build', 'deploy']);
+    it('should have 4 phases in order', () => {
+      assert.equal(PIPELINE_PHASES.length, 4);
+      assert.deepEqual(PIPELINE_PHASES, ['discover', 'plan', 'build', 'deploy']);
     });
   });
 
   describe('initPipeline', () => {
     it('should initialize greenfield pipeline', () => {
-      const state = initPipeline({ isGreenfield: true, mode: 'planning' });
+      const state = initPipeline({ isGreenfield: true, mode: 'discover' });
 
-      assert.equal(state.phase, 'planning');
+      assert.equal(state.phase, 'discover');
       assert.equal(state.isGreenfield, true);
       assert.ok(state.startedAt);
       assert.equal(state.completedAt, null);
@@ -38,7 +39,7 @@ describe('pipeline-manager', () => {
     });
 
     it('should initialize brownfield pipeline', () => {
-      const state = initPipeline({ isGreenfield: false, mode: 'planning' });
+      const state = initPipeline({ isGreenfield: false, mode: 'discover' });
 
       assert.equal(state.isGreenfield, false);
       assert.ok(state.agents['brownfield-wu']);
@@ -61,9 +62,9 @@ describe('pipeline-manager', () => {
       }
     });
 
-    it('should default to planning mode', () => {
+    it('should default to discover phase', () => {
       const state = initPipeline({});
-      assert.equal(state.phase, 'planning');
+      assert.equal(state.phase, 'discover');
     });
   });
 
@@ -104,17 +105,23 @@ describe('pipeline-manager', () => {
 
     it('should continue to next agent in same phase', () => {
       const state = initPipeline({ isGreenfield: true });
-      state.currentAgent = 'greenfield-wu';
+      state.phase = 'plan';
+      state.completedAgents = ['greenfield-wu', 'brief'];
+      state.agents['greenfield-wu'].status = AGENT_STATUS.COMPLETED;
+      state.agents['brief'].status = AGENT_STATUS.COMPLETED;
+      state.currentAgent = 'detail';
+      state.agents['detail'].status = AGENT_STATUS.IN_PROGRESS;
 
-      const result = advancePipeline(state, 'greenfield-wu');
+      const result = advancePipeline(state, 'detail');
 
       assert.equal(result.nextAction, 'continue');
-      assert.equal(result.nextAgent, 'brief');
+      assert.equal(result.nextAgent, 'architect');
       assert.equal(result.needsModeSwitch, false);
     });
 
     it('should advance phase when QA-Planning passes threshold', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
       state.completedAgents = [
         'greenfield-wu',
         'brief',
@@ -140,6 +147,7 @@ describe('pipeline-manager', () => {
 
     it('should not advance phase when QA-Planning score below threshold', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
       state.completedAgents = [
         'greenfield-wu',
         'brief',
@@ -157,12 +165,13 @@ describe('pipeline-manager', () => {
 
       const result = advancePipeline(state, 'qa-planning', { score: 85 });
 
-      assert.equal(result.state.phase, 'planning');
+      assert.equal(result.state.phase, 'plan');
       assert.equal(result.nextAction, 'wait');
     });
 
     it('should record mode transition', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
       state.completedAgents = [
         'greenfield-wu',
         'brief',
@@ -182,7 +191,7 @@ describe('pipeline-manager', () => {
 
       assert.ok(result.state.modeTransitions.length > 0);
       const transition = result.state.modeTransitions[0];
-      assert.equal(transition.from, 'planning');
+      assert.equal(transition.from, 'plan');
       assert.equal(transition.to, 'build');
       assert.equal(transition.trigger, 'autonomous');
     });
@@ -203,6 +212,7 @@ describe('pipeline-manager', () => {
   describe('checkPhaseTransition', () => {
     it('should block transition if QA-Planning not completed', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
 
       const result = checkPhaseTransition(state);
 
@@ -212,6 +222,7 @@ describe('pipeline-manager', () => {
 
     it('should block transition if QA-Planning score below threshold', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
       state.agents['qa-planning'].status = AGENT_STATUS.COMPLETED;
       state.agents['qa-planning'].score = 90;
 
@@ -224,6 +235,7 @@ describe('pipeline-manager', () => {
 
     it('should allow transition if QA-Planning score meets threshold', () => {
       const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
       state.agents['qa-planning'].status = AGENT_STATUS.COMPLETED;
       state.agents['qa-planning'].score = 96;
 
@@ -365,6 +377,166 @@ describe('pipeline-manager', () => {
       assert.throws(() => {
         markAgentInProgress(state, 'unknown-agent');
       });
+    });
+  });
+
+  describe('user_preview gate', () => {
+    /**
+     * Helper: build a pipeline state at the point where qa-implementation
+     * has just been submitted for completion inside the build phase.
+     */
+    function buildStateAtQAImpl(qaScore = 96) {
+      const state = initPipeline({ isGreenfield: true });
+      state.phase = 'build';
+
+      // Mark all pre-build agents as completed
+      const preBuildAgents = [
+        'greenfield-wu', 'brief', 'detail', 'architect',
+        'ux', 'phases', 'tasks', 'qa-planning',
+      ];
+      for (const name of preBuildAgents) {
+        state.agents[name].status = AGENT_STATUS.COMPLETED;
+        state.completedAgents.push(name);
+      }
+
+      // dev completed
+      state.agents['dev'].status = AGENT_STATUS.COMPLETED;
+      state.completedAgents.push('dev');
+
+      // qa-implementation in progress (about to complete)
+      state.agents['qa-implementation'].status = AGENT_STATUS.IN_PROGRESS;
+      state.currentAgent = 'qa-implementation';
+
+      return state;
+    }
+
+    it('should return user_preview when qa-implementation passes in build phase', () => {
+      const state = buildStateAtQAImpl(96);
+      const result = advancePipeline(state, 'qa-implementation', { score: 96 });
+
+      assert.equal(result.nextAction, 'user_preview');
+      assert.equal(result.state.phase, 'build'); // stays in build
+      assert.equal(result.nextAgent, null);
+      assert.equal(result.needsModeSwitch, false);
+      assert.ok(result.previewContext);
+      assert.equal(result.previewContext.qaScore, 96);
+    });
+
+    it('should NOT trigger user_preview when qa-implementation score is below threshold', () => {
+      const state = buildStateAtQAImpl();
+      const result = advancePipeline(state, 'qa-implementation', { score: 80 });
+
+      assert.equal(result.nextAction, 'wait'); // QA failed
+      assert.equal(result.state.phase, 'build');
+    });
+
+    it('should still advance qa-planning → build normally (no preview intercept)', () => {
+      const state = initPipeline({ isGreenfield: true });
+      state.phase = 'plan';
+      const prePlanAgents = [
+        'greenfield-wu', 'brief', 'detail', 'architect',
+        'ux', 'phases', 'tasks',
+      ];
+      for (const name of prePlanAgents) {
+        state.agents[name].status = AGENT_STATUS.COMPLETED;
+        state.completedAgents.push(name);
+      }
+      state.currentAgent = 'qa-planning';
+
+      const result = advancePipeline(state, 'qa-planning', { score: 97 });
+
+      assert.equal(result.nextAction, 'advance_phase');
+      assert.equal(result.state.phase, 'build');
+      assert.equal(result.nextAgent, 'dev');
+    });
+  });
+
+  describe('confirmPreview', () => {
+    function buildPreviewState() {
+      const state = initPipeline({ isGreenfield: true });
+      state.phase = 'build';
+
+      const allPrior = [
+        'greenfield-wu', 'brief', 'detail', 'architect',
+        'ux', 'phases', 'tasks', 'qa-planning', 'dev', 'qa-implementation',
+      ];
+      for (const name of allPrior) {
+        state.agents[name].status = AGENT_STATUS.COMPLETED;
+        state.completedAgents.push(name);
+      }
+      state.agents['qa-implementation'].score = 96;
+      state.currentAgent = null;
+
+      return state;
+    }
+
+    it('should advance to deploy on approve_keep', () => {
+      const state = buildPreviewState();
+      const result = confirmPreview(state, 'approve_keep');
+
+      assert.equal(result.nextAction, 'advance_phase');
+      assert.equal(result.state.phase, 'deploy');
+      assert.equal(result.nextAgent, 'devops');
+      assert.equal(result.needsModeSwitch, true);
+      assert.equal(result.serverAction, 'keep');
+    });
+
+    it('should advance to deploy on approve_kill', () => {
+      const state = buildPreviewState();
+      const result = confirmPreview(state, 'approve_kill');
+
+      assert.equal(result.nextAction, 'advance_phase');
+      assert.equal(result.state.phase, 'deploy');
+      assert.equal(result.serverAction, 'kill');
+    });
+
+    it('should record mode transition on approve', () => {
+      const state = buildPreviewState();
+      const result = confirmPreview(state, 'approve_keep');
+
+      assert.ok(result.state.modeTransitions.length > 0);
+      const t = result.state.modeTransitions[result.state.modeTransitions.length - 1];
+      assert.equal(t.from, 'build');
+      assert.equal(t.to, 'deploy');
+      assert.equal(t.trigger, 'user_preview_approved');
+    });
+
+    it('should route to dev on adjust', () => {
+      const state = buildPreviewState();
+      const result = confirmPreview(state, 'adjust');
+
+      assert.equal(result.nextAction, 'continue');
+      assert.equal(result.nextAgent, 'dev');
+      assert.equal(result.state.phase, 'build'); // stays in build
+      assert.equal(result.needsModeSwitch, false);
+    });
+
+    it('should trigger deviation on rethink', () => {
+      const state = buildPreviewState();
+      const result = confirmPreview(state, 'rethink');
+
+      assert.equal(result.nextAction, 'deviation');
+      assert.equal(result.nextAgent, null);
+      assert.equal(result.state.phase, 'build'); // stays in build
+      assert.equal(result.needsModeSwitch, false);
+    });
+
+    it('should add to history for each decision', () => {
+      for (const decision of ['approve_keep', 'approve_kill', 'adjust', 'rethink']) {
+        const state = buildPreviewState();
+        const result = confirmPreview(state, decision);
+        const last = result.state.history[result.state.history.length - 1];
+        assert.equal(last.agent, 'orchestrator');
+        assert.ok(last.action.startsWith('preview_'));
+      }
+    });
+
+    it('should throw on invalid decision', () => {
+      const state = buildPreviewState();
+      assert.throws(
+        () => confirmPreview(state, 'invalid'),
+        /Invalid preview decision/,
+      );
     });
   });
 });

@@ -2,7 +2,7 @@
 id: qa-planning-coverage-plan
 agent: qa-planning
 trigger: qa-planning-gate-define
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [coverage-plan.yaml]
@@ -166,7 +166,7 @@ modules:
     files:
       - chati.dev/orchestrator.js
       - chati.dev/mode-governance.js
-      - chati.dev/deviation-handler.js
+      - chati.dev/orchestrator/chati.md
     hard_to_test:
       - IDE detection: mock process.env and fs
       - User prompts: mock readline interface

@@ -2,7 +2,7 @@
 id: qa-planning-risk-matrix
 agent: qa-planning
 trigger: qa-planning-coverage-plan
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [risk-matrix.yaml]

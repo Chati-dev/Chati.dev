@@ -2,7 +2,7 @@
 id: qa-planning-gate-define
 agent: qa-planning
 trigger: qa-planning-test-strategy
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [quality-gates.yaml]

@@ -21,7 +21,7 @@ const VALID_AGENT_CONTENT = `# Brief Agent — Problem Extraction
 
 - **Role**: Problem Extraction Specialist
 - **Pipeline Position**: 2nd agent (after WU)
-- **Category**: PLANNING
+- **Category**: DISCOVER
 - **Question Answered**: WHAT is the problem?
 
 ---
@@ -122,28 +122,28 @@ entities:
       path: chati.dev/orchestrator/chati.md
       type: agent
     greenfield-wu:
-      path: chati.dev/agents/planning/greenfield-wu.md
+      path: chati.dev/agents/discover/greenfield-wu.md
       type: agent
     brownfield-wu:
-      path: chati.dev/agents/planning/brownfield-wu.md
+      path: chati.dev/agents/discover/brownfield-wu.md
       type: agent
     brief:
-      path: chati.dev/agents/planning/brief.md
+      path: chati.dev/agents/discover/brief.md
       type: agent
     detail:
-      path: chati.dev/agents/planning/detail.md
+      path: chati.dev/agents/plan/detail.md
       type: agent
     architect:
-      path: chati.dev/agents/planning/architect.md
+      path: chati.dev/agents/plan/architect.md
       type: agent
     ux:
-      path: chati.dev/agents/planning/ux.md
+      path: chati.dev/agents/plan/ux.md
       type: agent
     phases:
-      path: chati.dev/agents/planning/phases.md
+      path: chati.dev/agents/plan/phases.md
       type: agent
     tasks:
-      path: chati.dev/agents/planning/tasks.md
+      path: chati.dev/agents/plan/tasks.md
       type: agent
     qa-planning:
       path: chati.dev/agents/quality/qa-planning.md
@@ -169,8 +169,8 @@ describe('validate-agents', () => {
   before(() => setupFixtures());
 
   describe('EXPECTED_AGENTS', () => {
-    it('has 4 categories', () => {
-      assert.equal(Object.keys(EXPECTED_AGENTS).length, 4);
+    it('has 5 categories', () => {
+      assert.equal(Object.keys(EXPECTED_AGENTS).length, 5);
     });
 
     it('has 12 agents total', () => {
@@ -212,7 +212,7 @@ describe('validate-agents', () => {
 
   describe('validateAgent', () => {
     it('validates a well-formed agent file', () => {
-      const result = validateAgent(FIXTURES_DIR, join('agents', 'planning', 'brief.md'));
+      const result = validateAgent(FIXTURES_DIR, join('agents', 'discover', 'brief.md'));
       assert.ok(result.valid);
       assert.equal(result.errors.length, 0);
       assert.ok(result.completeness);
@@ -220,15 +220,15 @@ describe('validate-agents', () => {
     });
 
     it('reports missing file as error', () => {
-      const result = validateAgent(FIXTURES_DIR, join('agents', 'planning', 'nonexistent.md'));
+      const result = validateAgent(FIXTURES_DIR, join('agents', 'discover', 'nonexistent.md'));
       assert.equal(result.valid, false);
       assert.ok(result.errors.length > 0);
     });
 
     it('extracts identity from agent content', () => {
-      const result = validateAgent(FIXTURES_DIR, join('agents', 'planning', 'brief.md'));
+      const result = validateAgent(FIXTURES_DIR, join('agents', 'discover', 'brief.md'));
       assert.equal(result.identity.role, 'Problem Extraction Specialist');
-      assert.equal(result.identity.category, 'PLANNING');
+      assert.equal(result.identity.category, 'DISCOVER');
     });
   });
 
@@ -244,10 +244,10 @@ describe('validate-agents', () => {
     it('reports missing agents', () => {
       // Create a partial framework
       const partialDir = join(FIXTURES_DIR, '_partial');
-      mkdirSync(join(partialDir, 'agents', 'planning'), { recursive: true });
+      mkdirSync(join(partialDir, 'agents', 'discover'), { recursive: true });
       mkdirSync(join(partialDir, 'orchestrator'), { recursive: true });
 
-      writeFileSync(join(partialDir, 'agents', 'planning', 'brief.md'), VALID_AGENT_CONTENT);
+      writeFileSync(join(partialDir, 'agents', 'discover', 'brief.md'), VALID_AGENT_CONTENT);
       writeFileSync(join(partialDir, 'orchestrator', 'chati.md'), '# Orchestrator\n## On Activation\nRoute.');
 
       const report = validateAllAgents(partialDir);

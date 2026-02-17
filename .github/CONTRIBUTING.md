@@ -146,7 +146,7 @@ Agents live in `chati.dev/agents/{category}/`. Each agent is a Markdown file wit
 ## Identity
 - **Role**: ...
 - **Pipeline Position**: After {previous}, Before {next}
-- **Category**: PLANNING | Quality | BUILD | DEPLOY
+- **Category**: DISCOVER | PLAN | Quality | BUILD | DEPLOY
 
 ## Mission
 One paragraph describing what this agent does and why.

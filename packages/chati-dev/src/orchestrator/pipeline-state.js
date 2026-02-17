@@ -44,7 +44,7 @@ export function loadPipelineState(projectDir) {
 
     // Extract pipeline-relevant fields
     const state = {
-      phase: session.mode || 'planning',
+      phase: session.mode || 'discover',
       isGreenfield: session.project_type === 'greenfield',
       startedAt: session.started_at || null,
       completedAt: session.completed_at || null,

@@ -2,7 +2,7 @@
 id: brownfield-wu-dependency-scan
 agent: brownfield-wu
 trigger: brownfield-wu-deep-discovery
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: true
 outputs: [dependencies.yaml]

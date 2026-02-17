@@ -2,7 +2,7 @@
 id: tasks-estimate
 agent: tasks
 trigger: tasks-decompose
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [estimates.yaml]

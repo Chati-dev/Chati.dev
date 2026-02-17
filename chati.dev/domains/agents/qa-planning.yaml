@@ -42,3 +42,19 @@ rules:
   - id: qap-strategy
     text: "Test strategy must include unit, integration, and E2E test categories."
     priority: normal
+
+  - id: qap-adversarial
+    text: >
+      ADVERSARIAL REVIEW: Every planning validation MUST identify minimum 3
+      findings (gaps, improvements, or suggestions). Zero findings is
+      suspiciously clean — re-analyze with deeper scrutiny across all
+      traceability chains. Findings can be any severity.
+    priority: critical
+
+  - id: qap-devil-advocate
+    text: >
+      DEVIL'S ADVOCATE: After traceability validation, assume the plan has
+      a hidden flaw and actively search for it. Challenge assumptions,
+      question requirement completeness, and look for scope gaps that
+      could surface during BUILD. Document the adversarial analysis.
+    priority: high

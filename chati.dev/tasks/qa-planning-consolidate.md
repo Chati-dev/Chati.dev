@@ -2,7 +2,7 @@
 id: qa-planning-consolidate
 agent: qa-planning
 trigger: qa-planning-risk-matrix
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [qa-plan.yaml]

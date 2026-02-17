@@ -37,14 +37,14 @@ const AGENT_MODELS = {
  * Map of agent names to their definition file paths (relative to project root).
  */
 export const AGENT_FILE_MAP = {
-  'greenfield-wu': 'chati.dev/agents/planning/greenfield-wu.md',
-  'brownfield-wu': 'chati.dev/agents/planning/brownfield-wu.md',
-  brief: 'chati.dev/agents/planning/brief.md',
-  detail: 'chati.dev/agents/planning/detail.md',
-  architect: 'chati.dev/agents/planning/architect.md',
-  ux: 'chati.dev/agents/planning/ux.md',
-  phases: 'chati.dev/agents/planning/phases.md',
-  tasks: 'chati.dev/agents/planning/tasks.md',
+  'greenfield-wu': 'chati.dev/agents/discover/greenfield-wu.md',
+  'brownfield-wu': 'chati.dev/agents/discover/brownfield-wu.md',
+  brief: 'chati.dev/agents/discover/brief.md',
+  detail: 'chati.dev/agents/plan/detail.md',
+  architect: 'chati.dev/agents/plan/architect.md',
+  ux: 'chati.dev/agents/plan/ux.md',
+  phases: 'chati.dev/agents/plan/phases.md',
+  tasks: 'chati.dev/agents/plan/tasks.md',
   'qa-planning': 'chati.dev/agents/quality/qa-planning.md',
   dev: 'chati.dev/agents/build/dev.md',
   'qa-implementation': 'chati.dev/agents/quality/qa-implementation.md',
@@ -158,7 +158,7 @@ function buildPrismSection(config) {
   const result = runPrism({
     domainsDir,
     remainingPercent: 100, // Spawned terminals are always FRESH
-    mode: state.project?.state || 'planning',
+    mode: state.project?.state || 'discover',
     agent: config.agent,
     workflow: config.workflow || null,
     pipelinePosition: config.agent,
@@ -261,7 +261,7 @@ function buildSessionSection(config) {
     '',
     `- **Project**: ${project.name || '(unnamed)'}`,
     `- **Type**: ${project.type || 'greenfield'}`,
-    `- **Mode**: ${project.state || 'planning'}`,
+    `- **Mode**: ${project.state || 'discover'}`,
     `- **Language**: ${state.language || 'en'} (interaction) / English (artifacts)`,
     `- **User Level**: ${state.user_level || 'auto'}`,
     `- **Execution Mode**: ${state.execution_mode || 'autonomous'}`,

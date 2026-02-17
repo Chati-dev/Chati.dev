@@ -46,7 +46,7 @@ For each agent in the pipeline, gather:
 
 ### 3. Calculate Pipeline Progress
 Determine overall completion for each mode:
-- **PLANNING**: 9 agents (greenfield-wu OR brownfield-wu, brief, detail, architect, ux, phases, tasks, qa-planning)
+- **DISCOVER + PLAN**: 9 agents (greenfield-wu OR brownfield-wu, brief, detail, architect, ux, phases, tasks, qa-planning)
 - **BUILD**: 2 agents (dev, qa-implementation)
 - **DEPLOY**: 1 agent (devops)
 - Calculate percentage: completed / total
@@ -160,7 +160,7 @@ status_report:
 
   current_state:
     mode: "planning"
-    phase: "PLANNING"
+    phase: "DISCOVER"
     last_activity: "2026-02-13T02:15:00Z"
     hours_since_activity: 8.25
 
@@ -240,10 +240,10 @@ status_report:
   visual_report: |
     ╔════════════════════════════════════════════════════════════╗
     ║  chati.dev Status - HealthCare Portal                      ║
-    ║  Mode: PLANNING  |  Progress: 25% (3/12 agents)             ║
+    ║  Mode: DISCOVER  |  Progress: 25% (3/12 agents)             ║
     ╚════════════════════════════════════════════════════════════╝
 
-    PLANNING Pipeline (37.5%)
+    DISCOVER / PLAN Pipeline (37.5%)
     ✓ brownfield-wu  ✓ brief  ✓ detail  ◐ architect  ○ ux  ○ phases  ○ tasks  ○ qa-planning
 
     BUILD Pipeline (0%)

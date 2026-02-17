@@ -33,8 +33,8 @@ AI-assisted development today suffers from three critical issues:
 Chati.dev introduces **Agent-Driven Development**: a pipeline of 13 specialized agents where each agent owns a specific phase, produces validated artifacts, and hands off context to the next agent. An Intelligence Layer ensures context is never lost, knowledge persists across sessions, and the user never accidentally leaves the system.
 
 ```
-PLANNING (planning)  →  Quality Gate  →  BUILD  →  Quality Gate  →  DEPLOY
-  8 agents               QA-Planning     Dev        QA-Impl        DevOps
+DISCOVER  →  PLAN  →  Quality Gate  →  BUILD  →  Quality Gate  →  DEPLOY
+ 3 agents    5 agents   QA-Planning     Dev        QA-Impl        DevOps
 ```
 
 ### Key Innovations
@@ -108,11 +108,12 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 
 ## Architecture
 
-### 13 Agents, 4 Categories
+### 13 Agents, 5 Categories
 
 | Category | Agents | Purpose |
 |----------|--------|---------|
-| **PLANNING** | Greenfield WU, Brownfield WU, Brief, Detail (PRD), Architect, UX, Phases, Tasks | Planning & Requirements |
+| **DISCOVER** | Greenfield WU, Brownfield WU, Brief | User Interaction & Discovery |
+| **PLAN** | Detail (PRD), Architect, UX, Phases, Tasks | Autonomous Planning |
 | **Quality** | QA-Planning, QA-Implementation | Validation & Gates |
 | **BUILD** | Dev | Implementation |
 | **DEPLOY** | DevOps | Shipping |
@@ -131,13 +132,13 @@ User Request
     │
     ├── In-conversation ──┐
     │                     ▼
-    │   ┌─── PLANNING (interactive) ───┐
+    │   ┌─── DISCOVER (interactive) ──┐
     │   │  WU → Brief                 │
     │   └─────────────────────────────┘
     │
     ├── Spawns terminals ──────────────────────────┐
     │                                               ▼
-    │   ┌─── PLANNING (autonomous) ─── Parallel ───┐
+    │   ┌─── PLAN (autonomous) ─────── Parallel ───┐
     │   │  Detail (opus) ──┐                       │
     │   │  Architect (opus)├── run simultaneously  │
     │   │  UX (sonnet) ────┘                       │
@@ -284,13 +285,14 @@ your-project/
 ├── chati.dev/
 │   ├── orchestrator/             # Main orchestrator
 │   ├── agents/                   # 13 agent definitions
-│   │   ├── planning/              # 8 planning agents
+│   │   ├── discover/              # 3 discover agents (WU, Brief)
+│   │   ├── plan/                  # 5 plan agents (Detail, Architect, UX, Phases, Tasks)
 │   │   ├── quality/              # 2 quality gate agents
 │   │   ├── build/                # Dev agent
 │   │   └── deploy/               # DevOps agent
 │   ├── tasks/                    # 72 task definitions (YAML frontmatter)
-│   ├── workflows/                # 5 workflow blueprints
-│   ├── templates/                # 5 artifact templates
+│   ├── workflows/                # 6 workflow blueprints
+│   ├── templates/                # 6 artifact templates
 │   ├── schemas/                  # 5 JSON schemas for validation
 │   ├── intelligence/             # Context Engine, Memory Layer, Decision Engine
 │   ├── domains/                  # Domain loading configs (per-agent, per-workflow)
@@ -299,7 +301,7 @@ your-project/
 │   ├── frameworks/               # Decision heuristics, quality dims
 │   ├── quality-gates/            # Planning & implementation gates
 │   ├── patterns/                 # Elicitation patterns
-│   ├── data/                     # Entity registry (48 artifacts)
+│   ├── data/                     # Entity registry (50 artifacts)
 │   ├── i18n/                     # EN, PT, ES, FR translations
 │   ├── migrations/               # Version migration scripts
 │   ├── constitution.md           # 17 Articles + Preamble

@@ -93,4 +93,8 @@ async function main() {
 
 export { AGENT_MODELS, UPGRADE_CONDITIONS, getCurrentAgent };
 
-main();
+// Only run main when executed directly (not imported by tests)
+import { fileURLToPath } from 'url';
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

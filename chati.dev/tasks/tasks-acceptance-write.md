@@ -2,7 +2,7 @@
 id: tasks-acceptance-write
 agent: tasks
 trigger: tasks-estimate
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [task-criteria.yaml]

@@ -2,7 +2,7 @@
 id: brownfield-wu-risk-assess
 agent: brownfield-wu
 trigger: brownfield-wu-architecture-map
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [risk-assessment.yaml]

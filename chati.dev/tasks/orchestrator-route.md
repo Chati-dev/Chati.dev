@@ -58,7 +58,8 @@ Check if the requested action is valid for current position:
 
 ### 5. Select Target Agent
 Based on intent and position, identify the appropriate agent:
-- **PLANNING agents**: greenfield-wu, brownfield-wu, brief, detail, architect, ux, phases, tasks, qa-planning
+- **DISCOVER agents**: greenfield-wu, brownfield-wu, brief, detail
+- **PLAN agents**: architect, ux, phases, tasks, qa-planning
 - **BUILD agents**: dev, qa-implementation
 - **DEPLOY agents**: devops
 - **Orchestrator actions**: status, health, deviation
@@ -151,16 +152,16 @@ routing_decision:
   intent_classification: "pipeline-next"
   target_type: "agent"  # or "orchestrator-action"
   target: "detail"
-  reason: "User completed brief, detail is next in PLANNING pipeline"
+  reason: "User completed brief, detail is next in DISCOVER pipeline"
   mode: "planning"
-  pipeline_position: "PLANNING/detail"
+  pipeline_position: "DISCOVER/detail"
   context_package:
     previous_agent: "brief"
     handoff_file: ".chati/artifacts/handoffs/2026-02-13-brief.md"
     session_excerpt:
       mode: "planning"
       project_type: "greenfield"
-      current_phase: "PLANNING"
+      current_phase: "DISCOVER"
   validation:
     mode_check: "passed"
     prerequisites_check: "passed"

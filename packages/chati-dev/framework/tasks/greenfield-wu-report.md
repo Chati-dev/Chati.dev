@@ -2,7 +2,7 @@
 id: greenfield-wu-report
 agent: greenfield-wu
 trigger: greenfield-wu-tech-stack-assess
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [wu-report.yaml]

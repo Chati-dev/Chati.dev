@@ -140,10 +140,10 @@ export function runHealthCheck(targetDir) {
   // 4. Agent check
   const agentPaths = [
     'orchestrator/chati.md',
-    'agents/planning/greenfield-wu.md', 'agents/planning/brownfield-wu.md',
-    'agents/planning/brief.md', 'agents/planning/detail.md',
-    'agents/planning/architect.md', 'agents/planning/ux.md',
-    'agents/planning/phases.md', 'agents/planning/tasks.md',
+    'agents/discover/greenfield-wu.md', 'agents/discover/brownfield-wu.md',
+    'agents/discover/brief.md', 'agents/plan/detail.md',
+    'agents/plan/architect.md', 'agents/plan/ux.md',
+    'agents/plan/phases.md', 'agents/plan/tasks.md',
     'agents/quality/qa-planning.md', 'agents/quality/qa-implementation.md',
     'agents/build/dev.md', 'agents/deploy/devops.md',
   ];

@@ -2,7 +2,7 @@
 id: greenfield-wu-tech-stack-assess
 agent: greenfield-wu
 trigger: greenfield-wu-scaffold-detection
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [tech-stack.yaml]

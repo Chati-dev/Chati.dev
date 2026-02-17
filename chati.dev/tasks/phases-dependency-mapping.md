@@ -2,7 +2,7 @@
 id: phases-dependency-mapping
 agent: phases
 trigger: phases-breakdown
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [dependency-map.yaml]

@@ -54,7 +54,7 @@ Identify which artifacts are impacted:
 ### 4. Assess Impact Scope
 Evaluate the ripple effects:
 - **Localized**: Change affects only current/next agent
-- **Phase-wide**: Change affects current phase (e.g., all of PLANNING)
+- **Phase-wide**: Change affects current phase (e.g., all of DISCOVER or PLAN)
 - **Mode-wide**: Change affects entire mode (e.g., planning → build transition)
 - **Global**: Change affects entire project plan
 
@@ -172,7 +172,7 @@ deviation_plan:
     urgency: "medium"
 
   impact_assessment:
-    scope: "phase-wide"  # Affects multiple PLANNING agents
+    scope: "phase-wide"  # Affects multiple DISCOVER/PLAN agents
     affected_agents:
       - agent: "detail"
         status: "completed"

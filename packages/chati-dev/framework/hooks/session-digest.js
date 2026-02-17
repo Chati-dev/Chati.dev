@@ -21,7 +21,7 @@ function extractDigest(projectDir) {
 
   return {
     timestamp: new Date().toISOString(),
-    mode: extract('mode') || 'planning',
+    mode: extract('mode') || 'discover',
     currentAgent: extract('current_agent') || 'none',
     pipelinePosition: extract('pipeline_position') || 'unknown',
     workflow: extract('workflow') || 'unknown',
@@ -57,4 +57,8 @@ async function main() {
   }
 }
 
-main();
+// Only run main when executed directly (not imported by tests)
+import { fileURLToPath } from 'url';
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

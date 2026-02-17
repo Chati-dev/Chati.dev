@@ -2,7 +2,7 @@
 id: architect-consolidate
 agent: architect
 trigger: architect-security-review
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [architecture-final.yaml]

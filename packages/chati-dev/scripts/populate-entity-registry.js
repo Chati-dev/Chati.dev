@@ -161,7 +161,7 @@ function scanEntities(frameworkDir, relDir, category) {
 
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        // Recurse into subdirectories (e.g., agents/planning/, agents/build/)
+        // Recurse into subdirectories (e.g., agents/discover/, agents/plan/, agents/build/)
         const subEntities = scanEntities(frameworkDir, join(relDir, entry.name), category);
         entities.push(...subEntities);
         continue;

@@ -93,7 +93,7 @@ rules:
     const result = runPrism({
       domainsDir,
       remainingPercent: 80,
-      mode: 'planning',
+      mode: 'discover',
       agent: 'brief',
       workflow: 'greenfield-fullstack',
       pipelinePosition: 'brief',
@@ -112,7 +112,7 @@ rules:
     const result = runPrism({
       domainsDir,
       remainingPercent: 45,
-      mode: 'planning',
+      mode: 'discover',
       agent: 'brief',
       workflow: 'greenfield-fullstack',
       pipelinePosition: 'brief',
@@ -146,7 +146,7 @@ rules:
     const result = runPrism({
       domainsDir,
       remainingPercent: 80,
-      mode: 'planning',
+      mode: 'discover',
     });
 
     const layerNames = result.layers.map(l => l.layer);
@@ -157,7 +157,7 @@ rules:
     const result = runPrism({
       domainsDir,
       remainingPercent: 80,
-      mode: 'planning',
+      mode: 'discover',
       agent: 'brief',
     });
 
@@ -180,10 +180,10 @@ rules:
     const result = runPrism({
       domainsDir,
       remainingPercent: 80,
-      mode: 'planning',
+      mode: 'discover',
     });
 
-    assert.ok(result.xml.includes('<mode name="planning">'));
+    assert.ok(result.xml.includes('<mode name="discover">'));
     assert.ok(result.xml.includes('chati.dev/'));
   });
 

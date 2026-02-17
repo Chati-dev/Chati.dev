@@ -24,7 +24,7 @@ const REQUIRED_FIELDS = ['id', 'agent'];
 /**
  * Valid phase values.
  */
-const VALID_PHASES = ['planning', 'build', 'deploy', 'validate', 'quality'];
+const VALID_PHASES = ['discover', 'plan', 'planning', 'build', 'deploy', 'validate', 'quality'];
 
 // ---------------------------------------------------------------------------
 // Internal Helpers

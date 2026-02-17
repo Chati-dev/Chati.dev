@@ -5,7 +5,7 @@
 metadata:
   version: "1.0.0"
   last_updated: "2026-02-12T00:00:00Z"
-  entity_count: 47
+  entity_count: 50
   checksum_algorithm: sha256
 
 entities:
@@ -19,7 +19,7 @@ entities:
       adaptability: 0.2
 
     greenfield-wu:
-      path: chati.dev/agents/planning/greenfield-wu.md
+      path: chati.dev/agents/discover/greenfield-wu.md
       type: agent
       purpose: "Analyze greenfield project context, constraints, and technology landscape"
       keywords: [greenfield, analysis, context, technology, constraints]
@@ -27,7 +27,7 @@ entities:
       adaptability: 0.5
 
     brownfield-wu:
-      path: chati.dev/agents/planning/brownfield-wu.md
+      path: chati.dev/agents/discover/brownfield-wu.md
       type: agent
       purpose: "Deep discovery of existing codebase — architecture, patterns, debt, dependencies"
       keywords: [brownfield, discovery, codebase, architecture, debt]
@@ -35,7 +35,7 @@ entities:
       adaptability: 0.5
 
     brief:
-      path: chati.dev/agents/planning/brief.md
+      path: chati.dev/agents/discover/brief.md
       type: agent
       purpose: "Extract and structure user requirements through 5 elicitation phases"
       keywords: [requirements, elicitation, brief, functional, non-functional]
@@ -43,7 +43,7 @@ entities:
       adaptability: 0.4
 
     detail:
-      path: chati.dev/agents/planning/detail.md
+      path: chati.dev/agents/plan/detail.md
       type: agent
       purpose: "Transform Brief into formal PRD with complete specifications"
       keywords: [prd, specification, detail, formal, requirements]
@@ -51,7 +51,7 @@ entities:
       adaptability: 0.4
 
     architect:
-      path: chati.dev/agents/planning/architect.md
+      path: chati.dev/agents/plan/architect.md
       type: agent
       purpose: "Design technical architecture, make technology decisions, define system boundaries"
       keywords: [architecture, technology, design, patterns, boundaries]
@@ -59,7 +59,7 @@ entities:
       adaptability: 0.3
 
     ux:
-      path: chati.dev/agents/planning/ux.md
+      path: chati.dev/agents/plan/ux.md
       type: agent
       purpose: "Design user experience, interaction flows, and interface structure"
       keywords: [ux, design, interaction, flows, interface, wireframes]
@@ -67,7 +67,7 @@ entities:
       adaptability: 0.5
 
     phases:
-      path: chati.dev/agents/planning/phases.md
+      path: chati.dev/agents/plan/phases.md
       type: agent
       purpose: "Decompose PRD into development phases with MVP-first strategy"
       keywords: [phases, decomposition, mvp, planning, milestones]
@@ -75,7 +75,7 @@ entities:
       adaptability: 0.4
 
     tasks:
-      path: chati.dev/agents/planning/tasks.md
+      path: chati.dev/agents/plan/tasks.md
       type: agent
       purpose: "Create executable tasks with acceptance criteria from phase definitions"
       keywords: [tasks, acceptance-criteria, executable, given-when-then]
@@ -155,6 +155,14 @@ entities:
       dependencies: []
       adaptability: 0.6
 
+    quick-brief:
+      path: chati.dev/templates/quick-brief-tmpl.yaml
+      type: template
+      purpose: "Condensed brief template for Quick Flow pipeline — single-pass extraction"
+      keywords: [quick, brief, template, fast-track, condensed]
+      dependencies: [brief]
+      adaptability: 0.6
+
   workflows:
     greenfield-fullstack:
       path: chati.dev/workflows/greenfield-fullstack.yaml
@@ -195,6 +203,14 @@ entities:
       keywords: [brownfield, service, backend, api]
       dependencies: [orchestrator]
       adaptability: 0.5
+
+    quick-flow:
+      path: chati.dev/workflows/quick-flow.yaml
+      type: workflow
+      purpose: "Fast-track pipeline for simple tasks: bug fixes, small features, config changes. Skips full PLAN phase."
+      keywords: [quick, fast-track, bug-fix, hotfix, simple, condensed]
+      dependencies: [orchestrator, brief, dev, qa-implementation, devops]
+      adaptability: 0.4
 
   schemas:
     session:
@@ -333,10 +349,18 @@ entities:
     elicitation:
       path: chati.dev/patterns/elicitation.md
       type: framework
-      purpose: "Elicitation patterns for requirements gathering"
+      purpose: "Elicitation patterns overview and quick reference"
       keywords: [elicitation, requirements, gathering, patterns, interview]
-      dependencies: [brief]
+      dependencies: [brief, elicitation-library]
       adaptability: 0.6
+
+    elicitation-library:
+      path: chati.dev/patterns/elicitation-library.yaml
+      type: intelligence
+      purpose: "Comprehensive catalog of 24 elicitation methods with triggers, steps, agent mapping, and auto-selection rules"
+      keywords: [elicitation, methods, brain-dump, scamper, moscow, five-whys, delphi, pre-mortem, personas, journey-map, stakeholder-map]
+      dependencies: [brief]
+      adaptability: 0.5
 
   i18n:
     en:

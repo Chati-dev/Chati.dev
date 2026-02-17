@@ -48,7 +48,7 @@ For each potential transition, check requirements:
 **For planning → build**:
 - QA-Planning agent status = `completed`
 - QA-Planning score >= 95%
-- All PLANNING agents completed or skipped
+- All DISCOVER/PLAN agents completed or skipped
 - No blocking issues in planning phase
 
 **For build → validate**:
@@ -208,7 +208,7 @@ mode_suggestion:
 
   current_state:
     mode: "planning"
-    phase: "PLANNING"
+    phase: "PLAN"
     last_completed_agent: "qa-planning"
     last_activity: "2026-02-13T15:30:00Z"
 
@@ -271,7 +271,7 @@ mode_suggestion:
     approved_by: "autonomous"
     rationale: |
       QA-Planning completed with excellent score (97.5% vs 95% required).
-      All PLANNING agents complete. No blockers. High confidence (95%).
+      All DISCOVER/PLAN agents complete. No blockers. High confidence (95%).
       Article XI allows autonomous transition. Auto-executing.
 
   execution:
@@ -282,7 +282,7 @@ mode_suggestion:
   user_notification: |
     ✓ Autonomous Mode Transition
 
-    PLANNING → BUILD
+    PLAN → BUILD
 
     QA-Planning completed with score 97.5% (>= 95% required).
     Confidence: 95% (high)
@@ -321,14 +321,14 @@ mode_suggestion:
       3 open questions reduce confidence. Suggesting to user.
 
   user_prompt: |
-    Mode Transition Available: PLANNING → BUILD
+    Mode Transition Available: PLAN → BUILD
 
     QA-Planning completed with score 96.5% (>= 95% required).
     Confidence: 87% (strong suggestion)
 
     Considerations:
     ✓ Quality score exceeds threshold
-    ✓ All PLANNING agents complete
+    ✓ All DISCOVER/PLAN agents complete
     ⚠ 3 open questions remain (non-blocking)
 
     Proceed with transition to BUILD mode? (yes/no)
@@ -358,7 +358,7 @@ mode_suggestion:
   user_notification: |
     Mode Transition: Not Ready
 
-    QA-Planning score: 92% (95% required for PLANNING → BUILD)
+    QA-Planning score: 92% (95% required for PLAN → BUILD)
 
     To proceed:
     1. Address planning issues identified by QA-Planning

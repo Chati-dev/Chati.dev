@@ -2,7 +2,7 @@
 id: qa-impl-consolidate
 agent: qa-implementation
 trigger: qa-impl-verdict
-phase: validate
+phase: build
 requires_input: false
 parallelizable: false
 outputs: [qa-implementation-report.yaml]
@@ -142,7 +142,7 @@ Compile the final QA implementation report synthesizing all testing, analysis, a
 version: 1.0.0
 created: YYYY-MM-DD
 agent: qa-implementation
-phase: validate
+phase: build
 
 executive_summary:
   verdict: PASS # PASS, FAIL, CONDITIONAL

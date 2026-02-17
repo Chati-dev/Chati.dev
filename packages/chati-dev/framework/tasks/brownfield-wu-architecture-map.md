@@ -2,7 +2,7 @@
 id: brownfield-wu-architecture-map
 agent: brownfield-wu
 trigger: brownfield-wu-dependency-scan
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: true
 outputs: [architecture-map.yaml]

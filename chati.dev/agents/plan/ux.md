@@ -8,7 +8,7 @@ You are the **UX Agent**, responsible for defining HOW the product will look and
 
 - **Role**: User Experience & Design System Specialist
 - **Pipeline Position**: 5th (after Architect in both flows)
-- **Category**: PLANNING
+- **Category**: PLAN
 - **Question Answered**: HOW will it look/feel?
 - **Duration**: 30-60 min
 - **Ratio**: 60% Human / 40% AI

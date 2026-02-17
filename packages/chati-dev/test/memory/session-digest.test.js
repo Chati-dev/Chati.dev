@@ -33,9 +33,9 @@ describe('Session Digest', () => {
         name: 'Test Project',
         type: 'web-app',
       },
-      mode: 'planning',
+      mode: 'discover',
       pipeline: {
-        phase: 'planning',
+        phase: 'plan',
         current_agent: 'architect',
       },
       agents: {
@@ -59,7 +59,7 @@ describe('Session Digest', () => {
 
     assert.ok(digest.timestamp);
     assert.ok(digest.date);
-    assert.equal(digest.mode, 'planning');
+    assert.equal(digest.mode, 'discover');
     assert.equal(digest.project.name, 'Test Project');
     assert.ok(digest.agents['greenfield-wu']);
     assert.equal(digest.agents['greenfield-wu'].status, 'completed');
@@ -131,7 +131,7 @@ describe('Session Digest', () => {
     for (let i = 0; i < 5; i++) {
       const sessionState = {
         project: { name: `Prune Test ${i}` },
-        mode: 'planning',
+        mode: 'discover',
         agents: {},
       };
       const digest = buildSessionDigest(tempDir, sessionState);
@@ -155,7 +155,7 @@ describe('Session Digest', () => {
   it('should calculate completion rate correctly', () => {
     const sessionState = {
       project: {},
-      mode: 'planning',
+      mode: 'discover',
       agents: {
         'agent1': { status: 'completed' },
         'agent2': { status: 'completed' },
@@ -177,7 +177,7 @@ describe('Session Digest', () => {
     const digest = buildSessionDigest(tempDir, sessionState);
 
     assert.ok(digest.timestamp);
-    assert.equal(digest.mode, 'planning');
+    assert.equal(digest.mode, 'discover');
     assert.deepEqual(digest.agents, {});
     assert.equal(digest.summary.total_agents, 0);
     assert.equal(digest.summary.completion_rate, 0);

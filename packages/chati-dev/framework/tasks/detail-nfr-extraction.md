@@ -2,7 +2,7 @@
 id: detail-nfr-extraction
 agent: detail
 trigger: detail-expand-prd
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: true
 outputs: [nfr.yaml]

@@ -10,7 +10,7 @@ export function generateSessionYaml(config) {
     project: {
       name: projectName,
       type: projectType,
-      state: 'planning',
+      state: 'discover',
     },
     execution_mode: 'interactive',
     current_agent: '',

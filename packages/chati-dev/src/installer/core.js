@@ -49,7 +49,7 @@ export async function installFramework(config) {
   // Copy framework structure
   const frameworkDirs = [
     'orchestrator',
-    'agents/planning', 'agents/quality', 'agents/build', 'agents/deploy',
+    'agents/discover', 'agents/plan', 'agents/quality', 'agents/build', 'agents/deploy',
     'templates', 'workflows', 'quality-gates',
     'schemas', 'frameworks', 'intelligence', 'patterns',
     'hooks', 'domains', 'domains/agents', 'domains/workflows',
@@ -135,15 +135,16 @@ function copyFrameworkFiles(destDir) {
   const filesToCopy = [
     'constitution.md',
     'orchestrator/chati.md',
-    // PLANNING agents
-    'agents/planning/greenfield-wu.md',
-    'agents/planning/brownfield-wu.md',
-    'agents/planning/brief.md',
-    'agents/planning/detail.md',
-    'agents/planning/architect.md',
-    'agents/planning/ux.md',
-    'agents/planning/phases.md',
-    'agents/planning/tasks.md',
+    // DISCOVER agents
+    'agents/discover/greenfield-wu.md',
+    'agents/discover/brownfield-wu.md',
+    'agents/discover/brief.md',
+    // PLAN agents
+    'agents/plan/detail.md',
+    'agents/plan/architect.md',
+    'agents/plan/ux.md',
+    'agents/plan/phases.md',
+    'agents/plan/tasks.md',
     // Quality agents
     'agents/quality/qa-planning.md',
     'agents/quality/qa-implementation.md',
@@ -309,10 +310,11 @@ The orchestrator is at \`chati.dev/orchestrator/chati.md\`.
 Read it to understand routing, session management, and agent activation.
 
 ## Constitution
-Governance rules are in \`chati.dev/constitution.md\` (10 Articles).
+Governance rules are in \`chati.dev/constitution.md\` (17 Articles).
 
 ## Agents
-- PLANNING: chati.dev/agents/planning/ (8 agents)
+- DISCOVER: chati.dev/agents/discover/ (3 agents)
+- PLAN: chati.dev/agents/plan/ (5 agents)
 - Quality: chati.dev/agents/quality/ (2 agents)
 - BUILD: chati.dev/agents/build/ (1 agent)
 - DEPLOY: chati.dev/agents/deploy/ (1 agent)

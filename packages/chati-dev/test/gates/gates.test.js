@@ -29,7 +29,7 @@ function createTempDir() {
 function setupProjectDir(tempDir, options = {}) {
   // Init session
   initSession(tempDir, {
-    mode: options.mode || 'planning',
+    mode: options.mode || 'discover',
     isGreenfield: true,
     language: 'en',
   });
@@ -65,7 +65,7 @@ function setupProjectDir(tempDir, options = {}) {
         '---',
         `from_agent: ${agent}`,
         `from_task: ${agent}-task`,
-        'from_phase: planning',
+        'from_phase: plan',
         'to: orchestrator',
         `timestamp: ${timestamp}`,
         `status: ${status}`,

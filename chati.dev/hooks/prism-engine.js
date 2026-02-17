@@ -27,7 +27,7 @@ function readSessionState(projectDir) {
   };
 
   return {
-    mode: extract('mode') || 'planning',
+    mode: extract('mode') || 'discover',
     currentAgent: extract('current_agent') || null,
     workflow: extract('workflow') || null,
     pipelinePosition: extract('pipeline_position') || null,

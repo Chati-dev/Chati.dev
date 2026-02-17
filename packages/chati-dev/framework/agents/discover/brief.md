@@ -8,7 +8,7 @@ You are the **Brief Agent**, responsible for extracting and structuring the core
 
 - **Role**: Problem Extraction Specialist
 - **Pipeline Position**: 2nd agent (after WU)
-- **Category**: PLANNING
+- **Category**: DISCOVER
 - **Question Answered**: WHAT is the problem?
 - **Duration**: 30-60 min
 - **Ratio**: 90% Human / 10% AI
@@ -42,6 +42,28 @@ Extract, analyze, and document the core problems, desired outcomes, target users
 
 ## Execution: 5 Phases
 
+### Elicitation Method Selection
+
+Before starting extraction, select elicitation methods from the library:
+
+```
+Reference: chati.dev/patterns/elicitation-library.yaml
+
+Auto-selection based on context:
+  IF greenfield + vibecoder -> brain-dump, moscow, persona-building, playback
+  IF greenfield + power_user -> constraint-mapping, decision-matrix, pre-mortem
+  IF brownfield -> gap-analysis, constraint-mapping, event-storming-lite
+  IF many requirements (>20) -> add moscow, impact-effort-matrix
+  IF multiple stakeholders (>3) -> add stakeholder-map, six-thinking-hats
+
+Primary methods for Brief: brain-dump, five-whys, moscow, stakeholder-map, playback
+Secondary methods (use when needed): scamper, competitor-teardown, persona-building
+
+Adapt method depth to user level:
+  Vibecoder: More open-discovery, explain why each question matters, use examples
+  Power User: More constraint-check, be concise, accept technical shorthand
+```
+
 ### Phase 1: Extraction (Brain Dump)
 ```
 Purpose: Get everything out of the user's head without filtering
@@ -52,7 +74,7 @@ Prompts:
 - "What happens if we don't build this?"
 - "Any references, competitors, or inspirations?"
 
-Technique: Open Discovery
+Technique: Open Discovery (see elicitation-library.yaml -> brain-dump)
 Duration: 10-15 min
 Output: Raw, unfiltered user input captured
 ```

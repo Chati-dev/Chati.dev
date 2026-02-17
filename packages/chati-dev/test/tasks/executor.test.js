@@ -5,7 +5,7 @@ import { buildExecutionPayload, validateResults, determinePostAction } from '../
 const SAMPLE_TASK = {
   id: 'brief-extract',
   agent: 'brief',
-  phase: 'planning',
+  phase: 'discover',
   instructions: 'Extract requirements.',
   criteria: ['Category A extracted', 'Category B extracted', 'Confidence >= 90%'],
   outputs: ['brief.yaml'],

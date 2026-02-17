@@ -77,7 +77,7 @@ Modify `.chati/session.yaml`:
 
 ### 7. Determine Next Agent
 Based on pipeline position and mode:
-- **PLANNING**: Follow sequence (wu → brief → detail → architect → ux → phases → tasks → qa-planning)
+- **DISCOVER → PLAN**: Follow sequence (wu → brief → detail → architect → ux → phases → tasks → qa-planning)
 - **BUILD**: dev → qa-implementation
 - **DEPLOY**: devops
 - Handle special transitions (e.g., qa-planning → dev requires mode switch)
@@ -171,7 +171,7 @@ handoff_document:
     quality_score: 8.5
     duration_minutes: 45
     mode: "planning"
-    phase: "PLANNING"
+    phase: "DISCOVER"
 
   summary: |
     Completed detailed requirements analysis for HealthCare Portal.
@@ -228,7 +228,7 @@ handoff_document:
 
   session_update:
     agent_status: "completed"
-    pipeline_progress: 37.5  # 3 of 8 PLANNING agents done
+    pipeline_progress: 37.5  # 3 of 8 DISCOVER/PLAN agents done
     mode_transition_check:
       eligible: false
       reason: "QA-Planning not yet complete"

@@ -16,7 +16,8 @@ const SESSION_FILE = '.chati/session.yaml';
  */
 const DEFAULT_SESSION = {
   version: '1.0',
-  mode: 'planning',
+  mode: 'discover',
+  project: { name: '', type: 'greenfield', state: 'discover' },
   language: 'en',
   project_type: 'greenfield',
   started_at: null,
@@ -65,7 +66,12 @@ export function initSession(projectDir, options = {}) {
 
   const session = {
     ...DEFAULT_SESSION,
-    mode: options.mode || 'planning',
+    mode: options.mode || 'discover',
+    project: {
+      name: options.projectName || '',
+      type: options.isGreenfield === false ? 'brownfield' : 'greenfield',
+      state: options.mode || 'discover',
+    },
     language: options.language || 'en',
     project_type: options.isGreenfield === false ? 'brownfield' : 'greenfield',
     started_at: new Date().toISOString(),
@@ -220,8 +226,11 @@ export function recordModeTransition(projectDir, transition) {
     timestamp: new Date().toISOString(),
   });
 
-  // Update current mode
+  // Update current mode (both flat and nested for compatibility)
   session.mode = transition.to;
+  if (session.project) {
+    session.project.state = transition.to;
+  }
 
   return updateSession(projectDir, session);
 }
@@ -383,7 +392,7 @@ export function validateSession(projectDir) {
   }
 
   // Validate mode
-  const validModes = ['planning', 'build', 'validate', 'deploy', 'completed'];
+  const validModes = ['discover', 'plan', 'build', 'validate', 'deploy', 'completed'];
   if (!validModes.includes(session.mode)) {
     return {
       exists: true,

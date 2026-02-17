@@ -10,13 +10,13 @@ function setupFixtures() {
   mkdirSync(FIXTURES_DIR, { recursive: true });
 
   const tasks = [
-    { id: 'brief-extract', agent: 'brief', phase: 'planning', handoff_to: 'brief-validate' },
-    { id: 'brief-validate', agent: 'brief', phase: 'planning', handoff_to: 'brief-consolidate' },
-    { id: 'brief-consolidate', agent: 'brief', phase: 'planning', handoff_to: 'detail' },
+    { id: 'brief-extract', agent: 'brief', phase: 'discover', handoff_to: 'brief-validate' },
+    { id: 'brief-validate', agent: 'brief', phase: 'discover', handoff_to: 'brief-consolidate' },
+    { id: 'brief-consolidate', agent: 'brief', phase: 'discover', handoff_to: 'detail' },
     { id: 'dev-implement', agent: 'dev', phase: 'build', parallelizable: true, handoff_to: 'dev-test' },
     { id: 'dev-test', agent: 'dev', phase: 'build', parallelizable: true, handoff_to: 'dev-consolidate' },
     { id: 'dev-consolidate', agent: 'dev', phase: 'build', handoff_to: 'qa-implementation' },
-    { id: 'architect-design', agent: 'architect', phase: 'planning' },
+    { id: 'architect-design', agent: 'architect', phase: 'plan' },
   ];
 
   for (const t of tasks) {
@@ -163,7 +163,8 @@ describe('router', () => {
       assert.equal(stats.byAgent.brief, 3);
       assert.equal(stats.byAgent.dev, 3);
       assert.equal(stats.byAgent.architect, 1);
-      assert.equal(stats.byPhase.planning, 4);
+      assert.equal(stats.byPhase.discover, 3);
+      assert.equal(stats.byPhase.plan, 1);
       assert.equal(stats.byPhase.build, 3);
     });
   });

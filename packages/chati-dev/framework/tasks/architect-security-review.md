@@ -2,7 +2,7 @@
 id: architect-security-review
 agent: architect
 trigger: architect-db-design
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [security-review.yaml]

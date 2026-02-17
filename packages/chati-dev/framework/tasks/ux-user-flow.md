@@ -2,7 +2,7 @@
 id: ux-user-flow
 agent: ux
 trigger: ux-wireframe
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [user-flows.yaml]

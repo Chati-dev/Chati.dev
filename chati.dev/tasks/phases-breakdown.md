@@ -2,7 +2,7 @@
 id: phases-breakdown
 agent: phases
 trigger: architect
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [phases.yaml]

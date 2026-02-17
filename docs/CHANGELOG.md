@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-02-17
+
+### Changed
+
+- **Pipeline Phases**: Split PLANNING into DISCOVER (user interaction: WU + Brief) and PLAN (autonomous: Detail → Architect → UX → Phases → Tasks → QA-Planning). Pipeline is now 4 phases: DISCOVER → PLAN → BUILD → DEPLOY
+- **Agent Organization**: Moved agents from `agents/planning/` to `agents/discover/` and `agents/plan/`
+- **Session Schema**: State enum updated from `planning` to `discover | plan`
+- **Quick Flow Pipeline**: New workflow blueprint for rapid prototyping (greenfield-wu → brief → dev)
+
+### Fixed
+
+- **P0 — Mode Governance Hook**: Added `STATE_TO_GOVERNANCE_MODE` mapping to `mode-governance.js`. Without this, ALL write operations were blocked during DISCOVER and PLAN phases because `MODE_SCOPES['discover']` was undefined
+- **L1 Global Layer**: Added governance mode mapping for correct domain YAML lookup while preserving session state in output
+- **Session State Defaults**: Changed 9 source files from `|| 'planning'` to `|| 'discover'` (session state defaults)
+- **Hook Defaults**: Updated `prism-engine.js` and `session-digest.js` defaults from `'planning'` to `'discover'`
+- **Task Phase Alignment**: Updated 45 task files with correct `phase:` values (discover/plan/build/deploy) matching agent pipeline positions
+- **Article Count**: Fixed 3 files referencing "10 Articles" or "I-XVI" instead of "17 Articles" / "I-XVII"
+- **Workflow/Template Counts**: Fixed 6 files referencing "5 workflows" / "5 templates" instead of 6
+- **Constitution Article XI**: States column updated from `planning` to `discover, plan`
+- **Stale Cross-references**: Fixed deviation-handler.js reference → orchestrator/chati.md, PLAN agent count 6→5 in README
+- **Task Loader Default**: Changed fallback phase from `'planning'` (invalid) to `'plan'`
+
+### Stats
+
+- **990 tests** across 112 test suites (0 failures)
+- **158 files** modified in consistency audit
+- **75 task definitions** with verified phase assignments
+- **4 rounds** of progressive scanning (each deeper than previous)
+
+---
+
 ## [2.0.9] - 2026-02-17
 
 ### Changed

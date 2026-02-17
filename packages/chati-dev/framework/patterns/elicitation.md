@@ -2,6 +2,8 @@
 
 Agents use structured elicitation patterns to collect data from users. These patterns are baked into Protocol 5.8 (Interaction Model).
 
+> **Full Library**: See `chati.dev/patterns/elicitation-library.yaml` for the complete catalog of 24 methods with triggers, steps, agent mapping, and context-based auto-selection rules.
+
 ---
 
 ## Pattern Types

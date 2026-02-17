@@ -28,13 +28,25 @@ const MODE_SCOPES = {
   },
 };
 
+// Maps session states to governance modes (Article XI)
+const STATE_TO_GOVERNANCE_MODE = {
+  discover: 'planning',
+  plan: 'planning',
+  planning: 'planning',
+  build: 'build',
+  validate: 'build',
+  deploy: 'deploy',
+  completed: 'deploy',
+};
+
 function getCurrentMode(projectDir) {
   const sessionPath = join(projectDir, '.chati', 'session.yaml');
   if (!existsSync(sessionPath)) return 'planning'; // Default to most restrictive
 
   const raw = readFileSync(sessionPath, 'utf-8');
   const match = raw.match(/^\s*mode:\s*(.+)$/m);
-  return match ? match[1].trim().replace(/^["']|["']$/g, '') : 'planning';
+  const state = match ? match[1].trim().replace(/^["']|["']$/g, '') : 'discover';
+  return STATE_TO_GOVERNANCE_MODE[state] || 'planning';
 }
 
 function isPathAllowed(filePath, projectDir, mode) {
@@ -83,7 +95,7 @@ async function main() {
   }
 }
 
-export { getCurrentMode, isPathAllowed, MODE_SCOPES };
+export { getCurrentMode, isPathAllowed, MODE_SCOPES, STATE_TO_GOVERNANCE_MODE };
 
 // Only run main when executed directly (not imported by tests)
 import { fileURLToPath } from 'url';

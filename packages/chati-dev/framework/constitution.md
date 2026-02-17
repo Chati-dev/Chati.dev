@@ -6,7 +6,7 @@ Chati.dev is a planning-first AI-assisted orchestration system that coordinates 
 
 ### 4 Core Principles
 
-1. **Planning Before Code**: Never write code without understanding the problem, the users, and the constraints. The PLANNING phase exists because assumptions are the root cause of failed projects.
+1. **Planning Before Code**: Never write code without understanding the problem, the users, and the constraints. The DISCOVER and PLAN phases exist because assumptions are the root cause of failed projects.
 
 2. **Short Iterations**: Deliver value in small, verifiable increments. Every agent validates its own output before passing forward. Every quality gate catches issues early.
 
@@ -242,7 +242,7 @@ The pipeline operates in three execution modes that control agent permissions. M
 
 | Mode | States | Read Scope | Write Scope |
 |------|--------|------------|-------------|
-| **planning** | planning | Entire project (codebase + chati.dev/) | `chati.dev/` and `.chati/` only |
+| **planning** | discover, plan | Entire project (codebase + chati.dev/) | `chati.dev/` and `.chati/` only |
 | **build** | build, validate | Entire project | Entire project |
 | **deploy** | deploy | Entire project | Entire project + infra/CI operations |
 
@@ -390,7 +390,7 @@ The system SHALL support two execution modes that govern the degree of human inv
 
 4. Certain agents are ALWAYS human-in-the-loop regardless of mode:
    - **brief**: Requirements extraction requires human validation
-   - **deviation-handler**: Deviations from the plan always need human approval
+   - **orchestrator (deviation protocol)**: Deviations from the plan always need human approval
 
 5. Safety net triggers SHALL pause autonomous execution when dangerous conditions are detected: consecutive failures, circular approaches, resource limits, or destructive operations.
 
@@ -402,5 +402,5 @@ The system SHALL support two execution modes that govern the degree of human inv
 
 ---
 
-*Chati.dev Constitution v2.0.0 — 17 Articles + Preamble*
+*Chati.dev Constitution v2.1.0 — 17 Articles + Preamble*
 *All agents are bound by this Constitution. Violations are enforced per article.*

@@ -41,3 +41,19 @@ rules:
   - id: qai-backward
     text: "If spec/architecture issues found, trigger backward transition to planning mode."
     priority: high
+
+  - id: qai-adversarial
+    text: >
+      ADVERSARIAL REVIEW: Every QA pass MUST identify minimum 3 findings
+      (improvements, warnings, or suggestions). Zero findings is suspiciously
+      clean — trigger mandatory re-review with deeper analysis. This prevents
+      rubber-stamping. Findings can be any severity (low/info counts).
+    priority: critical
+
+  - id: qai-devil-advocate
+    text: >
+      DEVIL'S ADVOCATE: After initial review, assume the opposite conclusion
+      and actively search for evidence to support it. If initial pass says
+      APPROVED, spend one extra pass trying to find reasons to FAIL.
+      Document what you looked for and why it held up (or didn't).
+    priority: high

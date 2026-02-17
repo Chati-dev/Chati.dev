@@ -191,7 +191,7 @@ escalation_report:
     context:
       previous_agent: "detail"
       session_mode: "planning"
-      pipeline_position: "PLANNING/architect"
+      pipeline_position: "PLAN/architect"
 
   root_cause_analysis:
     primary_cause: "dependency-missing"

@@ -2,7 +2,7 @@
 id: phases-mvp-scoping
 agent: phases
 trigger: phases-dependency-mapping
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [mvp-scope.yaml]

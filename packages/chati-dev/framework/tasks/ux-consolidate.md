@@ -2,7 +2,7 @@
 id: ux-consolidate
 agent: ux
 trigger: ux-a11y-check
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [ux-final.yaml]

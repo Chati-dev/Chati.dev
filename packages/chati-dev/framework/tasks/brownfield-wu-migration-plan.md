@@ -2,7 +2,7 @@
 id: brownfield-wu-migration-plan
 agent: brownfield-wu
 trigger: brownfield-wu-risk-assess
-phase: planning
+phase: discover
 requires_input: true
 parallelizable: false
 outputs: [migration-plan.yaml]

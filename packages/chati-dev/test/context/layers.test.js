@@ -100,9 +100,9 @@ rules:
 
   describe('L1 Global', () => {
     it('loads global rules and mode constraints', () => {
-      const result = processL1({ domainsDir, mode: 'planning', bracket: 'FRESH' });
+      const result = processL1({ domainsDir, mode: 'discover', bracket: 'FRESH' });
       assert.equal(result.layer, 'L1');
-      assert.equal(result.mode, 'planning');
+      assert.equal(result.mode, 'discover');
       assert.equal(result.modeRules.writeScope, 'chati.dev/');
       assert.deepEqual(result.modeRules.blockedActions, ['write']);
     });
@@ -112,9 +112,9 @@ rules:
       assert.equal(result.modeRules.writeScope, '*');
     });
 
-    it('defaults to planning when mode not set', () => {
+    it('defaults to discover when mode not set', () => {
       const result = processL1({ domainsDir, bracket: 'FRESH' });
-      assert.equal(result.mode, 'planning');
+      assert.equal(result.mode, 'discover');
     });
   });
 

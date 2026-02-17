@@ -2,7 +2,7 @@
 id: ux-a11y-check
 agent: ux
 trigger: ux-component-map
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [a11y-report.yaml]

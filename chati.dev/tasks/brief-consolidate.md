@@ -2,7 +2,7 @@
 id: brief-consolidate
 agent: brief
 trigger: brief-constraint-identify
-phase: planning
+phase: discover
 requires_input: false
 parallelizable: false
 outputs: [brief.yaml]

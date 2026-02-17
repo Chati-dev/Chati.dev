@@ -119,18 +119,56 @@ For each completed task:
 Flag unverified criteria for manual review
 ```
 
-### Phase 5: Score & Decide
+### Phase 5: Adversarial Review (Mandatory)
+```
+RULE: Every QA pass MUST identify minimum 3 findings.
+Zero findings = suspiciously clean -> mandatory re-review.
+
+Process:
+1. After Phases 1-4, count total findings across all categories
+2. IF findings < 3:
+   - Log: "Adversarial trigger: only {N} findings detected"
+   - Re-run Phases 2-4 with DEEPER analysis:
+     * Lower severity threshold (include INFO-level observations)
+     * Check for implicit issues (poor naming, missing edge cases, weak error messages)
+     * Look for "things that work but could fail under load/scale"
+   - Findings now include: improvements, suggestions, best-practice deviations
+3. IF findings still < 3 after deep re-review:
+   - Document explicitly WHY the code is genuinely clean
+   - This documentation itself counts as a finding (type: attestation)
+
+Devil's Advocate Pass:
+  After initial review concludes APPROVED:
+  1. Assume the opposite: "This code has a hidden flaw"
+  2. Spend one focused pass actively seeking:
+     - Race conditions, memory leaks, unhandled edge cases
+     - Security assumptions that could be wrong
+     - Performance bottlenecks under 10x load
+     - Integration failures with external services
+  3. Document what you looked for and why it held up (or didn't)
+  4. This analysis is ALWAYS included in the report, even if no new issues found
+
+Findings Classification:
+  - ERROR: Must be fixed before APPROVED
+  - WARNING: Should be fixed, can proceed with documentation
+  - SUGGESTION: Improvement opportunity, does not block
+  - ATTESTATION: Explicit documentation of why something is clean
+```
+
+### Phase 6: Score & Decide
 ```
 Calculate overall quality score:
-  Tests: weight 0.30
-  Coverage: weight 0.20
+  Tests: weight 0.25
+  Coverage: weight 0.15
   Security: weight 0.25
   Code Quality: weight 0.15
   Acceptance Criteria: weight 0.10
+  Adversarial Review: weight 0.10
 
 Result:
-  - All checks pass -> APPROVED -> proceed to DevOps
+  - All checks pass AND adversarial review complete -> APPROVED -> proceed to DevOps
   - Any check fails -> enter silent correction loop
+  - Adversarial review incomplete -> CANNOT approve (re-run Phase 5)
 ```
 
 ---
@@ -232,6 +270,17 @@ Save to: `chati.dev/artifacts/8-Validation/qa-implementation-report.md`
 | Task | Criteria | Verified | Status |
 |------|----------|----------|--------|
 | T1.1 | {criterion} | Yes/No | {OK/FAIL} |
+
+## Adversarial Review
+| # | Type | Category | Description | Severity |
+|---|------|----------|-------------|----------|
+| 1 | {finding/attestation} | {security/performance/quality} | {desc} | {error/warning/suggestion/attestation} |
+
+### Devil's Advocate Analysis
+**Initial conclusion**: {APPROVED/NEEDS CORRECTION}
+**Adversarial hypothesis**: "This code has a hidden flaw in {area}"
+**Investigation**: {what was checked and why}
+**Result**: {held up / new issue found: {desc}}
 
 ## Correction History
 | Loop | Issue | Resolution |

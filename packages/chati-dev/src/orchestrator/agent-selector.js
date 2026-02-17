@@ -9,15 +9,15 @@ import { INTENT_TYPES } from './intent-classifier.js';
  * The complete agent pipeline in execution order.
  */
 export const AGENT_PIPELINE = [
-  { name: 'greenfield-wu', phase: 'planning', group: 'wu', parallel: false },
-  { name: 'brownfield-wu', phase: 'planning', group: 'wu', parallel: false },
-  { name: 'brief', phase: 'planning', group: 'planning', parallel: false },
-  { name: 'detail', phase: 'planning', group: 'planning-parallel', parallel: true },
-  { name: 'architect', phase: 'planning', group: 'planning-parallel', parallel: true },
-  { name: 'ux', phase: 'planning', group: 'planning-parallel', parallel: true },
-  { name: 'phases', phase: 'planning', group: 'planning', parallel: false },
-  { name: 'tasks', phase: 'planning', group: 'planning', parallel: false },
-  { name: 'qa-planning', phase: 'planning', group: 'quality', parallel: false },
+  { name: 'greenfield-wu', phase: 'discover', group: 'wu', parallel: false },
+  { name: 'brownfield-wu', phase: 'discover', group: 'wu', parallel: false },
+  { name: 'brief', phase: 'discover', group: 'discover', parallel: false },
+  { name: 'detail', phase: 'plan', group: 'plan-parallel', parallel: true },
+  { name: 'architect', phase: 'plan', group: 'plan-parallel', parallel: true },
+  { name: 'ux', phase: 'plan', group: 'plan-parallel', parallel: true },
+  { name: 'phases', phase: 'plan', group: 'plan', parallel: false },
+  { name: 'tasks', phase: 'plan', group: 'plan', parallel: false },
+  { name: 'qa-planning', phase: 'plan', group: 'quality', parallel: false },
   { name: 'dev', phase: 'build', group: 'build', parallel: false },
   { name: 'qa-implementation', phase: 'build', group: 'quality', parallel: false },
   { name: 'devops', phase: 'deploy', group: 'deploy', parallel: false },
@@ -58,7 +58,7 @@ function getAgentsByGroup(group) {
  *
  * @param {object} context
  * @param {string} context.intent - Classified intent
- * @param {string} context.mode - Current mode (planning/build/deploy)
+ * @param {string} context.mode - Current mode (discover/plan/build/deploy)
  * @param {string} [context.currentAgent] - Currently active agent
  * @param {string[]} [context.completedAgents] - Already completed agents
  * @param {boolean} [context.isGreenfield] - true for new projects, false for existing
@@ -88,7 +88,7 @@ export function selectAgent(context) {
   // If starting fresh with no completed agents
   if (completedAgents.length === 0) {
     // Planning intent starts with WU
-    if (intent === INTENT_TYPES.PLANNING) {
+    if (intent === INTENT_TYPES.DISCOVER) {
       const wuAgent = isGreenfield ? 'greenfield-wu' : 'brownfield-wu';
       return {
         agent: wuAgent,

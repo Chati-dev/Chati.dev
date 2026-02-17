@@ -2,7 +2,7 @@
 id: ux-component-map
 agent: ux
 trigger: ux-user-flow
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [component-map.yaml]

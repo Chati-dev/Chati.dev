@@ -1,0 +1,592 @@
+# Elicitation Library — Structured Methods Catalog
+# 24 methods organized by category, each with triggers, steps, and agent mapping.
+# Referenced by Brief agent and all DISCOVER/PLAN agents via PRISM L2.
+
+version: "1.0.0"
+description: >
+  Comprehensive catalog of elicitation methods for extracting, validating,
+  and refining requirements. Each method includes when to use it, step-by-step
+  execution, and which agents benefit most from it.
+
+categories:
+  divergent:
+    description: "Methods that expand thinking and generate new ideas"
+    methods:
+      - id: brain-dump
+        name: Brain Dump
+        purpose: "Get unfiltered, raw ideas out of the user's head"
+        when:
+          - "First contact with user (Brief Phase 1)"
+          - "User has a vague idea but hasn't structured it"
+          - "Starting a greenfield project"
+        steps:
+          - "Ask: 'Tell me everything about what you want to build. Don't filter, just talk.'"
+          - "Listen without interrupting for at least 2 minutes"
+          - "Ask: 'What else?' at least once"
+          - "Capture verbatim — do not restructure yet"
+          - "Note emotional cues (frustration, excitement, uncertainty)"
+        anti_patterns:
+          - "Interrupting the user's flow"
+          - "Asking structured questions too early"
+          - "Filtering or categorizing during capture"
+        agents: [brief, greenfield-wu]
+        duration: "5-15 min"
+        user_level: all
+
+      - id: scamper
+        name: SCAMPER
+        purpose: "Generate alternatives by systematically transforming existing ideas"
+        when:
+          - "User is stuck on a single approach"
+          - "Exploring feature variations"
+          - "Brownfield: reimagining existing features"
+        steps:
+          - "Substitute: What can be replaced? (tech, process, user flow)"
+          - "Combine: What can be merged? (features, screens, APIs)"
+          - "Adapt: What can be borrowed from similar products?"
+          - "Modify: What can be enlarged, shrunk, or changed?"
+          - "Put to other use: Can this serve a different audience?"
+          - "Eliminate: What can be removed without losing value?"
+          - "Reverse: What if the flow went backward?"
+        anti_patterns:
+          - "Applying all 7 to every feature (only use relevant ones)"
+          - "Using with vibecoders without explaining the framework"
+        agents: [brief, detail, architect]
+        duration: "10-20 min"
+        user_level: intermediate
+
+      - id: six-thinking-hats
+        name: Six Thinking Hats
+        purpose: "Explore a problem from 6 different perspectives"
+        when:
+          - "Complex decision with many stakeholders"
+          - "Team disagreement on approach"
+          - "Evaluating controversial features"
+        steps:
+          - "White Hat (Facts): What do we know? What data do we have?"
+          - "Red Hat (Feelings): What's your gut feeling about this?"
+          - "Black Hat (Caution): What could go wrong? What are the risks?"
+          - "Yellow Hat (Benefits): What are the advantages? Best case?"
+          - "Green Hat (Creativity): What alternatives exist? Any wild ideas?"
+          - "Blue Hat (Process): What's our conclusion? What do we decide?"
+        anti_patterns:
+          - "Skipping the Red Hat (emotions matter in product decisions)"
+          - "Spending too long on Black Hat (negativity spiral)"
+        agents: [brief, detail, architect]
+        duration: "15-30 min"
+        user_level: all
+
+      - id: what-if
+        name: What-If Scenarios
+        purpose: "Explore edge cases and future states through hypotheticals"
+        when:
+          - "Defining non-functional requirements"
+          - "Stress-testing architecture decisions"
+          - "Exploring scalability concerns"
+        steps:
+          - "Ask: 'What if you had 10x users tomorrow?'"
+          - "Ask: 'What if your main database went down?'"
+          - "Ask: 'What if a competitor launched this feature first?'"
+          - "Ask: 'What if your team doubled/halved in size?'"
+          - "Capture implications for each scenario"
+          - "Identify which scenarios need architectural mitigation"
+        anti_patterns:
+          - "Asking unrealistic scenarios (100,000x users for a hobby project)"
+          - "Using this for simple CRUD features"
+        agents: [architect, detail, phases]
+        duration: "10-15 min"
+        user_level: all
+
+  convergent:
+    description: "Methods that narrow options and reach decisions"
+    methods:
+      - id: five-whys
+        name: 5 Whys
+        purpose: "Drill to root cause by asking 'why' repeatedly"
+        when:
+          - "User states a problem but the real issue is deeper"
+          - "Debugging requirement contradictions"
+          - "Understanding motivation behind a feature request"
+        steps:
+          - "User states the problem"
+          - "Ask: 'Why is that a problem?' (Why 1)"
+          - "Take the answer, ask 'Why?' again (Why 2)"
+          - "Repeat until you reach the root cause (usually 3-5 levels)"
+          - "Validate: 'So the real problem is {root cause}?'"
+        anti_patterns:
+          - "Being mechanical — adapt the phrasing of 'why'"
+          - "Going beyond 5 levels (diminishing returns)"
+          - "Making the user feel interrogated"
+        agents: [brief, detail]
+        duration: "5-10 min"
+        user_level: all
+
+      - id: moscow
+        name: MoSCoW Prioritization
+        purpose: "Categorize requirements by priority (Must/Should/Could/Won't)"
+        when:
+          - "Too many requirements for MVP"
+          - "Need to cut scope"
+          - "Defining phases/milestones"
+        steps:
+          - "List all identified requirements"
+          - "For each, ask: 'Is this Must Have, Should Have, Could Have, or Won't Have (this version)?'"
+          - "Validate Must Haves: 'If we remove this, does the product still work?'"
+          - "Ensure Won't Have items are explicitly documented (negative scope)"
+          - "Present final categorization for user approval"
+        anti_patterns:
+          - "Making everything Must Have"
+          - "Skipping Won't Have (essential for scope control)"
+          - "Not challenging the user when Must Have list is > 60% of total"
+        agents: [brief, detail, phases]
+        duration: "10-20 min"
+        user_level: all
+
+      - id: decision-matrix
+        name: Weighted Decision Matrix
+        purpose: "Objectively compare options using weighted criteria"
+        when:
+          - "Choosing between tech stacks"
+          - "Selecting architecture patterns"
+          - "Evaluating third-party services"
+        steps:
+          - "List the options to evaluate"
+          - "Define evaluation criteria (performance, cost, maintainability, etc.)"
+          - "Assign weight to each criterion (total = 100%)"
+          - "Score each option per criterion (1-5)"
+          - "Calculate weighted totals"
+          - "Present matrix with recommendation"
+        anti_patterns:
+          - "Using equal weights for everything"
+          - "Not involving the user in weight definition"
+          - "Having more than 7 criteria (cognitive overload)"
+        agents: [architect, detail, ux]
+        duration: "10-15 min"
+        user_level: intermediate
+
+      - id: dot-voting
+        name: Dot Voting
+        purpose: "Quick prioritization when many options exist"
+        when:
+          - "Multiple feature ideas to prioritize"
+          - "Choosing between design alternatives"
+          - "User overwhelmed by options"
+        steps:
+          - "Present all options as a numbered list"
+          - "Give user 3-5 'votes' to distribute"
+          - "User assigns votes (can give multiple to one option)"
+          - "Rank by vote count"
+          - "Discuss top 3 to confirm"
+        anti_patterns:
+          - "More than 10 options (split into categories first)"
+          - "Not discussing results (votes are input, not final decision)"
+        agents: [brief, ux, phases]
+        duration: "5 min"
+        user_level: all
+
+  analytical:
+    description: "Methods for structured analysis and gap identification"
+    methods:
+      - id: stakeholder-map
+        name: Stakeholder Mapping
+        purpose: "Identify all people/systems affected by the project"
+        when:
+          - "Enterprise projects with multiple user types"
+          - "Projects with external integrations"
+          - "When user says 'it's for everyone' (red flag)"
+        steps:
+          - "List all direct users (who interacts with the system?)"
+          - "List indirect stakeholders (who is affected by the system?)"
+          - "For each: define role, needs, pain points, access level"
+          - "Map relationships between stakeholders"
+          - "Identify conflicting needs between stakeholder groups"
+          - "Prioritize stakeholders by impact/influence"
+        anti_patterns:
+          - "Treating 'admin' and 'user' as the only two roles"
+          - "Forgetting the system itself as a stakeholder (monitoring, ops)"
+        agents: [brief, detail, ux]
+        duration: "10-20 min"
+        user_level: all
+
+      - id: gap-analysis
+        name: Gap Analysis
+        purpose: "Identify the delta between current state and desired state"
+        when:
+          - "Brownfield projects"
+          - "User knows what they want but not what's missing"
+          - "Migration or upgrade projects"
+        steps:
+          - "Document current state (what exists today)"
+          - "Document desired state (what should exist)"
+          - "Identify gaps (what's missing)"
+          - "Categorize gaps: feature gaps, quality gaps, process gaps"
+          - "Prioritize gaps by business impact"
+          - "Map gaps to requirements"
+        anti_patterns:
+          - "Only looking at feature gaps (quality and process matter too)"
+          - "Skipping current state documentation"
+        agents: [brownfield-wu, brief, detail]
+        duration: "15-30 min"
+        user_level: intermediate
+
+      - id: constraint-mapping
+        name: Constraint Mapping
+        purpose: "Systematically identify all project constraints"
+        when:
+          - "Early project phases (Brief, Detail)"
+          - "Before architecture decisions"
+          - "When user says 'no constraints' (always dig deeper)"
+        steps:
+          - "Technical constraints: existing stack, platform, browser support"
+          - "Business constraints: budget, timeline, team size, compliance"
+          - "User constraints: accessibility, offline support, device types"
+          - "Operational constraints: hosting, deployment, monitoring"
+          - "Legal constraints: GDPR, HIPAA, data residency"
+          - "Classify each as HARD (non-negotiable) or SOFT (preference)"
+          - "Flag constraint conflicts"
+        anti_patterns:
+          - "Accepting 'no constraints' at face value"
+          - "Not distinguishing hard vs soft constraints"
+        agents: [brief, architect, detail]
+        duration: "10-15 min"
+        user_level: all
+
+      - id: impact-effort-matrix
+        name: Impact/Effort Matrix
+        purpose: "Visualize features by value vs implementation cost"
+        when:
+          - "Prioritizing features for MVP"
+          - "Deciding phase boundaries"
+          - "Too many 'Must Have' requirements"
+        steps:
+          - "List all features/requirements"
+          - "For each, estimate: Impact (1-5) and Effort (1-5)"
+          - "Plot on 2x2 matrix: Quick Wins (high impact, low effort), Big Bets (high/high), Fill-Ins (low/low), Time Sinks (low impact, high effort)"
+          - "MVP = Quick Wins + selected Big Bets"
+          - "Time Sinks = Won't Have (or defer to later phase)"
+        anti_patterns:
+          - "Debating exact scores (relative comparison is what matters)"
+          - "Not involving the user in impact scoring"
+        agents: [phases, tasks, detail]
+        duration: "10-15 min"
+        user_level: intermediate
+
+      - id: pre-mortem
+        name: Pre-Mortem Analysis
+        purpose: "Imagine the project failed and work backward to identify risks"
+        when:
+          - "Before finalizing architecture"
+          - "Before BUILD phase"
+          - "High-stakes or enterprise projects"
+        steps:
+          - "Imagine: 'It's 6 months from now, the project failed. What happened?'"
+          - "List all possible failure modes (technical, business, team, market)"
+          - "For each: estimate likelihood (1-5) and impact (1-5)"
+          - "Identify mitigation for high-risk items"
+          - "Feed mitigations back into requirements/architecture as constraints"
+        anti_patterns:
+          - "Being too optimistic (the point is to think about failure)"
+          - "Listing only technical risks (business and team risks matter)"
+        agents: [qa-planning, architect, detail]
+        duration: "10-20 min"
+        user_level: all
+
+  creative:
+    description: "Methods for innovative thinking and user empathy"
+    methods:
+      - id: persona-building
+        name: Persona Building
+        purpose: "Create detailed user personas for design decisions"
+        when:
+          - "Multiple user types identified"
+          - "UX decisions need user context"
+          - "Brief Phase 2 (Structured Analysis)"
+        steps:
+          - "For each user type from stakeholder map:"
+          - "Name, age range, role, technical proficiency"
+          - "Goals: What do they want to achieve?"
+          - "Frustrations: What annoys them about current solutions?"
+          - "Typical day: When/where/how do they use the product?"
+          - "Key scenario: Write one user story for this persona"
+          - "Prioritize personas by frequency of use"
+        anti_patterns:
+          - "Creating too many personas (3-5 is ideal)"
+          - "Making personas too generic ('tech-savvy millennial')"
+          - "Skipping frustrations (this drives design decisions)"
+        agents: [brief, ux, detail]
+        duration: "10-15 min per persona"
+        user_level: all
+
+      - id: user-journey-map
+        name: User Journey Mapping
+        purpose: "Map the end-to-end experience for each user type"
+        when:
+          - "Designing user flows"
+          - "Identifying pain points in existing products"
+          - "Before UX specification"
+        steps:
+          - "Select persona"
+          - "Map stages: Awareness -> Onboarding -> Core Usage -> Advanced -> Retention"
+          - "For each stage: Actions, Thoughts, Emotions, Pain Points, Opportunities"
+          - "Identify 'moments of truth' (critical success points)"
+          - "Flag drop-off risks (where users might leave)"
+          - "Feed opportunities into requirements"
+        anti_patterns:
+          - "Making the happy path only (map the frustrated path too)"
+          - "Forgetting error states and edge cases"
+        agents: [ux, brief, detail]
+        duration: "15-20 min"
+        user_level: intermediate
+
+      - id: crazy-eights
+        name: Crazy Eights
+        purpose: "Generate 8 different solutions in 8 minutes"
+        when:
+          - "Design exploration needed"
+          - "User stuck on a single approach"
+          - "Need creative alternatives quickly"
+        steps:
+          - "Define the problem to solve in one sentence"
+          - "Set timer: 1 minute per idea, 8 ideas total"
+          - "Describe each idea in 2-3 sentences (no detail needed)"
+          - "Evaluate: Which ideas are most promising?"
+          - "Combine: Can any be merged?"
+          - "Select top 2-3 for further development"
+        anti_patterns:
+          - "Judging ideas during generation (separate generation from evaluation)"
+          - "Spending too long on any single idea"
+        agents: [ux, architect, brief]
+        duration: "10 min"
+        user_level: all
+
+  validation:
+    description: "Methods for verifying and confirming understanding"
+    methods:
+      - id: playback
+        name: Playback / Mirror
+        purpose: "Confirm understanding by restating what was heard"
+        when:
+          - "After each extraction phase"
+          - "Before finalizing any document"
+          - "When user seems uncertain about a decision"
+        steps:
+          - "Restate the key points in your own words"
+          - "Ask: 'Did I get this right?'"
+          - "Accept corrections without justifying"
+          - "Update artifacts immediately"
+          - "Re-confirm if correction was significant"
+        anti_patterns:
+          - "Reading back verbatim (rephrase to prove understanding)"
+          - "Getting defensive when corrected"
+        agents: [brief, detail, architect, ux, phases, tasks]
+        duration: "2-5 min"
+        user_level: all
+
+      - id: assumption-audit
+        name: Assumption Audit
+        purpose: "Surface and validate hidden assumptions"
+        when:
+          - "Before architecture decisions"
+          - "When requirements feel 'obvious' (danger zone)"
+          - "QA-Planning validation"
+        steps:
+          - "List all assumptions made so far (explicit and implicit)"
+          - "For each: 'Is this actually validated or just assumed?'"
+          - "Categorize: Validated, Reasonable, Risky, Unknown"
+          - "For Risky/Unknown: define how to validate"
+          - "Feed back into requirements as either constraints or open questions"
+        anti_patterns:
+          - "Only checking explicit assumptions"
+          - "Assuming technical assumptions are always correct"
+        agents: [qa-planning, architect, detail]
+        duration: "10-15 min"
+        user_level: intermediate
+
+      - id: acceptance-criteria-review
+        name: Acceptance Criteria Review
+        purpose: "Validate that acceptance criteria are testable and complete"
+        when:
+          - "After Tasks agent generates criteria"
+          - "QA-Planning validation"
+          - "Before BUILD phase"
+        steps:
+          - "For each criterion: Is it in Given-When-Then format?"
+          - "Is it binary (pass/fail)? Not subjective?"
+          - "Is it specific to this feature? Not generic?"
+          - "Does it cover the happy path AND at least one edge case?"
+          - "Can a developer implement a test for this criterion?"
+          - "Flag any criterion that fails these checks"
+        anti_patterns:
+          - "Accepting criteria like 'it should work well'"
+          - "Not checking edge cases"
+          - "Not validating that criteria are implementable"
+        agents: [qa-planning, tasks]
+        duration: "5-10 min"
+        user_level: intermediate
+
+      - id: delphi
+        name: Delphi Technique
+        purpose: "Reach consensus through iterative refinement"
+        when:
+          - "Disagreement on estimates (timeline, effort, priority)"
+          - "Multiple valid perspectives on a decision"
+          - "Complex projects with uncertainty"
+        steps:
+          - "Present the question/estimate to decide"
+          - "Collect initial estimate/opinion"
+          - "Present reasoning for the estimate"
+          - "Ask: 'Considering {reasoning}, would you adjust?'"
+          - "Iterate until convergence (max 3 rounds)"
+          - "Document final estimate with confidence level"
+        anti_patterns:
+          - "Anchoring on the first estimate"
+          - "More than 3 rounds (diminishing returns)"
+        agents: [phases, tasks, architect]
+        duration: "5-10 min per decision"
+        user_level: intermediate
+
+  contextual:
+    description: "Methods adapted to specific project contexts"
+    methods:
+      - id: competitor-teardown
+        name: Competitor Teardown
+        purpose: "Analyze competitors to inform feature decisions"
+        when:
+          - "User mentions competitors or references"
+          - "SaaS or marketplace projects"
+          - "Brief Phase 3 (Research)"
+        steps:
+          - "List mentioned competitors/references"
+          - "For each: What do they do well? What do they do poorly?"
+          - "Feature comparison matrix: has/doesn't have"
+          - "Identify differentiation opportunities"
+          - "Ask: 'What would make someone choose your product over {competitor}?'"
+          - "Feed differentiators into requirements"
+        anti_patterns:
+          - "Copying competitor features blindly"
+          - "Only looking at direct competitors (adjacent products matter)"
+        agents: [brief, detail]
+        duration: "10-20 min"
+        user_level: all
+
+      - id: event-storming-lite
+        name: Event Storming Lite
+        purpose: "Map business processes as domain events"
+        when:
+          - "Complex business logic"
+          - "Multi-step workflows"
+          - "Before architecture design"
+        steps:
+          - "List domain events (things that happen): 'User registered', 'Order placed'"
+          - "Arrange events chronologically"
+          - "For each event: What triggers it? What's the result?"
+          - "Identify aggregates (clusters of related events)"
+          - "Identify bounded contexts (independent domains)"
+          - "Feed into architecture design"
+        anti_patterns:
+          - "Going too granular too early"
+          - "Mixing technical events with business events"
+        agents: [architect, detail]
+        duration: "15-30 min"
+        user_level: intermediate
+
+      - id: story-mapping
+        name: Story Mapping
+        purpose: "Organize features into a user-centric release plan"
+        when:
+          - "Planning MVP scope"
+          - "Defining phase boundaries"
+          - "Prioritizing features across releases"
+        steps:
+          - "Top row: user activities (high-level goals)"
+          - "Second row: user tasks (steps within each activity)"
+          - "Below each task: user stories (specific features)"
+          - "Draw horizontal lines for release boundaries"
+          - "Everything above first line = MVP"
+          - "Validate: Does MVP deliver end-to-end value?"
+        anti_patterns:
+          - "Making MVP too feature-rich"
+          - "Not validating that MVP is usable end-to-end"
+        agents: [phases, tasks, detail]
+        duration: "15-25 min"
+        user_level: intermediate
+
+      - id: risk-radar
+        name: Risk Radar
+        purpose: "Visualize and track project risks by category"
+        when:
+          - "QA-Planning validation"
+          - "Before BUILD phase"
+          - "Enterprise or high-stakes projects"
+        steps:
+          - "Categorize risks: Technical, Business, Team, External, Security"
+          - "For each risk: Likelihood (1-5) x Impact (1-5) = Risk Score"
+          - "High risk (score > 15): Must mitigate before BUILD"
+          - "Medium risk (8-15): Document mitigation strategy"
+          - "Low risk (< 8): Accept and monitor"
+          - "Assign risk owner for each high/medium risk"
+        anti_patterns:
+          - "Only tracking technical risks"
+          - "Not updating radar as project progresses"
+        agents: [qa-planning, architect, phases]
+        duration: "10-15 min"
+        user_level: intermediate
+
+# Agent-method mapping for quick lookup
+agent_recommendations:
+  greenfield-wu:
+    primary: [brain-dump, constraint-mapping]
+    secondary: [what-if]
+  brownfield-wu:
+    primary: [gap-analysis, constraint-mapping]
+    secondary: [event-storming-lite]
+  brief:
+    primary: [brain-dump, five-whys, moscow, stakeholder-map, playback]
+    secondary: [scamper, competitor-teardown, persona-building]
+  detail:
+    primary: [gap-analysis, constraint-mapping, decision-matrix]
+    secondary: [six-thinking-hats, scamper, event-storming-lite]
+  architect:
+    primary: [constraint-mapping, decision-matrix, pre-mortem, what-if]
+    secondary: [event-storming-lite, risk-radar]
+  ux:
+    primary: [persona-building, user-journey-map, crazy-eights, dot-voting]
+    secondary: [stakeholder-map, playback]
+  phases:
+    primary: [moscow, impact-effort-matrix, story-mapping]
+    secondary: [delphi, dot-voting]
+  tasks:
+    primary: [acceptance-criteria-review, story-mapping]
+    secondary: [delphi, constraint-mapping]
+  qa-planning:
+    primary: [assumption-audit, acceptance-criteria-review, pre-mortem, risk-radar]
+    secondary: [playback]
+  qa-implementation:
+    primary: [assumption-audit, acceptance-criteria-review]
+    secondary: [playback]
+
+# Context-based auto-selection rules
+auto_selection:
+  - condition: "project.type == greenfield AND user_level == vibecoder"
+    recommend: [brain-dump, moscow, persona-building, playback]
+    reasoning: "Vibecoders need guided extraction with visual methods"
+
+  - condition: "project.type == greenfield AND user_level == power_user"
+    recommend: [constraint-mapping, decision-matrix, pre-mortem, story-mapping]
+    reasoning: "Power users can handle analytical methods directly"
+
+  - condition: "project.type == brownfield"
+    recommend: [gap-analysis, event-storming-lite, constraint-mapping, pre-mortem]
+    reasoning: "Brownfield needs structured analysis of existing state vs desired state"
+
+  - condition: "requirement_count > 20"
+    recommend: [moscow, impact-effort-matrix, dot-voting]
+    reasoning: "Many requirements need aggressive prioritization"
+
+  - condition: "stakeholder_count > 3"
+    recommend: [stakeholder-map, six-thinking-hats, delphi]
+    reasoning: "Multiple stakeholders need structured consensus methods"
+
+  - condition: "project.complexity == enterprise"
+    recommend: [pre-mortem, risk-radar, assumption-audit, event-storming-lite]
+    reasoning: "Enterprise projects need thorough risk analysis"

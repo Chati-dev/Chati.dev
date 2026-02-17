@@ -70,6 +70,51 @@ Before determining state, check if the user passed a subcommand:
 -> Resume session. Go to Step 5 (Session Resume)
 ```
 
+### Step 3b: Quick Flow Detection
+
+Before full project setup, check if this is a quick-flow candidate:
+
+```
+Quick Flow Triggers (any of these):
+  - User explicitly requests: "quick fix", "hotfix", "bug fix", "small change"
+  - Single, well-defined requirement (one sentence)
+  - Bug report with reproduction steps
+  - Configuration/environment change
+  - Small refactoring with clear scope
+
+Quick Flow Disqualifiers (any of these blocks quick-flow):
+  - New feature requiring architecture decisions
+  - Multiple interconnected requirements
+  - Greenfield project (no existing codebase)
+  - Enterprise or compliance context
+  - User explicitly requests full pipeline
+  - Scope involves > 5 files or database schema changes
+
+IF quick-flow detected (confidence >= 0.8):
+  1. Present to user:
+     "This looks like a quick task. I can use Quick Flow (fast-track):
+      Brief (quick) → Dev → QA → Deploy
+      Skips: Detail, Architect, UX, Phases, Tasks, QA-Planning
+
+      1. Use Quick Flow (Recommended for this task)
+      2. Use full pipeline instead
+      Enter number:"
+
+  2. IF user confirms quick-flow:
+     - Load workflow: chati.dev/workflows/quick-flow.yaml
+     - Set session.yaml: workflow = quick-flow
+     - Set project.state = discover
+     - Activate Brief agent in quick-extraction mode
+     - Skip to Quick Brief (see quick-flow.yaml)
+
+  3. IF user prefers full pipeline:
+     - Continue to Step 4 (New Project Setup)
+
+  4. Escalation: If during quick-flow, complexity exceeds expectations:
+     - Pause and offer switch to full pipeline
+     - See quick-flow.yaml escalation section
+```
+
 ### Step 4: New Project Setup
 
 #### 3a. Detect Project Type
@@ -96,7 +141,7 @@ If not already set in session.yaml:
 project:
   name: "{detected or asked}"
   type: greenfield | brownfield
-  state: planning
+  state: discover
 execution_mode: interactive
 current_agent: greenfield-wu | brownfield-wu
 language: "{detected}"
@@ -106,8 +151,8 @@ user_level_confidence: 0.0
 
 #### 3d. Route to First Agent
 ```
-If greenfield -> Read chati.dev/agents/planning/greenfield-wu.md -> Activate
-If brownfield -> Read chati.dev/agents/planning/brownfield-wu.md -> Activate
+If greenfield -> Read chati.dev/agents/discover/greenfield-wu.md -> Activate
+If brownfield -> Read chati.dev/agents/discover/brownfield-wu.md -> Activate
 ```
 
 ### Step 5: Session Resume
@@ -144,14 +189,14 @@ brownfield-wu -> Brief -> Architect -> Detail -> UX -> Phases -> Tasks -> QA-Pla
 ### Agent Location Map
 | Agent | File |
 |-------|------|
-| greenfield-wu | chati.dev/agents/planning/greenfield-wu.md |
-| brownfield-wu | chati.dev/agents/planning/brownfield-wu.md |
-| brief | chati.dev/agents/planning/brief.md |
-| detail | chati.dev/agents/planning/detail.md |
-| architect | chati.dev/agents/planning/architect.md |
-| ux | chati.dev/agents/planning/ux.md |
-| phases | chati.dev/agents/planning/phases.md |
-| tasks | chati.dev/agents/planning/tasks.md |
+| greenfield-wu | chati.dev/agents/discover/greenfield-wu.md |
+| brownfield-wu | chati.dev/agents/discover/brownfield-wu.md |
+| brief | chati.dev/agents/discover/brief.md |
+| detail | chati.dev/agents/plan/detail.md |
+| architect | chati.dev/agents/plan/architect.md |
+| ux | chati.dev/agents/plan/ux.md |
+| phases | chati.dev/agents/plan/phases.md |
+| tasks | chati.dev/agents/plan/tasks.md |
 | qa-planning | chati.dev/agents/quality/qa-planning.md |
 | dev | chati.dev/agents/build/dev.md |
 | qa-implementation | chati.dev/agents/quality/qa-implementation.md |
@@ -167,7 +212,8 @@ When an agent completes (score >= 95%):
   4. Orchestrator identifies next agent from pipeline
   5. Update session.yaml: current_agent = next_agent
   6. Update project.state if crossing macro-phase boundary:
-     - WU through QA-Planning = planning
+     - WU + Brief = discover
+     - Detail through QA-Planning = plan
      - Dev + QA-Implementation = build
      - Final validation = validate
      - DevOps = deploy
@@ -344,7 +390,7 @@ model_selections:
 Before any agent writes a file, the orchestrator validates the operation against the current mode:
 
 ```
-If project.state == "planning":
+If project.state == "discover" OR "plan":
   ALLOW write to: chati.dev/**, .chati/**
   BLOCK write to: everything else
   ALLOW read: everything (essential for brownfield-wu codebase analysis)
@@ -364,13 +410,13 @@ If project.state == "deploy":
 Mode transitions are AUTOMATIC based on quality gate results. The orchestrator executes the transition when the trigger condition is met.
 
 ```
-planning -> build:
+plan -> build:
   TRIGGER: qa-planning agent completes with score >= 95%
   ACTION:
     1. Update project.state = "build"
     2. Log transition in session.yaml mode_transitions:
        - timestamp: "{now}"
-         from: planning
+         from: plan
          to: build
          trigger: "qa-planning completed with score {score}%"
          type: automatic
@@ -403,12 +449,12 @@ deploy -> completed:
 ### Backward Transitions
 
 ```
-build/validate -> planning:
+build/validate -> plan:
   TRIGGER: qa-implementation classifies issue as:
     - issue_type: "spec" (requirement gap, ambiguity, conflict)
     - issue_type: "architecture" (design flaw, missing component)
   ACTION:
-    1. Update project.state = "planning"
+    1. Update project.state = "plan"
     2. Log backward transition in mode_transitions:
        - type: backward
          reason: "{QA finding description}"
@@ -550,9 +596,11 @@ Display project status dashboard:
   Phase: {state}           Mode: {execution_mode}
   Language: {language}     IDE: {ides}
 
-  PLANNING:
-    WU: {score}  Brief: {score}  Detail: {score}  Arch: {score}
-    UX: {score}  Phases: {score}  Tasks: {score}  QA-P: {score}
+  DISCOVER:
+    WU: {score}  Brief: {score}
+  PLAN:
+    Detail: {score}  Arch: {score}  UX: {score}
+    Phases: {score}  Tasks: {score}  QA-P: {score}
 
   BUILD:
     Dev: {status}  QA-Impl: {status}

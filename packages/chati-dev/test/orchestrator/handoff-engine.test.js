@@ -103,7 +103,7 @@ describe('handoff-engine', () => {
         fromTask: {
           id: 'brief-001',
           agent: 'brief',
-          phase: 'planning',
+          phase: 'discover',
           outputs: ['brief.md'],
           criteria: ['Create project brief', 'Define scope'],
         },
@@ -145,7 +145,7 @@ describe('handoff-engine', () => {
         task: {
           id: 'detail-001',
           agent: 'detail',
-          phase: 'planning',
+          phase: 'plan',
           outputs: ['detail.md'],
           criteria: [],
         },
@@ -195,14 +195,18 @@ describe('handoff-engine', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'history-test-'));
 
       // Create multiple handoffs
-      const agents = ['brief', 'detail', 'architect'];
+      const agentPhases = [
+        { agent: 'brief', phase: 'discover' },
+        { agent: 'detail', phase: 'plan' },
+        { agent: 'architect', phase: 'plan' },
+      ];
 
-      for (const agent of agents) {
+      for (const { agent, phase } of agentPhases) {
         const handoff = buildHandoff({
           task: {
             id: `${agent}-001`,
             agent,
-            phase: 'planning',
+            phase,
             outputs: [`${agent}.md`],
             criteria: [],
           },
@@ -239,14 +243,18 @@ describe('handoff-engine', () => {
       const testDir = mkdtempSync(join(tmpdir(), 'rollback-test-'));
 
       // Create handoffs for brief, detail, architect
-      const agents = ['brief', 'detail', 'architect'];
+      const agentPhases = [
+        { agent: 'brief', phase: 'discover' },
+        { agent: 'detail', phase: 'plan' },
+        { agent: 'architect', phase: 'plan' },
+      ];
 
-      for (const agent of agents) {
+      for (const { agent, phase } of agentPhases) {
         const handoff = buildHandoff({
           task: {
             id: `${agent}-001`,
             agent,
-            phase: 'planning',
+            phase,
             outputs: [`${agent}.md`],
             criteria: [],
           },
@@ -275,7 +283,7 @@ describe('handoff-engine', () => {
         task: {
           id: 'brief-001',
           agent: 'brief',
-          phase: 'planning',
+          phase: 'discover',
           outputs: ['brief.md'],
           criteria: [],
         },

@@ -2,7 +2,7 @@
 id: tasks-decompose
 agent: tasks
 trigger: phases
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: false
 outputs: [tasks-list.yaml]

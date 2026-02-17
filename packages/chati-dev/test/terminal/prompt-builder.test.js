@@ -19,7 +19,8 @@ describe('prompt-builder', () => {
   before(() => {
     // Create minimal project structure
     mkdirSync(join(TEST_DIR, 'chati.dev', 'domains'), { recursive: true });
-    mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'planning'), { recursive: true });
+    mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'discover'), { recursive: true });
+    mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'plan'), { recursive: true });
     mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'quality'), { recursive: true });
     mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'build'), { recursive: true });
     mkdirSync(join(TEST_DIR, 'chati.dev', 'agents', 'deploy'), { recursive: true });
@@ -37,15 +38,15 @@ describe('prompt-builder', () => {
 
     // Create a minimal agent definition
     writeFileSync(
-      join(TEST_DIR, 'chati.dev', 'agents', 'planning', 'detail.md'),
+      join(TEST_DIR, 'chati.dev', 'agents', 'plan', 'detail.md'),
       '# Detail Agent\n\nYou are the Detail agent. Create the PRD.'
     );
     writeFileSync(
-      join(TEST_DIR, 'chati.dev', 'agents', 'planning', 'architect.md'),
+      join(TEST_DIR, 'chati.dev', 'agents', 'plan', 'architect.md'),
       '# Architect Agent\n\nYou are the Architect agent.'
     );
     writeFileSync(
-      join(TEST_DIR, 'chati.dev', 'agents', 'planning', 'ux.md'),
+      join(TEST_DIR, 'chati.dev', 'agents', 'plan', 'ux.md'),
       '# UX Agent\n\nYou are the UX agent.'
     );
     writeFileSync(
@@ -157,7 +158,7 @@ describe('prompt-builder', () => {
         taskId: 'design',
         projectDir: TEST_DIR,
         sessionState: {
-          project: { name: 'TestProject', type: 'greenfield', state: 'planning' },
+          project: { name: 'TestProject', type: 'greenfield', state: 'discover' },
           language: 'pt',
         },
       });

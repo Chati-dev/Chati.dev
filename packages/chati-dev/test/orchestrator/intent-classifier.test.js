@@ -13,9 +13,9 @@ import {
 
 describe('intent-classifier', () => {
   describe('classifyIntent', () => {
-    it('should classify planning intent', () => {
+    it('should classify discover intent', () => {
       const result = classifyIntent('I want to plan a new feature');
-      assert.equal(result.intent, INTENT_TYPES.PLANNING);
+      assert.equal(result.intent, INTENT_TYPES.DISCOVER);
       assert.ok(result.confidence > 0);
       assert.ok(result.keywords.includes('plan'));
     });
@@ -78,15 +78,15 @@ describe('intent-classifier', () => {
       assert.ok(withContext.confidence >= withoutContext.confidence);
     });
 
-    it('should boost planning intent in planning mode', () => {
+    it('should boost discover intent in discover mode', () => {
       const msg = 'let me think about the architecture';
-      const withContext = classifyIntent(msg, { mode: 'planning' });
+      const withContext = classifyIntent(msg, { mode: 'discover' });
 
-      assert.equal(withContext.intent, INTENT_TYPES.PLANNING);
+      assert.equal(withContext.intent, INTENT_TYPES.DISCOVER);
     });
 
     it('should include reasoning in result', () => {
-      const result = classifyIntent('plan a feature', { mode: 'planning' });
+      const result = classifyIntent('plan a feature', { mode: 'discover' });
       assert.ok(result.reasoning);
       assert.ok(result.reasoning.includes('plan'));
     });
@@ -103,8 +103,8 @@ describe('intent-classifier', () => {
   });
 
   describe('getIntentPhase', () => {
-    it('should map planning to planning phase', () => {
-      assert.equal(getIntentPhase(INTENT_TYPES.PLANNING), 'planning');
+    it('should map discover to discover phase', () => {
+      assert.equal(getIntentPhase(INTENT_TYPES.DISCOVER), 'discover');
     });
 
     it('should map implementation to build phase', () => {
@@ -134,32 +134,32 @@ describe('intent-classifier', () => {
 
   describe('checkModeAlignment', () => {
     it('should detect no change needed when aligned', () => {
-      const result = checkModeAlignment(INTENT_TYPES.PLANNING, 'planning');
+      const result = checkModeAlignment(INTENT_TYPES.DISCOVER, 'discover');
       assert.equal(result.needsChange, false);
       assert.equal(result.targetMode, null);
     });
 
     it('should detect forward transition needed', () => {
-      const result = checkModeAlignment(INTENT_TYPES.IMPLEMENTATION, 'planning');
+      const result = checkModeAlignment(INTENT_TYPES.IMPLEMENTATION, 'discover');
       assert.equal(result.needsChange, true);
       assert.equal(result.targetMode, 'build');
       assert.ok(result.reason.includes('forward'));
     });
 
     it('should detect backward transition needed', () => {
-      const result = checkModeAlignment(INTENT_TYPES.PLANNING, 'build');
+      const result = checkModeAlignment(INTENT_TYPES.DISCOVER, 'build');
       assert.equal(result.needsChange, true);
-      assert.equal(result.targetMode, 'planning');
+      assert.equal(result.targetMode, 'discover');
       assert.ok(result.reason.includes('backward'));
     });
 
     it('should handle intents with no phase mapping', () => {
-      const result = checkModeAlignment(INTENT_TYPES.STATUS, 'planning');
+      const result = checkModeAlignment(INTENT_TYPES.STATUS, 'discover');
       assert.equal(result.needsChange, false);
     });
 
-    it('should detect deploy transition from planning', () => {
-      const result = checkModeAlignment(INTENT_TYPES.DEPLOY, 'planning');
+    it('should detect deploy transition from discover', () => {
+      const result = checkModeAlignment(INTENT_TYPES.DEPLOY, 'discover');
       assert.equal(result.needsChange, true);
       assert.equal(result.targetMode, 'deploy');
     });

@@ -2,7 +2,7 @@
 id: detail-edge-case-analysis
 agent: detail
 trigger: detail-nfr-extraction
-phase: planning
+phase: plan
 requires_input: false
 parallelizable: true
 outputs: [edge-cases.yaml]
