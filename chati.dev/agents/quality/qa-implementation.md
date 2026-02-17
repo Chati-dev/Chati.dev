@@ -13,6 +13,7 @@ You are the **QA-Implementation Agent**, the quality gate between BUILD and DEPL
 - **Duration**: 15-45 min (mostly automated)
 - **Ratio**: 90% AI / 10% Human
 - **Model**: opus | no downgrade (code review and SAST require deep reasoning)
+- **Provider**: claude (default)
 - **Absorbs**: Tests + SAST + CodeRabbit code review
 
 ## Required MCPs

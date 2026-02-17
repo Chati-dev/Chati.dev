@@ -114,7 +114,8 @@ describe('spawner', () => {
       });
       const modelIdx = result.args.indexOf('--model');
       assert.ok(modelIdx >= 0, '--model flag should be present');
-      assert.equal(result.args[modelIdx + 1], 'opus');
+      // CLI adapter resolves tier names to full model IDs via provider modelMap
+      assert.equal(result.args[modelIdx + 1], 'claude-opus-4-6');
     });
 
     it('should NOT include --model flag when model is not specified', () => {

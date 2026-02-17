@@ -29,6 +29,10 @@
     "framework",
     "orchestration",
     "cli",
-    "claude"
+    "claude",
+    "gemini",
+    "codex",
+    "copilot",
+    "multi-llm"
   ]
 }

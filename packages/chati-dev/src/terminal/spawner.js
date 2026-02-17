@@ -9,6 +9,7 @@
 
 import { spawn } from 'child_process';
 import { validateWriteScopes, buildIsolationEnv } from './isolation.js';
+import { getProvider } from './cli-registry.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -103,16 +104,25 @@ export function buildSpawnCommand(config) {
     }
   }
 
-  // Build CLI args — prompt is piped via stdin, NOT as a CLI argument
-  const command = 'claude';
-  const args = ['--print', '--dangerously-skip-permissions'];
+  // Resolve CLI provider — defaults to claude for backwards compatibility
+  const providerName = config.provider || 'claude';
+  let command, args, prompt;
 
-  if (config.model) {
-    args.push('--model', config.model);
+  try {
+    const provider = getProvider(providerName);
+    const adapterResult = provider.adapter.buildCommand(config, provider);
+    command = adapterResult.command;
+    args = adapterResult.args;
+    prompt = adapterResult.stdinPrompt;
+  } catch {
+    // Fallback to claude if provider resolution fails (backwards compatibility)
+    command = 'claude';
+    args = ['--print', '--dangerously-skip-permissions'];
+    if (config.model) {
+      args.push('--model', config.model);
+    }
+    prompt = config.prompt || null;
   }
-
-  // Prompt is returned separately for stdin piping (avoids ARG_MAX limits)
-  const prompt = config.prompt || null;
 
   return { command, args, env, terminalId, prompt };
 }

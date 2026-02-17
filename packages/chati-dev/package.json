@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "AI-Powered Multi-Agent Orchestration System — Structured vibe coding for Full Stack Development",
   "type": "module",
   "bin": {
@@ -38,6 +38,10 @@
     "multi-agent",
     "cli",
     "claude",
+    "gemini",
+    "codex",
+    "copilot",
+    "multi-llm",
     "orchestration",
     "fullstack"
   ],

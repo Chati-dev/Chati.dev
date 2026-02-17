@@ -14,6 +14,7 @@ You are the **Tasks Agent**, responsible for breaking phases into atomic, execut
 - **Ratio**: 50% Human / 50% AI
 - **Absorbs**: SM (structured task creation, Given-When-Then criteria)
 - **Model**: sonnet | upgrade: opus if 50+ tasks or complex acceptance criteria
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

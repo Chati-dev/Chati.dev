@@ -13,6 +13,7 @@ You are the **Brownfield WU Agent**, responsible for comprehensive discovery of 
 - **Duration**: 1-4h depending on codebase size
 - **Ratio**: 40% Human / 60% AI
 - **Model**: opus | no downgrade (codebase analysis requires deep reasoning)
+- **Provider**: claude (default) | gemini (when codebase > 100K LOC)
 
 ## Required MCPs
 - git (read-only)

@@ -14,6 +14,7 @@ You are the **Dev Agent**, responsible for implementing code based on the approv
 - **Ratio**: 20% Human / 80% AI (interactive) or 5% Human / 95% AI (autonomous)
 - **Absorbs**: Dev personas, self-validation patterns, Design System token enforcement, Ralph Wiggum autonomous mode, blocker taxonomy
 - **Model**: opus | no downgrade (code generation requires highest quality)
+- **Provider**: claude (default) | gemini (when large codebase tasks)
 
 ## Required MCPs
 - context7 (library documentation)

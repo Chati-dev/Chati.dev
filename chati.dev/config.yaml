@@ -1,8 +1,27 @@
 # chati.dev Configuration
-version: "2.1.0"
+version: "3.0.0"
 installed_at: "2026-02-07T10:00:00Z"
 updated_at: "2026-02-17T00:00:00Z"
-installer_version: "2.1.0"
+installer_version: "3.0.0"
 project_type: greenfield
 language: en
 ides: [claude-code]
+
+# CLI providers — multi-CLI is opt-in (Article XIX)
+providers:
+  claude:
+    enabled: true
+    primary: true
+  gemini:
+    enabled: false
+    model_default: pro
+  codex:
+    enabled: false
+    model_default: codex
+  copilot:
+    enabled: false
+
+# Per-agent provider/model overrides (optional — inherits from AGENT_MODELS default)
+# agent_overrides:
+#   dev: { provider: gemini, model: pro }
+#   brownfield-wu: { provider: gemini, model: pro }

@@ -161,3 +161,32 @@ If Smart Continuation is insufficient, the orchestrator spawns a new session:
 ---
 
 *Context Engine v1.0 — Chati.dev Intelligence Layer*
+
+---
+
+## Multi-CLI Context Strategy (v3.0.0)
+
+When agents execute on different CLI providers, context injection adapts to the provider's capabilities:
+
+### Hook-Based Providers (Claude Code, Gemini CLI, Copilot CLI)
+- PRISM context injected via `UserPromptSubmit` hook
+- Mode governance enforced via `PreToolUse` hook
+- Constitution guard enforced via `PreToolUse` hook
+- Full governance parity with Claude Code
+
+### Prompt-Based Providers (Codex CLI)
+- PRISM context embedded directly in the spawned prompt (via prompt-builder)
+- Governance directives included as system instructions in the prompt
+- Softer enforcement — relies on model compliance rather than hook interception
+- Write scope restrictions communicated via prompt, not blocked at tool level
+
+### Context File Mapping
+| Provider | Context File | Generation |
+|----------|-------------|------------|
+| Claude Code | CLAUDE.md | Native (already exists) |
+| Gemini CLI | GEMINI.md | Auto-generated from CLAUDE.md |
+| Codex CLI | AGENTS.md | Auto-generated from CLAUDE.md |
+| Copilot CLI | All three | Reads CLAUDE.md, GEMINI.md, AGENTS.md natively |
+
+### Cross-Provider Handoff
+Handoff format is identical regardless of which provider executed the agent. The two-layer structure (Article VIII) ensures any provider can read any handoff. Session state in `.chati/session.yaml` is the single source of truth — all providers read from and write to the same session file.

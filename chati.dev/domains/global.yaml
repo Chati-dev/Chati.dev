@@ -18,6 +18,26 @@ rules:
     text: "Interact with user in their preferred language. Artifacts stay in English."
     priority: normal
 
+  # Execution Profile Rules (v3.0.0)
+  execution-profiles:
+    - explore-readonly: "In explore profile, all write/edit tool calls are blocked."
+      priority: critical
+    - guided-confirmation: "In guided profile, significant writes require user confirmation."
+      priority: high
+    - autonomous-gate-check: "Autonomous profile requires cumulative gate scores >= 90%."
+      priority: critical
+    - profile-downgrade: "If quality drops below threshold during autonomous execution, auto-downgrade to guided."
+      priority: critical
+
+  # Multi-CLI Rules (v3.0.0)
+  multi-cli:
+    - primary-provider: "Claude is the default and primary provider. Multi-CLI is opt-in."
+      priority: high
+    - provider-validation: "Health check validates provider availability before spawning."
+      priority: high
+    - provider-model-map: "Each provider has its own model map. Agent assignments reference tier (opus/sonnet/haiku) which maps to provider-specific models."
+      priority: normal
+
 modes:
   planning:
     writeScope: "chati.dev/"

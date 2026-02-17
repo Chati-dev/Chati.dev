@@ -79,3 +79,31 @@ rules:
   - id: art-xvii
     text: "Execution mode governance: autonomous requires gate >= 90%. Safety net with circuit breaker (3 failures)."
     priority: critical
+
+articles:
+  article-xviii:
+    name: "Execution Profile Governance"
+    enforcement: block
+    rules:
+      - profile-explore: "In explore profile, agents read and analyze only. No write operations permitted."
+        priority: critical
+      - profile-guided: "In guided profile, agents propose actions and wait for user confirmation before writes."
+        priority: high
+      - profile-autonomous: "In autonomous profile, agents execute without confirmation when gate scores >= 90%."
+        priority: critical
+      - profile-always-confirm: "Destructive operations, deployments, deviations, and backward transitions always require confirmation regardless of profile."
+        priority: critical
+  article-xix:
+    name: "Multi-CLI Governance"
+    enforcement: guide
+    rules:
+      - provider-registry: "CLI Provider Registry is source of truth for provider capabilities."
+        priority: high
+      - provider-agnostic-handoff: "Handoff format is provider-agnostic. All agents produce handoffs in the same two-layer format."
+        priority: critical
+      - provider-fallback: "If a configured provider is unavailable, fall back to primary provider (claude) with warning."
+        priority: high
+      - provider-hooks: "Hook-based governance applies only to providers with hook support. Others use prompt injection."
+        priority: high
+      - provider-context-files: "Context file generation is automatic when a provider is enabled."
+        priority: normal

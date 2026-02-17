@@ -47,3 +47,11 @@ rules:
   - id: orch-session
     text: "Persist all state changes to session.yaml immediately."
     priority: high
+
+  # Provider Routing (v3.0.0)
+  - provider-routing: "Select optimal provider for each agent based on: agent preference, project overrides, provider availability, fallback to primary."
+    priority: high
+  - provider-health: "Validate provider availability via health check before spawning agent terminals."
+    priority: high
+  - provider-command: "/chati providers lists all enabled providers and their status."
+    priority: normal

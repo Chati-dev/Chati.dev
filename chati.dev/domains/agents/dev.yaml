@@ -47,3 +47,7 @@ rules:
   - id: dev-iterate
     text: "Iterate on implementation until acceptance criteria are met."
     priority: normal
+
+  # Provider Preference (v3.0.0)
+  - dev-provider: "Default provider: claude. Can run on gemini for large codebase tasks (1M context window)."
+    priority: normal

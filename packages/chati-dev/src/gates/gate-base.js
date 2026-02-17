@@ -9,6 +9,33 @@
 import { evaluateGate, getGateThreshold, resolveGateAction } from '../autonomy/autonomous-gate.js';
 
 /**
+ * Gate verdict constants (v3.0.0).
+ * APPROVED: Score >= threshold — proceed to next pipeline stage.
+ * NEEDS_REVISION: Score within 5 points below threshold — return to agent for fixes.
+ * BLOCKED: Score significantly below threshold or critical blocker — halt pipeline.
+ */
+export const GateVerdict = {
+  APPROVED: 'approved',
+  NEEDS_REVISION: 'needs_revision',
+  BLOCKED: 'blocked',
+};
+
+/**
+ * Determine the gate verdict from a score and threshold.
+ *
+ * @param {number} score - Gate evaluation score (0-100)
+ * @param {number} threshold - Minimum score to pass
+ * @param {boolean} [hasCriticalBlocker=false] - Whether a critical blocker exists
+ * @returns {string} One of GateVerdict values
+ */
+export function determineVerdict(score, threshold, hasCriticalBlocker = false) {
+  if (hasCriticalBlocker) return GateVerdict.BLOCKED;
+  if (score >= threshold) return GateVerdict.APPROVED;
+  if (score >= threshold - 5) return GateVerdict.NEEDS_REVISION;
+  return GateVerdict.BLOCKED;
+}
+
+/**
  * Abstract base class for quality gates.
  *
  * Uses the Template Method pattern: evaluate() is the template that
@@ -70,14 +97,19 @@ export class GateBase {
 
       const action = resolveGateAction(gateResult.result, mode);
 
+      const threshold = getGateThreshold(this.agent);
+      const hasCriticalBlocker = warnings.some(w => w.toLowerCase().includes('critical'));
+      const verdict = determineVerdict(gateResult.score, threshold, hasCriticalBlocker);
+
       return {
         gateId: this.id,
         gateName: this.name,
         result: gateResult.result,
+        verdict,
         score: gateResult.score,
         evidence,
         recommendation: action.action,
-        canProceed: gateResult.canProceed,
+        canProceed: verdict === GateVerdict.APPROVED,
         details: gateResult.details,
         warnings,
       };

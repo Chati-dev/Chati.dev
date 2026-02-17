@@ -19,6 +19,32 @@
       "default": "interactive",
       "description": "interactive = agent-driven guided mode; autonomous = Ralph Wiggum mode (Dev agent)"
     },
+    "execution_profile": {
+      "type": "string",
+      "enum": ["explore", "guided", "autonomous"],
+      "default": "guided",
+      "description": "Current execution profile governing confirmation requirements"
+    },
+    "providers_enabled": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["claude"],
+      "description": "List of enabled CLI providers"
+    },
+    "profile_transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "reason": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      },
+      "default": [],
+      "description": "History of execution profile changes"
+    },
     "current_agent": {
       "type": "string",
       "description": "Currently active agent name"
@@ -143,6 +169,7 @@
           "recommended": { "enum": ["opus", "sonnet", "haiku"], "description": "Recommended model" },
           "actual": { "enum": ["opus", "sonnet", "haiku"], "description": "Model actually used" },
           "reason": { "type": "string", "description": "Why this model was selected (default, upgrade condition, no downgrade)" },
+          "provider": { "type": "string", "description": "CLI provider used (claude, gemini, codex, copilot)" },
           "timestamp": { "type": "string", "format": "date-time" }
         }
       }

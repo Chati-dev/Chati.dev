@@ -14,7 +14,7 @@
 
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { GateBase } from './gate-base.js';
+import { GateBase, GateVerdict, determineVerdict } from './gate-base.js';
 import { loadSession } from '../orchestrator/session-manager.js';
 import { loadHandoff } from '../tasks/handoff.js';
 
@@ -202,6 +202,9 @@ export class QAImplementationGate extends GateBase {
       ? Math.round((criteriaResults.length / allCriteria.length) * 100)
       : 0;
 
-    return { score, criteriaResults, allCriteria, warnings };
+    const hasCriticalBlocker = !evidence.noCriticalBugs;
+    const verdict = determineVerdict(score, 95, hasCriticalBlocker);
+
+    return { score, criteriaResults, allCriteria, warnings, verdict };
   }
 }

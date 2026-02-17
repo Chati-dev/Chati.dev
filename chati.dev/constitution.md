@@ -368,6 +368,18 @@ The orchestrator SHALL select the optimal AI model for each agent to balance qua
 
 8. Model selections are logged in session.yaml under `model_selections[]` for cost tracking and optimization.
 
+9. Four provider categories are recognized for multi-CLI execution:
+   - **claude**: Primary provider. Deep reasoning, complex analysis, code generation. Full hook support, MCP support.
+   - **gemini**: Large-context provider. Codebase analysis, discovery, document review. 1M token context window. Full hook support, MCP support.
+   - **codex**: Rapid-coding provider. Fast code generation, sandbox execution. No hook support, MCP support.
+   - **copilot**: Multi-model provider. Reads CLAUDE.md, GEMINI.md, and AGENTS.md natively. Full hook support, MCP support.
+
+10. Claude is the default and primary provider. Multi-CLI is opt-in via `config.yaml` `providers` section. When only `claude` is enabled, the system behaves identically to v2.x.
+
+11. Provider assignments per agent are defined in `config.yaml` under `agent_overrides`. When no override exists, the agent uses the primary provider.
+
+12. For providers without hook support (e.g., codex), governance is enforced by prompt injection — the PRISM context block is embedded in the prompt rather than injected via hooks. This provides softer but functional governance.
+
 **Enforcement: GUIDE** — Model recommendations are advisory in IDE mode; automatic in SDK mode.
 
 ---
@@ -402,5 +414,58 @@ The system SHALL support two execution modes that govern the degree of human inv
 
 ---
 
-*Chati.dev Constitution v2.1.0 — 17 Articles + Preamble*
+## Article XVIII: Execution Profile Governance
+
+The system SHALL support three execution profiles that govern the degree of confirmation required for agent actions. Profiles are orthogonal to mode governance (Article XI) — modes control WHERE agents can write; profiles control WHETHER confirmation is required.
+
+1. Three profiles are recognized:
+   - **explore**: Read-only mode. Agents analyze, investigate, and suggest but perform NO write operations. Useful for safe discovery and analysis.
+   - **guided**: Default profile. Agents propose actions and wait for user confirmation before writes. Balances safety with productivity.
+   - **autonomous**: Full autonomy. Agents execute without confirmation when quality gate scores meet thresholds. Requires cumulative gate scores >= 90%.
+
+2. The default profile is `guided`. Profile selection is stored in `session.yaml` under `execution_profile`.
+
+3. Profile transitions are logged in `session.yaml` under `profile_transitions[]` for audit trail.
+
+4. Certain operations ALWAYS require confirmation regardless of profile:
+   - Destructive operations (file deletion, database drops, force push)
+   - Deployment to production environments
+   - Deviation protocol activation
+   - Backward pipeline transitions (build → planning)
+
+5. The `autonomous` profile is gated by quality: it can only be activated when the most recent QA gate score is >= 90%. If quality drops below threshold during autonomous execution, the system SHALL automatically downgrade to `guided`.
+
+6. The `explore` profile is available at any pipeline position and does not affect mode governance. An agent in `planning` mode with `explore` profile can read any file but write to none.
+
+**Enforcement: BLOCK** — Write operations in `explore` profile are rejected. Autonomous mode without qualifying gate scores is rejected.
+
+---
+
+## Article XIX: Multi-CLI Governance
+
+When multiple CLI providers are enabled, the system SHALL coordinate agent execution across providers while maintaining governance consistency.
+
+1. The CLI Provider Registry (`packages/chati-dev/src/terminal/cli-registry.js`) is the source of truth for provider capabilities: command syntax, model flags, stdin support, hook support, MCP support, and context file format.
+
+2. The handoff format is provider-agnostic. All agents, regardless of which CLI executes them, produce handoffs in the same two-layer format (Article VIII). This ensures seamless inter-provider communication.
+
+3. Provider availability SHALL be validated by the health check engine before spawning. If a configured provider is unavailable, the system SHALL fall back to the primary provider (claude) with a warning.
+
+4. Context file generation is automatic. When a provider is enabled in `config.yaml`, the installer SHALL generate the corresponding context file (GEMINI.md for gemini, AGENTS.md for codex) derived from CLAUDE.md content.
+
+5. Hook-based governance (constitution-guard, mode-governance, read-protection) applies ONLY to providers with hook support. For providers without hooks, equivalent governance is enforced via prompt injection — the PRISM context block includes governance directives.
+
+6. The orchestrator SHALL select the optimal provider for each agent based on:
+   a. Agent's provider preference (defined in agent Identity section)
+   b. Project-level overrides (config.yaml `agent_overrides`)
+   c. Provider availability (health check)
+   d. Fallback: primary provider (claude)
+
+7. Cost tracking SHALL include provider information. Each model selection entry in session.yaml includes: provider, model, agent, timestamp, and estimated token usage.
+
+**Enforcement: GUIDE** — Provider selection is advisory. The system falls back gracefully when providers are unavailable.
+
+---
+
+*Chati.dev Constitution v3.0.0 — 19 Articles + Preamble*
 *All agents are bound by this Constitution. Violations are enforced per article.*

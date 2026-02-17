@@ -47,3 +47,7 @@ rules:
   - id: bf-05
     text: "MUST assess technical debt and provide risk scores in wu-report.yaml"
     priority: normal
+
+  # Provider Preference (v3.0.0)
+  - wu-provider: "Default provider: claude. Gemini recommended for large codebases (>100K LOC) due to 1M context window."
+    priority: normal

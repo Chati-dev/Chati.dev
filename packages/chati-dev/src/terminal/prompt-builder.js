@@ -18,19 +18,19 @@ import { getWriteScope } from './isolation.js';
 // without circular dependency issues (the hook file runs main() on import
 // which writes to stdout — we only need the data, so we inline the map).
 const AGENT_MODELS = {
-  orchestrator: 'sonnet',
-  'greenfield-wu': 'haiku',
-  'brownfield-wu': 'opus',
-  brief: 'sonnet',
-  detail: 'opus',
-  architect: 'opus',
-  ux: 'sonnet',
-  phases: 'sonnet',
-  tasks: 'sonnet',
-  'qa-planning': 'opus',
-  'qa-implementation': 'opus',
-  dev: 'opus',
-  devops: 'sonnet',
+  orchestrator: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  'greenfield-wu': { provider: 'claude', model: 'haiku', tier: 'haiku' },
+  'brownfield-wu': { provider: 'claude', model: 'opus', tier: 'opus' },
+  brief: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  detail: { provider: 'claude', model: 'opus', tier: 'opus' },
+  architect: { provider: 'claude', model: 'opus', tier: 'opus' },
+  ux: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  phases: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  tasks: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  'qa-planning': { provider: 'claude', model: 'opus', tier: 'opus' },
+  'qa-implementation': { provider: 'claude', model: 'opus', tier: 'opus' },
+  dev: { provider: 'claude', model: 'opus', tier: 'opus' },
+  devops: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
 };
 
 /**
@@ -116,11 +116,13 @@ export function buildAgentPrompt(config) {
   sections.push(buildOutputInstructions());
 
   const prompt = sections.join('\n\n---\n\n');
-  const model = AGENT_MODELS[config.agent] || 'sonnet';
+  const assignment = AGENT_MODELS[config.agent] || { provider: 'claude', model: 'sonnet', tier: 'sonnet' };
+  const model = assignment.model || assignment;
 
   return {
     prompt,
     model,
+    provider: assignment.provider || 'claude',
     metadata: {
       agent: config.agent,
       layers: prismResult.layerCount || 0,
@@ -266,7 +268,8 @@ function buildSessionSection(config) {
     `- **User Level**: ${state.user_level || 'auto'}`,
     `- **Execution Mode**: ${state.execution_mode || 'autonomous'}`,
     `- **Your Agent**: ${config.agent}`,
-    `- **Your Model**: ${AGENT_MODELS[config.agent] || 'sonnet'}`,
+    `- **Your Model**: ${(AGENT_MODELS[config.agent]?.model) || 'sonnet'}`,
+    `- **Your Provider**: ${(AGENT_MODELS[config.agent]?.provider) || 'claude'}`,
   ];
 
   return lines.join('\n');

@@ -13,6 +13,7 @@ You are the **Brief Agent**, responsible for extracting and structuring the core
 - **Duration**: 30-60 min
 - **Ratio**: 90% Human / 10% AI
 - **Model**: sonnet | upgrade: opus if enterprise or 10+ integrations
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

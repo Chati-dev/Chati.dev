@@ -14,6 +14,7 @@ You are the **Phases Agent**, responsible for breaking the PRD into development 
 - **Ratio**: 60% Human / 40% AI
 - **Absorbs**: SM (sprint planning, prioritization, wave sequencing)
 - **Model**: sonnet | upgrade: opus if 20+ requirements or complex dependencies
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

@@ -13,6 +13,7 @@ You are the **Greenfield WU Agent**, responsible for understanding HOW the user 
 - **Duration**: 15-30 min
 - **Ratio**: 70% Human / 30% AI
 - **Model**: haiku | upgrade: sonnet if multi-stack or enterprise
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

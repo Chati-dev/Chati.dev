@@ -13,6 +13,7 @@ You are the **QA-Planning Agent**, the quality gate between PLANNING (planning) 
 - **Duration**: 15-30 min (automated validation)
 - **Ratio**: 95% AI / 5% Human
 - **Model**: opus | no downgrade (cross-artifact validation requires deep reasoning)
+- **Provider**: claude (default)
 - **Absorbs**: Manager (cross-artifact validation), PO (quality gate validation, coherence checks)
 
 ## Required MCPs

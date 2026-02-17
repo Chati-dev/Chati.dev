@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-02-17
+
+### Added
+
+- **Multi-CLI Architecture**: CLI Provider Registry + Adapter pattern for Claude Code, Gemini CLI, Codex CLI, and Copilot CLI
+- **CLI Adapters**: Per-provider command/args builders (claude-adapter, gemini-adapter, codex-adapter, copilot-adapter)
+- **Context File Generator**: Auto-generates GEMINI.md and AGENTS.md from CLAUDE.md when alternative providers are enabled
+- **Execution Profiles**: 3 profiles (explore/guided/autonomous) orthogonal to mode governance — controls confirmation requirements
+- **Gotchas Auto-Capture Engine**: Monitors agent execution for recurring error patterns (3x threshold → auto-captured gotcha)
+- **Health Check Engine**: 6 system checks (CLI availability, framework integrity, session state, hooks health, dependencies, git status)
+- **File Evolution Tracker**: Records file modifications per agent for conflict detection in parallel execution
+- **Timeline Manager**: Chronological event log (11 event types) for audit trail and session replay
+- **Build State Manager**: Checkpoint-based persistence for autonomous build loop (Ralph Wiggum v2)
+- **Autonomous Build Loop**: Retry logic, global timeout, progress callbacks for the dev agent
+- **Wave Analyzer**: Topological sort (Kahn's algorithm) grouping tasks into parallelizable waves
+- **Gate Verdicts**: APPROVED/NEEDS_REVISION/BLOCKED — enhanced from simple pass/fail
+- **Constitution Articles XVIII + XIX**: Execution Profile Governance and Multi-CLI Governance
+
+### Changed
+
+- **Constitution**: Updated to 19 Articles (was 17). Article XVI expanded for multi-provider support
+- **AGENT_MODELS**: Format changed from `string` to `{ provider, model, tier }` object (backwards compatible)
+- **Spawner**: Now uses CLI adapter from registry instead of hardcoded `'claude'` command
+- **Config**: Added `providers` section and `agent_overrides` for per-agent provider/model selection
+- **Schemas**: Session schema adds `execution_profile`, `providers_enabled`, `profile_transitions`; Config schema adds `providers` and `agent_overrides`
+- **Agent Definitions**: All 12 agents now include `Provider` field in Identity section
+- **Orchestrator**: Added Provider Routing section and `/chati providers` subcommand
+- **Domain Files**: Updated constitution.yaml, global.yaml, orchestrator.yaml, dev.yaml, brownfield-wu.yaml
+- **Intelligence Docs**: Added Multi-CLI Context Strategy and Cross-CLI Memory Persistence sections
+
+### Stats
+
+- 20 new source files, ~30 modified files
+- Constitution: 19 Articles + Preamble (v3.0.0)
+- Multi-CLI: 4 providers supported (claude, gemini, codex, copilot)
+- Claude Code remains primary and fully functional — multi-CLI is opt-in
+
+---
+
 ## [2.1.2] - 2026-02-17
 
 ### Changed
