@@ -5,9 +5,7 @@
 | Version | Supported |
 |---------|-----------|
 | 2.0.x | :white_check_mark: Current |
-| 1.4.x | :warning: Security fixes only |
-| 1.3.x | :warning: Security fixes only |
-| < 1.3 | :x: Not supported |
+| < 2.0 | :x: Not supported — upgrade to 2.0.x |
 
 We recommend always running the latest version. Use `npx chati-dev check-update` to verify.
 
@@ -20,7 +18,7 @@ If you discover a security vulnerability in Chati.dev, please report it responsi
 ### How to Report
 
 1. **Do NOT** open a public GitHub issue for security vulnerabilities
-2. Use [GitHub Security Advisories](https://github.com/ogabrielalonso/Chati.dev/security/advisories/new) to report privately
+2. Use [GitHub Security Advisories](https://github.com/Chati-dev/Chati.dev/security/advisories/new) to report privately
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
@@ -149,7 +147,7 @@ When using Chati.dev:
 
 We follow [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure):
 
-1. Reporter submits vulnerability via email
+1. Reporter submits vulnerability via [GitHub Security Advisories](https://github.com/Chati-dev/Chati.dev/security/advisories/new)
 2. We acknowledge receipt within 48 hours
 3. We develop and test a fix
 4. We coordinate release timing with the reporter

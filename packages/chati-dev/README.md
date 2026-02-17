@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/chati-dev"><img src="https://img.shields.io/npm/v/chati-dev?color=blue&label=npm" alt="npm"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/badge/License-BSL_1.1-blue.svg" alt="License: BSL 1.1"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node.js"></a>
   <a href="#internationalization"><img src="https://img.shields.io/badge/i18n-EN%20%7C%20PT%20%7C%20ES%20%7C%20FR-informational.svg" alt="i18n"></a>
   <a href=".github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions Welcome"></a>
@@ -55,23 +55,40 @@ PLANNING (planning)  →  Quality Gate  →  BUILD  →  Quality Gate  →  DEPL
 
 ---
 
+## Prerequisites
+
+- **Node.js** >= 20.0.0 ([download](https://nodejs.org/))
+- **Claude Code** — the CLI for Claude ([install guide](https://docs.anthropic.com/en/docs/claude-code/overview))
+
+Other supported IDEs: VS Code, Cursor, Gemini CLI, GitHub Copilot, AntiGravity (see [Supported IDEs](#supported-ides)).
+
+---
+
 ## Quick Start
 
-### Install
+### 1. Install in your project
+
+Open a terminal in your project directory:
 
 ```bash
 npx chati-dev init
 ```
 
-The wizard guides you through language and project type, then auto-configures Claude Code with the required MCPs.
+The wizard asks your language and project type, then auto-configures Claude Code with the required MCPs.
 
-### Activate
+### 2. Start Claude Code and activate
+
+Open Claude Code in the same project directory, then type:
 
 ```
 /chati
 ```
 
 The orchestrator loads your session, detects where you left off, and routes you to the right agent. You stay inside the system until you explicitly exit.
+
+### 3. Build
+
+From here, the agents take over. You'll go through Planning (requirements, architecture, phases, tasks), Quality Gates, Build, and Deploy — all orchestrated automatically.
 
 ### Monitor
 
@@ -286,18 +303,18 @@ your-project/
 │   ├── i18n/                     # EN, PT, ES, FR translations
 │   ├── migrations/               # Version migration scripts
 │   ├── constitution.md           # 17 Articles + Preamble
-│   └── config.yaml               # System configuration
-├── chati.dev/artifacts/          # Generated during pipeline
-│   ├── 0-WU/
-│   ├── 1-Brief/
-│   ├── 2-PRD/
-│   ├── 3-Architecture/
-│   ├── 4-UX/
-│   ├── 5-Phases/
-│   ├── 6-Tasks/
-│   ├── 7-QA-Planning/
-│   ├── 8-Validation/
-│   └── handoffs/
+│   ├── config.yaml               # System configuration
+│   └── artifacts/                # Generated during pipeline
+│       ├── 0-WU/
+│       ├── 1-Brief/
+│       ├── 2-PRD/
+│       ├── 3-Architecture/
+│       ├── 4-UX/
+│       ├── 5-Phases/
+│       ├── 6-Tasks/
+│       ├── 7-QA-Planning/
+│       ├── 8-Validation/
+│       └── handoffs/
 └── packages/
     └── chati-dev/                # CLI + runtime engine (npx chati-dev)
         └── src/terminal/         # Multi-terminal spawner, monitor, collector
@@ -312,9 +329,9 @@ The installer and agent interactions support 4 languages:
 | Language | Code | Status |
 |----------|------|--------|
 | **English** | `en` | Default |
-| **Portugues** | `pt` | Full support |
-| **Espanol** | `es` | Full support |
-| **Francais** | `fr` | Full support |
+| **Português** | `pt` | Full support |
+| **Español** | `es` | Full support |
+| **Français** | `fr` | Full support |
 
 Artifacts are always generated in English for portability and team collaboration.
 
@@ -332,14 +349,6 @@ Upgrades include automatic backup, migrations, validation, and config merging. R
 
 ---
 
-## Prerequisites
-
-- **Node.js** >= 20.0.0
-- **npm** >= 9.0.0
-- A supported IDE with AI assistant capabilities
-
----
-
 ## Contributing
 
 We welcome contributions from agents, templates, workflows, intelligence data, translations, and CLI improvements. Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines.
@@ -350,7 +359,7 @@ For security concerns, please see our [Security Policy](.github/SECURITY.md).
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+This project is licensed under the Business Source License 1.1 — see [LICENSE](../../LICENSE) for details. Free for personal, educational, and evaluation use. Converts to Apache 2.0 on 2030-02-16.
 
 ---
 

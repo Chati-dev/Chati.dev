@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "2.0.7",
+  "version": "2.0.9",
   "description": "AI-Powered Multi-Agent Orchestration System — Structured vibe coding for Full Stack Development",
   "type": "module",
   "bin": {
@@ -42,15 +42,15 @@
     "fullstack"
   ],
   "author": "Chati.dev",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ogabrielalonso/Chati.dev.git",
+    "url": "https://github.com/Chati-dev/Chati.dev.git",
     "directory": "packages/chati-dev"
   },
-  "homepage": "https://github.com/ogabrielalonso/Chati.dev#readme",
+  "homepage": "https://github.com/Chati-dev/Chati.dev#readme",
   "bugs": {
-    "url": "https://github.com/ogabrielalonso/Chati.dev/issues"
+    "url": "https://github.com/Chati-dev/Chati.dev/issues"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",

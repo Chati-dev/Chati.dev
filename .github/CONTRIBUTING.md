@@ -27,9 +27,9 @@ Thank you for your interest in contributing to Chati.dev. This guide covers ever
 
 ```bash
 # 1. Fork and clone
-git clone https://github.com/YOUR_USERNAME/chati-dev.git
-cd chati-dev
-git remote add upstream https://github.com/ogabrielalonso/Chati.dev.git
+git clone https://github.com/YOUR_USERNAME/Chati.dev.git
+cd Chati.dev
+git remote add upstream https://github.com/Chati-dev/Chati.dev.git
 
 # 2. Install CLI dependencies
 cd packages/chati-dev && npm install && cd ../..
@@ -77,7 +77,7 @@ Then open a Pull Request on GitHub.
 ### Project Structure
 
 ```
-chati-dev/
+Chati.dev/
 ├── chati.dev/                # System core
 │   ├── orchestrator/         # Main orchestrator
 │   ├── agents/               # 13 agent definitions
@@ -86,14 +86,14 @@ chati-dev/
 │   ├── templates/            # Artifact templates
 │   ├── workflows/            # Pipeline blueprints
 │   ├── data/                 # Entity registry
-│   ├── constitution.md       # 17 Articles + Preamble
-│   └── docs/                 # Upgrade specs
+│   └── constitution.md       # 17 Articles + Preamble
 ├── packages/
 │   └── chati-dev/            # CLI + runtime engine (npm package)
 │       ├── bin/              # Entry point
 │       ├── src/              # Source code (ESM)
 │       ├── test/             # Unit tests (node:test)
 │       └── framework/        # Bundled framework (auto-generated)
+├── docs/                     # Changelog, upgrade specs
 └── .github/                  # GitHub templates and config
 ```
 
@@ -201,7 +201,7 @@ The Intelligence Layer has three systems. See the individual spec files below.
 ### Decision Engine (`chati.dev/intelligence/decision-engine.md`)
 
 - REUSE/ADAPT/CREATE decision framework
-- TF-IDF keyword overlap + purpose similarity
+- Jaccard similarity + purpose matching
 - Changes must respect Article XIV (Framework Registry Governance)
 
 ---
@@ -396,10 +396,16 @@ All contributions must comply with the [Constitution](chati.dev/constitution.md)
 
 ---
 
+## License
+
+This project is licensed under the [Business Source License 1.1](../LICENSE). By contributing, you agree that your contributions will be licensed under the same terms. The license converts to Apache 2.0 on 2030-02-16.
+
+---
+
 ## Getting Help
 
-- **Issues**: [github.com/ogabrielalonso/Chati.dev/issues](https://github.com/ogabrielalonso/Chati.dev/issues)
-- **Discussions**: [github.com/ogabrielalonso/Chati.dev/discussions](https://github.com/ogabrielalonso/Chati.dev/discussions)
+- **Issues**: [github.com/Chati-dev/Chati.dev/issues](https://github.com/Chati-dev/Chati.dev/issues)
+- **Discussions**: [github.com/Chati-dev/Chati.dev/discussions](https://github.com/Chati-dev/Chati.dev/discussions)
 - **Examples**: Read existing agent files in `chati.dev/agents/` for reference
 - **Intelligence**: See `chati.dev/intelligence/` for Context Engine, Memory Layer, and Decision Engine specs
 

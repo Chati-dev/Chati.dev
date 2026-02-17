@@ -4,10 +4,10 @@
   "private": true,
   "description": "Chati.dev — AI-Powered Multi-Agent Orchestration System",
   "author": "Chati.dev",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ogabrielalonso/Chati.dev.git"
+    "url": "https://github.com/Chati-dev/Chati.dev.git"
   },
   "workspaces": [
     "packages/*"
