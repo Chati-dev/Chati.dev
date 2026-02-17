@@ -13,30 +13,16 @@
  * @returns {{ command: string, args: string[], stdinPrompt: string|null }}
  */
 export function buildCommand(config, provider) {
-  const args = [];
+  const args = [...provider.baseArgs];
 
   if (config.model) {
     const resolvedModel = provider.modelMap[config.model] || config.model;
-    args.push('--model', resolvedModel);
+    args.push(provider.modelFlag, resolvedModel);
   }
 
-  // Gemini CLI uses --prompt for non-interactive mode
-  // When stdin is piped, Gemini reads from stdin automatically
-  args.push('--prompt');
-
   return {
-    command: 'gemini',
+    command: provider.command,
     args,
     stdinPrompt: config.prompt || null,
   };
-}
-
-/**
- * Build environment variables specific to Gemini CLI.
- *
- * @param {import('../spawner.js').SpawnConfig} config
- * @returns {Record<string, string>}
- */
-export function buildEnv(config) {
-  return {};
 }

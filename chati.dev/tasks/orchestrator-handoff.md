@@ -175,7 +175,7 @@ handoff_document:
 
   summary: |
     Completed detailed requirements analysis for HealthCare Portal.
-    Identified 12 user stories across 4 modules (Authentication, Patient Records,
+    Identified 12 requirements across 4 modules (Authentication, Patient Records,
     Appointments, Billing). Mapped 3 external integrations (Payment Gateway,
     Insurance API, Lab Results). Defined data model with 8 core entities.
 
@@ -186,7 +186,7 @@ handoff_document:
       size_kb: 45
     - path: ".chati/artifacts/requirements/user-stories.yaml"
       type: "structured-data"
-      description: "12 user stories with acceptance criteria"
+      description: "12 requirements with acceptance criteria"
       size_kb: 8
     - path: ".chati/artifacts/requirements/integrations.yaml"
       type: "structured-data"

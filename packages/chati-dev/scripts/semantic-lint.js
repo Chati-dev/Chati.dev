@@ -185,7 +185,7 @@ function checkSchemaExistence(frameworkDir, results) {
 }
 
 /**
- * Check constitution has >= 17 articles.
+ * Check constitution has >= 19 articles.
  */
 function checkConstitution(frameworkDir, results) {
   results.checks++;
@@ -199,11 +199,11 @@ function checkConstitution(frameworkDir, results) {
   const content = readFileSync(constitutionPath, 'utf-8');
   const articleCount = (content.match(/^## Article/gm) || []).length;
 
-  if (articleCount >= 17) {
+  if (articleCount >= 19) {
     results.passed++;
     results.details.push(`Constitution: ${articleCount} articles found`);
   } else {
-    results.errors.push(`Constitution has only ${articleCount} articles (expected >= 17)`);
+    results.errors.push(`Constitution has only ${articleCount} articles (expected >= 19)`);
   }
 }
 

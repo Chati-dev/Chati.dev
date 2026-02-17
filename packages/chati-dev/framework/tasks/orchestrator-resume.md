@@ -173,7 +173,7 @@ session_state:
     file: ".chati/artifacts/handoffs/2026-02-13-detail.md"
     key_outputs:
       - "Functional requirements document"
-      - "12 user stories identified"
+      - "12 requirements identified"
       - "3 external integrations mapped"
   context_summary:
     decisions_made: 8

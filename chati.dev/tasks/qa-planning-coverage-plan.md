@@ -78,7 +78,7 @@ Create a detailed test coverage plan with specific targets for each module, comp
 
 8. **Establish Coverage Baselines**
    - **Initial Baseline**: Measure current coverage (if brownfield) or set 0% (if greenfield)
-   - **Sprint Targets**: Define incremental improvement goals (e.g., +5% per sprint)
+   - **Phase Targets**: Define incremental improvement goals (e.g., +5% per phase)
    - **Release Targets**: Set minimum coverage for each release milestone
    - **Maintenance Target**: Steady-state coverage after initial development (e.g., 75%)
 
@@ -95,10 +95,10 @@ Create a detailed test coverage plan with specific targets for each module, comp
     - **Review Cadence**: When exception is revisited (quarterly)
 
 11. **Create Coverage Improvement Roadmap**
-    - **Phase 0 (Installer)**: 70% target (focus on CLI and validation logic)
-    - **Phase 1-3 (Core Agents)**: 75% target (add agent task execution tests)
-    - **Phase 4-5 (Quality/Build)**: 80% target (comprehensive integration tests)
-    - **Phase 6-7 (Deploy/Validate)**: 85% target (full pipeline coverage)
+    - **Phase 1 (Installer)**: 70% target (focus on CLI and validation logic)
+    - **Phase 2-4 (Core Agents)**: 75% target (add agent task execution tests)
+    - **Phase 5-6 (Quality/Build)**: 80% target (comprehensive integration tests)
+    - **Phase 7-8 (Deploy/Validate)**: 85% target (full pipeline coverage)
 
 12. **Compile Coverage Plan Document**
     - List all modules with specific targets
@@ -108,7 +108,7 @@ Create a detailed test coverage plan with specific targets for each module, comp
 
 ## Decision Points
 
-- **Target Adjustment for Legacy Code**: If brownfield project has existing low coverage, set realistic incremental targets rather than immediate 80% requirement. Example: 40% current → 50% sprint 1 → 60% sprint 2 → 70% sprint 3.
+- **Target Adjustment for Legacy Code**: If brownfield project has existing low coverage, set realistic incremental targets rather than immediate 80% requirement. Example: 40% current → 50% Phase 1 → 60% Phase 2 → 70% Phase 3.
 
 - **Integration Test Coverage**: For external dependencies (MCPs, file system), decide between mocking (higher coverage, less realistic) vs real integration (lower coverage, more realistic). Recommend hybrid: unit tests with mocks, separate integration tests with real dependencies.
 
@@ -287,9 +287,9 @@ exceptions:
     review_date: quarterly
 
 baselines:
-  sprint_1: 70%
-  sprint_2: 75%
-  sprint_3: 80%
+  phase_1: 70%
+  phase_2: 75%
+  phase_3: 80%
   release_1.0: 75%
   maintenance: 75%
 

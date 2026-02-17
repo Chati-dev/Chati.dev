@@ -67,18 +67,18 @@ Present options and recommend:
 
 ### 3. Define Migration Phases
 Break migration into phases (typically 4-8 phases):
-- **Phase 0: Preparation**
+- **Phase 1: Preparation**
   - Set up monitoring and observability
   - Increase test coverage for critical paths
   - Document current behavior
   - Fix critical security issues
   - Set up feature flags
-- **Phase 1: Foundation**
+- **Phase 2: Foundation**
   - Update dependencies to secure versions
   - Standardize tooling (linting, formatting, testing)
   - Resolve circular dependencies
   - Set up CI/CD if missing
-- **Phase 2-N: Incremental Changes**
+- **Phase 3-N: Incremental Changes**
   - Each phase targets a specific subsystem or concern
   - Maintain working system at end of each phase
   - Deploy and validate before next phase
@@ -152,7 +152,7 @@ For each phase, document:
 - Add 20-30% buffer for unknowns
 - Calculate calendar time based on:
   - Team size
-  - Velocity (story points per sprint)
+  - Velocity (estimated hours per phase)
   - Availability (not 100% on migration)
   - Dependencies and waiting time
 - Provide optimistic, realistic, and pessimistic timelines

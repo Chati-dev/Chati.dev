@@ -7,7 +7,7 @@
  * @module scripts/changelog-generator
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 /**
  * @typedef {Object} ParsedCommit
@@ -84,7 +84,7 @@ export function getGitCommits(since = null, cwd = process.cwd()) {
 
   let output;
   try {
-    output = execSync(`git log ${range} --pretty=format:"${format}"`, {
+    output = execFileSync('git', ['log', range, `--pretty=format:${format}`], {
       cwd,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],

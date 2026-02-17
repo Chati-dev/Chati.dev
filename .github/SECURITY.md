@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---------|-----------|
-| 2.1.x | :white_check_mark: Current |
-| < 2.1 | :x: Not supported — upgrade to 2.1.x |
+| 3.0.x | :white_check_mark: Current |
+| 2.x | :x: Not supported — upgrade to 3.0.x |
+| < 2.0 | :x: Not supported |
 
 We recommend always running the latest version. Use `npx chati-dev check-update` to verify.
 

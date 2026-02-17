@@ -3,6 +3,7 @@ import { t, SUPPORTED_LANGUAGES, loadLanguage } from './i18n.js';
 import { detectProjectType } from '../utils/detector.js';
 import { showSummary, showChecklist } from './feedback.js';
 import { brand, dim, success } from '../utils/colors.js';
+import { isProviderAvailable } from '../terminal/cli-registry.js';
 
 /**
  * Step 1: Language Selection (always in English)
@@ -58,12 +59,58 @@ export async function stepProjectType(targetDir) {
 }
 
 /**
- * Step 3: Confirmation
+ * Step 3: LLM Provider Selection
+ */
+export async function stepLlmProvider() {
+  const providers = [
+    { name: 'claude', label: t('installer.llm_provider_claude') },
+    { name: 'gemini', label: t('installer.llm_provider_gemini') },
+    { name: 'codex', label: t('installer.llm_provider_codex') },
+    { name: 'copilot', label: t('installer.llm_provider_copilot') },
+  ];
+
+  // Check availability of each provider
+  const availability = {};
+  for (const prov of providers) {
+    try {
+      availability[prov.name] = await isProviderAvailable(prov.name);
+    } catch {
+      availability[prov.name] = prov.name === 'claude'; // claude always available
+    }
+  }
+
+  const options = providers.map(prov => {
+    const installed = availability[prov.name];
+    const suffix = installed ? '' : ` ${dim(t('installer.llm_provider_not_installed'))}`;
+    return {
+      value: prov.name,
+      label: `${prov.label}${suffix}`,
+    };
+  });
+
+  const provider = await p.select({
+    message: t('installer.llm_provider_title'),
+    options,
+    initialValue: 'claude',
+  });
+
+  if (p.isCancel(provider)) {
+    p.cancel('Installation cancelled.');
+    process.exit(0);
+  }
+
+  return provider;
+}
+
+/**
+ * Step 4: Confirmation
  */
 export async function stepConfirmation(config) {
-  const { projectName, projectType, language, selectedMCPs } = config;
+  const { projectName, projectType, language, llmProvider, selectedMCPs } = config;
 
   const langName = SUPPORTED_LANGUAGES.find(l => l.value === language)?.label || language;
+  const providerNames = { claude: 'Claude (Anthropic)', gemini: 'Gemini (Google)', codex: 'Codex (OpenAI)', copilot: 'Copilot (GitHub)' };
+  const providerDisplay = providerNames[llmProvider] || llmProvider;
   const ideNames = 'Claude Code (auto-configured)';
   const mcpNames = selectedMCPs.length > 0
     ? `${selectedMCPs.join(', ')} (auto-installed)`
@@ -74,6 +121,7 @@ export async function stepConfirmation(config) {
   showSummary({
     [t('installer.project_label')]: `${projectName} (${projectType === 'greenfield' ? 'Greenfield' : 'Brownfield'})`,
     [t('installer.language_label')]: langName,
+    [t('installer.llm_provider_label')]: providerDisplay,
     [t('installer.ides_label')]: ideNames,
     [t('installer.mcps_label')]: mcpNames,
   });

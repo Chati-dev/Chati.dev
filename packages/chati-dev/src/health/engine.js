@@ -6,8 +6,9 @@
  * Constitution Article XIV — Framework Registry Governance.
  */
 
-import { existsSync, readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { isCommandAvailable, parseProviderConfig } from '../utils/config-parser.js';
 
 // ---------------------------------------------------------------------------
 // Check Result Types
@@ -50,19 +51,13 @@ export async function checkCliAvailability(projectDir) {
     return { name: 'cli-availability', status: 'warn', message: 'No config.yaml found', duration: Date.now() - start };
   }
 
-  const raw = readFileSync(configPath, 'utf-8');
-  const providers = ['claude', 'gemini', 'codex', 'copilot'];
+  const { enabled } = parseProviderConfig(projectDir);
   const missing = [];
 
-  for (const provider of providers) {
-    const enabledMatch = raw.match(new RegExp(`${provider}:[\\s\\S]*?enabled:\\s*true`, 'm'));
-    if (enabledMatch) {
-      const { execSync } = await import('child_process');
-      try {
-        execSync(`which ${provider}`, { stdio: 'ignore' });
-      } catch {
-        missing.push(provider);
-      }
+  for (const provider of enabled) {
+    const available = await isCommandAvailable(provider);
+    if (!available) {
+      missing.push(provider);
     }
   }
 

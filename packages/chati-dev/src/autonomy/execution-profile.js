@@ -12,7 +12,7 @@
  * Constitution Article XVIII — Execution Profile Governance.
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 // ---------------------------------------------------------------------------

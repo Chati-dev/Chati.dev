@@ -41,12 +41,12 @@ export const IDE_CONFIGS = {
   },
   'gemini-cli': {
     name: 'Gemini CLI',
-    description: 'Google AI for development',
+    description: 'Google AI terminal agent',
     recommended: false,
-    configPath: '.gemini/agents/',
-    rulesFile: '.gemini/instructions.md',
-    mcpConfigFile: null,
-    formatNotes: 'Gemini agent format',
+    configPath: '.gemini/commands/',
+    rulesFile: null,
+    mcpConfigFile: '.gemini/settings.json',
+    formatNotes: 'TOML command format',
   },
   'github-copilot': {
     name: 'GitHub Copilot',
@@ -55,7 +55,7 @@ export const IDE_CONFIGS = {
     configPath: '.github/agents/',
     rulesFile: '.github/copilot-instructions.md',
     mcpConfigFile: null,
-    formatNotes: 'GitHub Copilot format',
+    formatNotes: 'GitHub Copilot agent format',
   },
 };
 

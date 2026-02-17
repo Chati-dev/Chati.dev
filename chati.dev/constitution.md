@@ -17,7 +17,7 @@ Chati.dev is a planning-first AI-assisted orchestration system that coordinates 
 ### Anti-Patterns (NEVER do these)
 
 - **Skip Brief**: Jumping to implementation without understanding the problem guarantees solving the wrong problem.
-- **Long Sprints**: Phases longer than 2 weeks lose focus and delay feedback.
+- **Long Phases**: Phases longer than 2 weeks lose focus and delay feedback.
 - **Ignore Feedback**: User corrections during any agent's execution are signals, not interruptions.
 - **Over-engineering**: Building for hypothetical future requirements adds complexity without value.
 - **Excessive Docs**: Documentation should enable action, not demonstrate thoroughness. If nobody reads it, don't write it.
@@ -416,12 +416,12 @@ The system SHALL support two execution modes that govern the degree of human inv
 
 ## Article XVIII: Execution Profile Governance
 
-The system SHALL support three execution profiles that govern the degree of confirmation required for agent actions. Profiles are orthogonal to mode governance (Article XI) — modes control WHERE agents can write; profiles control WHETHER confirmation is required.
+The system SHALL support three execution profiles that govern the degree of confirmation required for agent actions. Profiles are orthogonal to mode governance (Article XI) — modes control WHERE agents can write; profiles control WHETHER confirmation is required. Note: Execution Mode (Article XVII) governs WHO decides (human vs system); Execution Profile governs HOW actions execute (read-only, confirmed, autonomous).
 
 1. Three profiles are recognized:
    - **explore**: Read-only mode. Agents analyze, investigate, and suggest but perform NO write operations. Useful for safe discovery and analysis.
    - **guided**: Default profile. Agents propose actions and wait for user confirmation before writes. Balances safety with productivity.
-   - **autonomous**: Full autonomy. Agents execute without confirmation when quality gate scores meet thresholds. Requires cumulative gate scores >= 90%.
+   - **autonomous**: Full autonomy. Agents execute without confirmation when quality gate scores meet thresholds. Requires cumulative gate scores >= 95%.
 
 2. The default profile is `guided`. Profile selection is stored in `session.yaml` under `execution_profile`.
 
@@ -433,7 +433,7 @@ The system SHALL support three execution profiles that govern the degree of conf
    - Deviation protocol activation
    - Backward pipeline transitions (build → planning)
 
-5. The `autonomous` profile is gated by quality: it can only be activated when the most recent QA gate score is >= 90%. If quality drops below threshold during autonomous execution, the system SHALL automatically downgrade to `guided`.
+5. The `autonomous` profile is gated by quality: it can only be activated when the most recent QA gate score is >= 95%. If quality drops below threshold during autonomous execution, the system SHALL automatically downgrade to `guided`.
 
 6. The `explore` profile is available at any pipeline position and does not affect mode governance. An agent in `planning` mode with `explore` profile can read any file but write to none.
 

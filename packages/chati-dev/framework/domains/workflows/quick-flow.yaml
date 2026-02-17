@@ -1,0 +1,23 @@
+# Quick Flow Workflow Domain — PRISM L3
+# Fast-track pipeline for simple tasks (bug fixes, small features, config changes)
+# Skips full PLAN phase — goes from Brief directly to Dev
+
+steps:
+  - brief
+  - dev
+  - qa-implementation
+  - devops
+
+rules:
+  - id: qf-scope
+    text: "Quick Flow is only for low-complexity tasks. Escalate to full pipeline if scope grows."
+    priority: critical
+  - id: qf-quality
+    text: "QA-Implementation validation is mandatory even in Quick Flow. No quality shortcuts."
+    priority: critical
+  - id: qf-brief
+    text: "Brief runs in quick-extraction mode: single-pass, 2 rounds max."
+    priority: high
+  - id: qf-escalation
+    text: "If dev discovers unexpected complexity, pause and offer escalation to full pipeline."
+    priority: high

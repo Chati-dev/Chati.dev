@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { logBanner } from '../utils/logger.js';
-import { stepLanguage, stepProjectType, stepConfirmation } from './questions.js';
+import { stepLanguage, stepProjectType, stepLlmProvider, stepConfirmation } from './questions.js';
 import { createSpinner, showStep, showValidation, showQuickStart } from './feedback.js';
 import { installFramework } from '../installer/core.js';
 import { validateInstallation } from '../installer/validator.js';
@@ -35,16 +35,20 @@ export async function runWizard(targetDir, options = {}) {
   // Step 2: Project Type
   const projectType = options.projectType || await stepProjectType(targetDir);
 
+  // Step 3: LLM Provider
+  const llmProvider = options.llmProvider || await stepLlmProvider();
+
   // Auto-configured: Claude Code + default MCPs
   const selectedIDEs = options.ides || ['claude-code'];
   const selectedMCPs = options.mcps || DEFAULT_MCPS;
 
-  // Step 3: Confirmation
+  // Step 4: Confirmation
   const projectName = basename(targetDir);
   const config = {
     projectName,
     projectType,
     language,
+    llmProvider,
     selectedIDEs,
     selectedMCPs,
     targetDir,
@@ -53,7 +57,7 @@ export async function runWizard(targetDir, options = {}) {
 
   await stepConfirmation(config);
 
-  // Step 4: Installation + Validation
+  // Step 5: Installation + Validation
   console.log();
   const installSpinner = createSpinner(t('installer.installing'));
   installSpinner.start();
@@ -80,14 +84,21 @@ export async function runWizard(targetDir, options = {}) {
     const validation = await validateInstallation(targetDir);
     validateSpinner.stop();
 
-    showValidation(t('installer.agents_valid'));
+    // Show validation results based on actual checks
+    if (validation.agents?.pass) showValidation(t('installer.agents_valid'));
+    if (validation.constitution?.pass) showValidation(t('installer.constitution_ok'));
+    if (validation.intelligence?.pass) showValidation(t('installer.intelligence_valid'));
+    if (validation.registry?.pass) showValidation(t('installer.registry_valid'));
+    if (validation.memories?.pass) showValidation(t('installer.memories_valid'));
+    if (validation.session?.pass) showValidation(t('installer.session_ok'));
     showValidation(t('installer.handoff_ok'));
     showValidation(t('installer.validation_ok'));
-    showValidation(t('installer.constitution_ok'));
-    showValidation(t('installer.intelligence_valid'));
-    showValidation(t('installer.registry_valid'));
-    showValidation(t('installer.memories_valid'));
-    showValidation(t('installer.session_ok'));
+
+    // Warn if any checks failed
+    if (validation.passed < validation.total) {
+      const failed = validation.total - validation.passed;
+      p.log.warn(`${failed} validation check(s) did not pass. Run 'npx chati-dev health' for details.`);
+    }
 
     console.log();
     p.outro(t('installer.success'));
@@ -101,7 +112,8 @@ export async function runWizard(targetDir, options = {}) {
     return { success: true, config, validation };
   } catch (err) {
     installSpinner.stop();
-    p.cancel(`Installation failed: ${err.message}`);
+    const phase = err.message?.includes('validat') ? 'Validation' : 'Installation';
+    p.cancel(`${phase} failed: ${err.message}`);
     return { success: false, error: err.message };
   }
 }

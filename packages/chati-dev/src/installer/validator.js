@@ -63,7 +63,7 @@ export async function validateInstallation(targetDir) {
   if (existsSync(constitutionPath)) {
     const content = readFileSync(constitutionPath, 'utf-8');
     const articleCount = (content.match(/^## Article/gm) || []).length;
-    results.constitution.pass = articleCount >= 17;
+    results.constitution.pass = articleCount >= 19;
     results.constitution.details.push({ articleCount });
   }
   results.total += 1;
@@ -94,6 +94,7 @@ export async function validateInstallation(targetDir) {
   const workflowFiles = [
     'greenfield-fullstack.yaml', 'brownfield-fullstack.yaml',
     'brownfield-discovery.yaml', 'brownfield-service.yaml', 'brownfield-ui.yaml',
+    'quick-flow.yaml',
   ];
   let workflowCount = 0;
   for (const file of workflowFiles) {
@@ -101,7 +102,7 @@ export async function validateInstallation(targetDir) {
       workflowCount++;
     }
   }
-  results.workflows.pass = workflowCount === 5;
+  results.workflows.pass = workflowCount === 6;
   results.total += 1;
   if (results.workflows.pass) results.passed += 1;
 
@@ -109,6 +110,7 @@ export async function validateInstallation(targetDir) {
   const templateFiles = [
     'prd-tmpl.yaml', 'brownfield-prd-tmpl.yaml',
     'fullstack-architecture-tmpl.yaml', 'task-tmpl.yaml', 'qa-gate-tmpl.yaml',
+    'quick-brief-tmpl.yaml',
   ];
   let templateCount = 0;
   for (const file of templateFiles) {
@@ -116,7 +118,7 @@ export async function validateInstallation(targetDir) {
       templateCount++;
     }
   }
-  results.templates.pass = templateCount === 5;
+  results.templates.pass = templateCount === 6;
   results.total += 1;
   if (results.templates.pass) results.passed += 1;
 

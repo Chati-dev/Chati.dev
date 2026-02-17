@@ -81,9 +81,9 @@ Run static analysis security testing (SAST) to identify security vulnerabilities
 
 9. **Analyze Trends (if historical data available)**
    - Compare findings with previous scan (if available)
-   - Track new vulnerabilities introduced in this sprint
+   - Track new vulnerabilities introduced in this phase
    - Track resolved vulnerabilities since last scan
-   - Calculate vulnerability velocity (new - resolved per sprint)
+   - Calculate vulnerability velocity (new - resolved per phase)
 
 10. **Generate Remediation Guidance**
     - For each CRITICAL/HIGH finding:
@@ -330,7 +330,7 @@ trends:
   previous_scan_date: YYYY-MM-DD (or null if first scan)
   new_vulnerabilities: 2
   resolved_vulnerabilities: 0
-  vulnerability_velocity: +2 per sprint
+  vulnerability_velocity: +2 per phase
 
 remediation_roadmap:
   priority_1_blocking:
@@ -378,19 +378,19 @@ assessment:
     - Fix both HIGH severity exploitable vulnerabilities
     - Upgrade yaml package to 2.3.4+
     - Re-run SAST scan to verify fixes
-    - Medium and low findings can be deferred to next sprint
+    - Medium and low findings can be deferred to next phase
 
   recommendations:
     - Priority 1: Fix SAST-001 with path validation (2 hours)
     - Priority 2: Fix SAST-002 with execFile (1 hour)
     - Priority 3: Upgrade yaml dependency (30 minutes)
-    - Schedule code quality fixes for next sprint
+    - Schedule code quality fixes for next phase
 
 next_steps:
   - Return to dev agent for HIGH vulnerability remediation
   - Re-run qa-impl-sast-scan after fixes
   - If rerun passes (0 HIGH exploitable), proceed to qa-impl-regression-check
-  - Track LOW/MEDIUM findings in backlog for future sprints
+  - Track LOW/MEDIUM findings in backlog for future phases
 
 handoff:
   to: dev

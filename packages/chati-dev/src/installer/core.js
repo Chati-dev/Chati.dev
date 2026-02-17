@@ -3,7 +3,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { IDE_CONFIGS } from '../config/ide-configs.js';
 import { generateClaudeMCPConfig } from '../config/mcp-configs.js';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd } from './templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateGeminiRouter, generateCopilotAgent } from './templates.js';
+import { generateContextFiles } from '../config/context-file-generator.js';
 import { verifyManifest } from './manifest.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -18,7 +19,7 @@ const FRAMEWORK_SOURCE = existsSync(BUNDLED_SOURCE) ? BUNDLED_SOURCE : MONOREPO_
  * Install Chati.dev framework into target directory
  */
 export async function installFramework(config) {
-  const { targetDir, projectType, language, selectedIDEs, selectedMCPs, projectName, version } = config;
+  const { targetDir, projectType, language, selectedIDEs, selectedMCPs, projectName, version, llmProvider } = config;
 
   // 0. Verify framework signature (supply chain protection)
   const manifestPath = join(FRAMEWORK_SOURCE, 'manifest.json');
@@ -38,7 +39,7 @@ export async function installFramework(config) {
   createDir(join(targetDir, '.chati'));
   writeFileSync(
     join(targetDir, '.chati', 'session.yaml'),
-    generateSessionYaml({ projectName, projectType, language, selectedIDEs, selectedMCPs }),
+    generateSessionYaml({ projectName, projectType, language, selectedIDEs, selectedMCPs, llmProvider }),
     'utf-8'
   );
 
@@ -91,7 +92,7 @@ export async function installFramework(config) {
   // Write config.yaml
   writeFileSync(
     join(frameworkDir, 'config.yaml'),
-    generateConfigYaml({ version, projectType, language, selectedIDEs }),
+    generateConfigYaml({ version, projectType, language, selectedIDEs, llmProvider }),
     'utf-8'
   );
 
@@ -101,13 +102,13 @@ export async function installFramework(config) {
   }
 
   // 4. Copy context files to .claude/rules/chati/ (auto-loaded by Claude Code)
-  const rulesDir = join(targetDir, '.claude', 'rules', 'chati');
-  createDir(rulesDir);
   const contextFiles = ['root.md', 'governance.md', 'protocols.md', 'quality.md'];
+  const claudeRulesDir = join(targetDir, '.claude', 'rules', 'chati');
+  createDir(claudeRulesDir);
   for (const file of contextFiles) {
     const src = join(FRAMEWORK_SOURCE, 'context', file);
     if (existsSync(src)) {
-      copyFileSync(src, join(rulesDir, file));
+      copyFileSync(src, join(claudeRulesDir, file));
     }
   }
 
@@ -124,6 +125,14 @@ export async function installFramework(config) {
     generateClaudeLocalMd(),
     'utf-8'
   );
+
+  // 7. Generate context files for non-Claude providers (GEMINI.md, AGENTS.md)
+  // Copilot CLI natively reads AGENTS.md + CLAUDE.md + GEMINI.md — no separate COPILOT.md needed.
+  const hasNonClaudeProvider = (llmProvider && llmProvider !== 'claude') ||
+    selectedIDEs.some(ide => ['gemini-cli', 'github-copilot'].includes(ide));
+  if (hasNonClaudeProvider) {
+    generateContextFiles(targetDir);
+  }
 }
 
 /**
@@ -157,12 +166,14 @@ function copyFrameworkFiles(destDir) {
     'templates/fullstack-architecture-tmpl.yaml',
     'templates/task-tmpl.yaml',
     'templates/qa-gate-tmpl.yaml',
+    'templates/quick-brief-tmpl.yaml',
     // Workflows
     'workflows/greenfield-fullstack.yaml',
     'workflows/brownfield-fullstack.yaml',
     'workflows/brownfield-discovery.yaml',
     'workflows/brownfield-service.yaml',
     'workflows/brownfield-ui.yaml',
+    'workflows/quick-flow.yaml',
     // Quality gates
     'quality-gates/planning-gate.md',
     'quality-gates/implementation-gate.md',
@@ -191,6 +202,7 @@ function copyFrameworkFiles(destDir) {
     'hooks/session-digest.js',
     'hooks/model-governance.js',
     'hooks/settings.json',
+    'hooks/read-protection.js',
     // Domains (PRISM Context Engine)
     'domains/constitution.yaml',
     'domains/global.yaml',
@@ -212,6 +224,7 @@ function copyFrameworkFiles(destDir) {
     'domains/workflows/brownfield-discovery.yaml',
     'domains/workflows/brownfield-service.yaml',
     'domains/workflows/brownfield-ui.yaml',
+    'domains/workflows/quick-flow.yaml',
     // i18n
     'i18n/en.yaml',
     'i18n/pt.yaml',
@@ -294,10 +307,32 @@ Pass through all context: session state, handoffs, artifacts, and user input.
         'utf-8'
       );
     }
+  } else if (ideKey === 'gemini-cli') {
+    // Gemini CLI: TOML command file (native format for /chati command)
+    writeFileSync(join(targetDir, '.gemini', 'commands', 'chati.toml'), generateGeminiRouter(), 'utf-8');
+  } else if (ideKey === 'github-copilot') {
+    // GitHub Copilot: agent file (.github/agents/chati.md) for @chati invocation
+    writeFileSync(join(targetDir, '.github', 'agents', 'chati.md'), generateCopilotAgent(), 'utf-8');
+
+    // Copilot instructions file (auto-loaded by Copilot CLI)
+    createDir(dirname(join(targetDir, config.rulesFile)));
+    writeFileSync(join(targetDir, config.rulesFile), generateProviderInstructions(config.name), 'utf-8');
   } else {
-    // For other IDEs, create a rules file pointing to chati.dev/
-    const rulesContent = `# Chati.dev System Rules
-# This file configures ${config.name} to work with Chati.dev
+    // VS Code, Cursor, AntiGravity — generic rules file
+    if (config.rulesFile) {
+      createDir(dirname(join(targetDir, config.rulesFile)));
+      writeFileSync(join(targetDir, config.rulesFile), generateProviderInstructions(config.name), 'utf-8');
+    }
+  }
+}
+
+/**
+ * Generate provider-agnostic instructions file content.
+ * Used for non-Claude IDEs (.github/copilot-instructions.md, .vscode/chati/rules.md, etc.)
+ */
+function generateProviderInstructions(providerName) {
+  return `# Chati.dev System Rules
+# This file configures ${providerName} to work with Chati.dev
 
 ## System Location
 All system content is in the \`chati.dev/\` directory.
@@ -310,7 +345,15 @@ The orchestrator is at \`chati.dev/orchestrator/chati.md\`.
 Read it to understand routing, session management, and agent activation.
 
 ## Constitution
-Governance rules are in \`chati.dev/constitution.md\` (17 Articles).
+Governance rules are in \`chati.dev/constitution.md\` (19 Articles).
+
+## Pipeline
+\`\`\`
+DISCOVER: WU -> Brief
+PLAN:     Detail -> Architect -> UX -> Phases -> Tasks -> QA-Planning
+BUILD:    Dev -> QA-Implementation
+DEPLOY:   DevOps
+\`\`\`
 
 ## Agents
 - DISCOVER: chati.dev/agents/discover/ (3 agents)
@@ -319,11 +362,6 @@ Governance rules are in \`chati.dev/constitution.md\` (17 Articles).
 - BUILD: chati.dev/agents/build/ (1 agent)
 - DEPLOY: chati.dev/agents/deploy/ (1 agent)
 `;
-    if (config.rulesFile) {
-      createDir(dirname(join(targetDir, config.rulesFile)));
-      writeFileSync(join(targetDir, config.rulesFile), rulesContent, 'utf-8');
-    }
-  }
 }
 
 /**

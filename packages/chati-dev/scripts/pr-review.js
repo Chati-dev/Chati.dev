@@ -7,7 +7,7 @@
  * @module scripts/pr-review
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { extname, dirname } from 'node:path';
 
 /**
@@ -64,13 +64,13 @@ export function getSensitivePaths() {
 
 /**
  * Executes a git command and returns the output.
- * @param {string} cmd
+ * @param {string[]} args - Git subcommand and arguments
  * @param {string} cwd
  * @returns {string}
  */
-function git(cmd, cwd) {
+function git(args, cwd) {
   try {
-    return execSync(`git ${cmd}`, {
+    return execFileSync('git', args, {
       cwd,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -89,7 +89,7 @@ function git(cmd, cwd) {
  * @returns {ChangedFiles}
  */
 export function getChangedFiles(base, head, cwd = process.cwd()) {
-  const output = git(`diff --name-status ${base}...${head}`, cwd);
+  const output = git(['diff', '--name-status', `${base}...${head}`], cwd);
   if (!output) {
     return { added: [], modified: [], deleted: [], renamed: [] };
   }

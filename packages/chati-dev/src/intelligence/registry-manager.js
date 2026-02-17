@@ -131,8 +131,8 @@ export function runHealthCheck(targetDir) {
   if (existsSync(constitutionPath)) {
     const content = readFileSync(constitutionPath, 'utf-8');
     const articleCount = (content.match(/^## Article/gm) || []).length;
-    checks.constitution.pass = articleCount >= 17;
-    checks.constitution.details = `${articleCount}/17 articles`;
+    checks.constitution.pass = articleCount >= 19;
+    checks.constitution.details = `${articleCount}/19 articles`;
   } else {
     checks.constitution.details = 'Not found';
   }

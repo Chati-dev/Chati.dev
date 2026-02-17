@@ -1,5 +1,5 @@
 # Constitution Domain — Extracted governance rules for PRISM L0
-# Source: chati.dev/constitution.md (17 Articles + Preamble)
+# Source: chati.dev/constitution.md (19 Articles + Preamble)
 
 summary: >
   Constitution governance: self-validation required (loop until quality >= 95%),
@@ -9,7 +9,7 @@ summary: >
   context brackets, memory governance, registry governance,
   session lock, model governance.
 
-articleCount: 17
+articleCount: 19
 
 rules:
   - id: art-i

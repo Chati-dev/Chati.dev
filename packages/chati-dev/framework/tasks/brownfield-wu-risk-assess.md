@@ -159,7 +159,7 @@ For each identified risk:
 ### 9. Prioritize Risks
 Sort risks by risk score descending:
 - **Critical Priority (Score 70-100)**: Address immediately
-- **High Priority (Score 40-69)**: Address in next sprint
+- **High Priority (Score 40-69)**: Address in next phase
 - **Medium Priority (Score 20-39)**: Address within 3 months
 - **Low Priority (Score 1-19)**: Monitor, address when convenient
 
@@ -419,6 +419,6 @@ total_remediation_effort:
 next_steps:
   - Address 3 critical security risks immediately
   - Create detailed remediation plan for high priority risks
-  - Schedule technical debt reduction sprints
+  - Schedule technical debt reduction phases
   - Set up monitoring to track new risks
 ```

@@ -27,8 +27,8 @@ Merge: tasks-list.yaml, estimates.yaml, task-criteria.yaml
 Organize tasks hierarchically:
 - Phase → Feature → Tasks
 
-### 3. Add Sprint Planning Hints
-Suggest which tasks could be grouped into sprints.
+### 3. Add Phase Planning Hints
+Suggest which tasks could be grouped into phases.
 
 ### 4. Generate Final Task List
 Complete, ready for development.
@@ -40,12 +40,12 @@ timestamp: 2026-02-13T18:00:00Z
 total_tasks: 67
 total_estimated_hours: 480
 [All task details consolidated]
-sprint_suggestions:
-  sprint_1:
+phase_suggestions:
+  phase_1:
     focus: Database schema and authentication backend
     tasks: [TASK-001, TASK-002, TASK-005, TASK-006]
     estimated_hours: 60
-  sprint_2:
+  phase_2:
     focus: Authentication UI and post backend
     tasks: [TASK-003, TASK-004, TASK-010, TASK-011]
     estimated_hours: 72

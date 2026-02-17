@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'js-yaml';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd } from '../../src/installer/templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateGeminiRouter, generateCopilotAgent } from '../../src/installer/templates.js';
 
 const testConfig = {
   projectName: 'test-project',
@@ -122,5 +122,213 @@ describe('generateClaudeLocalMd', () => {
   it('starts with inactive session', () => {
     const result = generateClaudeLocalMd();
     assert.ok(result.includes('INACTIVE'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Multi-CLI feature tests
+// ---------------------------------------------------------------------------
+
+describe('generateSessionYaml with llmProvider', () => {
+  it('defaults providers_enabled to claude when llmProvider is undefined', () => {
+    const config = { ...testConfig, llmProvider: undefined };
+    const parsed = yaml.load(generateSessionYaml(config));
+    assert.deepEqual(parsed.providers_enabled, ['claude']);
+  });
+
+  it('uses explicit llmProvider in providers_enabled', () => {
+    const config = { ...testConfig, llmProvider: 'gemini' };
+    const parsed = yaml.load(generateSessionYaml(config));
+    assert.deepEqual(parsed.providers_enabled, ['gemini']);
+  });
+
+  it('includes execution_profile field', () => {
+    const parsed = yaml.load(generateSessionYaml(testConfig));
+    assert.equal(parsed.execution_profile, 'guided');
+  });
+
+  it('includes profile_transitions array', () => {
+    const parsed = yaml.load(generateSessionYaml(testConfig));
+    assert.ok(Array.isArray(parsed.profile_transitions));
+    assert.equal(parsed.profile_transitions.length, 0);
+  });
+});
+
+describe('generateConfigYaml with llmProvider', () => {
+  it('defaults to claude provider when llmProvider is undefined', () => {
+    const config = { ...testConfig, llmProvider: undefined };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.claude.primary, true);
+    assert.equal(parsed.providers.claude.enabled, true);
+  });
+
+  it('sets gemini as primary when selected', () => {
+    const config = { ...testConfig, llmProvider: 'gemini' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.gemini.primary, true);
+    assert.equal(parsed.providers.gemini.enabled, true);
+    assert.equal(parsed.providers.claude.primary, false);
+  });
+
+  it('enables selected provider in providers block', () => {
+    for (const provider of ['claude', 'gemini', 'codex', 'copilot']) {
+      const config = { ...testConfig, llmProvider: provider };
+      const parsed = yaml.load(generateConfigYaml(config));
+      assert.equal(parsed.providers[provider].enabled, true, `${provider} should be enabled`);
+      assert.equal(parsed.providers[provider].primary, true, `${provider} should be primary`);
+    }
+  });
+
+  it('generates agent_overrides for non-claude providers', () => {
+    for (const provider of ['gemini', 'codex', 'copilot']) {
+      const config = { ...testConfig, llmProvider: provider };
+      const parsed = yaml.load(generateConfigYaml(config));
+      assert.ok(parsed.agent_overrides, `${provider} should have agent_overrides`);
+      assert.ok(Object.keys(parsed.agent_overrides).length > 0, `${provider} agent_overrides should not be empty`);
+    }
+  });
+
+  it('does not generate agent_overrides for claude', () => {
+    const config = { ...testConfig, llmProvider: 'claude' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.agent_overrides, undefined);
+  });
+
+  it('maps all 13 agents in agent_overrides for gemini', () => {
+    const config = { ...testConfig, llmProvider: 'gemini' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    const expectedAgents = [
+      'orchestrator', 'greenfield-wu', 'brownfield-wu', 'brief', 'detail',
+      'architect', 'ux', 'phases', 'tasks',
+      'qa-planning', 'dev', 'qa-implementation', 'devops',
+    ];
+    const overriddenAgents = Object.keys(parsed.agent_overrides);
+    assert.equal(overriddenAgents.length, expectedAgents.length);
+    for (const agent of expectedAgents) {
+      assert.ok(parsed.agent_overrides[agent], `Missing override for ${agent}`);
+      assert.equal(parsed.agent_overrides[agent].provider, 'gemini');
+      assert.ok(typeof parsed.agent_overrides[agent].model === 'string');
+    }
+  });
+
+  it('uses correct tier names for codex (codex and mini)', () => {
+    const config = { ...testConfig, llmProvider: 'codex' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    const models = new Set(Object.values(parsed.agent_overrides).map(o => o.model));
+    // codex provider should only use 'codex' and 'mini' tiers
+    for (const model of models) {
+      assert.ok(
+        ['codex', 'mini'].includes(model),
+        `Unexpected codex tier: ${model}. Expected "codex" or "mini".`
+      );
+    }
+    // Both tiers should be present (deep agents get codex, light agents get mini)
+    assert.ok(models.has('codex'), 'Should have "codex" tier');
+    assert.ok(models.has('mini'), 'Should have "mini" tier');
+  });
+
+  it('uses correct tier names for copilot (claude-sonnet and gpt-5)', () => {
+    const config = { ...testConfig, llmProvider: 'copilot' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    const models = new Set(Object.values(parsed.agent_overrides).map(o => o.model));
+    for (const model of models) {
+      assert.ok(
+        ['claude-sonnet', 'gpt-5'].includes(model),
+        `Unexpected copilot tier: ${model}. Expected "claude-sonnet" or "gpt-5".`
+      );
+    }
+  });
+
+  it('enables gemini when gemini-cli is in selectedIDEs', () => {
+    const config = { ...testConfig, selectedIDEs: ['claude-code', 'gemini-cli'], llmProvider: 'claude' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.gemini.enabled, true);
+    assert.equal(parsed.providers.gemini.primary, false);
+  });
+
+  it('enables copilot when github-copilot is in selectedIDEs', () => {
+    const config = { ...testConfig, selectedIDEs: ['claude-code', 'github-copilot'], llmProvider: 'claude' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.copilot.enabled, true);
+    assert.equal(parsed.providers.copilot.primary, false);
+  });
+
+  it('does not enable gemini when only claude-code is in selectedIDEs', () => {
+    const config = { ...testConfig, selectedIDEs: ['claude-code'], llmProvider: 'claude' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.gemini.enabled, false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Provider-specific router/agent tests
+// ---------------------------------------------------------------------------
+
+describe('generateGeminiRouter', () => {
+  it('returns valid TOML content', () => {
+    const result = generateGeminiRouter();
+    assert.ok(typeof result === 'string');
+    assert.ok(result.length > 0);
+    // TOML must have description and prompt fields
+    assert.ok(result.includes('description ='), 'Should have TOML description field');
+    assert.ok(result.includes('prompt ='), 'Should have TOML prompt field');
+  });
+
+  it('uses TOML triple-quoted string for prompt', () => {
+    const result = generateGeminiRouter();
+    assert.ok(result.includes('"""'), 'Should use TOML triple-quoted strings');
+  });
+
+  it('references the orchestrator', () => {
+    const result = generateGeminiRouter();
+    assert.ok(result.includes('chati.dev/orchestrator/chati.md'));
+  });
+
+  it('includes {{args}} for user input', () => {
+    const result = generateGeminiRouter();
+    assert.ok(result.includes('{{args}}'), 'Should include {{args}} placeholder');
+  });
+
+  it('includes language override', () => {
+    const result = generateGeminiRouter();
+    assert.ok(result.includes('language'));
+    assert.ok(result.includes('session.yaml'));
+  });
+
+  it('does not reference Claude Code', () => {
+    const result = generateGeminiRouter();
+    assert.ok(!result.includes('Claude Code'));
+    assert.ok(!result.includes('CLAUDE.md'));
+  });
+});
+
+describe('generateCopilotAgent', () => {
+  it('returns a non-empty markdown string', () => {
+    const result = generateCopilotAgent();
+    assert.ok(typeof result === 'string');
+    assert.ok(result.length > 0);
+    assert.ok(result.startsWith('#'), 'Should start with markdown heading');
+  });
+
+  it('includes language override section', () => {
+    const result = generateCopilotAgent();
+    assert.ok(result.includes('Language Override'));
+    assert.ok(result.includes('session.yaml'));
+  });
+
+  it('references the orchestrator', () => {
+    const result = generateCopilotAgent();
+    assert.ok(result.includes('chati.dev/orchestrator/chati.md'));
+  });
+
+  it('includes GitHub Copilot in the content', () => {
+    const result = generateCopilotAgent();
+    assert.ok(result.includes('GitHub Copilot'));
+  });
+
+  it('does not reference Claude Code', () => {
+    const result = generateCopilotAgent();
+    assert.ok(!result.includes('Claude Code'));
+    assert.ok(!result.includes('CLAUDE.md'));
   });
 });

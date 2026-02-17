@@ -17,7 +17,7 @@ authority:
   blocked:
     - Code implementation
     - Task-level decomposition (that's tasks agent's role)
-    - Detailed estimation (story points)
+    - Detailed estimation (hours or sizing)
     - Deployment planning
     - Architecture redesign
   redirectMessage: "Phase breakdown is complete. Redirecting to tasks agent for task decomposition."
@@ -27,7 +27,7 @@ outputs:
 
 rules:
   - id: ph-01
-    text: "MUST define Phase 0 as MVP with minimum viable feature set for user validation"
+    text: "MUST define Phase 1 as MVP with minimum viable feature set for user validation"
     priority: critical
 
   - id: ph-02

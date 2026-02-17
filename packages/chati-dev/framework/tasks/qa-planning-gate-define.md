@@ -73,7 +73,7 @@ Define quality gates and enforcement thresholds for each stage of the chati.dev 
 7. **Establish Threshold Levels**
    - **BLOCKER**: Must fix immediately, blocks all progress (test failures, critical vulnerabilities)
    - **CRITICAL**: Must fix before merge/release (high vulnerabilities, major regressions)
-   - **MAJOR**: Should fix in current sprint (moderate issues, technical debt)
+   - **MAJOR**: Should fix in current phase (moderate issues, technical debt)
    - **MINOR**: Can defer to backlog (low priority issues, enhancements)
 
 8. **Define Gate Enforcement Mechanisms**
@@ -98,7 +98,7 @@ Define quality gates and enforcement thresholds for each stage of the chati.dev 
     - **Gate Pass Rate**: Track percentage of clean gate passes
     - **Bypass Frequency**: Monitor override usage patterns
     - **Time in Gate**: Measure delay caused by gate failures
-    - **Trend Analysis**: Track improvement/degradation over sprints
+    - **Trend Analysis**: Track improvement/degradation over phases
 
 12. **Compile Quality Gates Document**
     - Structure gates by pipeline stage
@@ -127,7 +127,7 @@ Define quality gates and enforcement thresholds for each stage of the chati.dev 
 
 **Tool Integration Failures**
 - If CI/CD pipeline cannot enforce a gate automatically, define manual checklist
-- Flag for devops agent to implement automation in future sprint
+- Flag for devops agent to implement automation in future phase
 - Ensure interim manual process is documented
 
 ## Output Format
@@ -253,14 +253,14 @@ severity_levels:
     resolution_time: same day
 
   MAJOR:
-    description: Fix in current sprint
+    description: Fix in current phase
     examples: [moderate issues, technical debt, performance degradation]
-    resolution_time: within sprint
+    resolution_time: within phase
 
   MINOR:
     description: Backlog eligible
     examples: [low priority issues, enhancements, cosmetic fixes]
-    resolution_time: next sprint or later
+    resolution_time: next phase or later
 
 bypass_procedures:
   deviation_protocol:

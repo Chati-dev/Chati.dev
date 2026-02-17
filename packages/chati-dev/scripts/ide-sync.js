@@ -49,13 +49,13 @@ export const IDE_CONFIGS = {
     description: 'AntiGravity',
   },
   'gemini-cli': {
-    configDir: '.gemini/',
-    extension: '.md',
-    format: 'markdown',
+    commandDir: '.gemini/commands/',
+    extension: '.toml',
+    format: 'toml',
     description: 'Gemini CLI',
   },
   'github-copilot': {
-    instructionsDir: '.github/copilot/',
+    agentsDir: '.github/agents/',
     extension: '.md',
     format: 'markdown',
     description: 'GitHub Copilot',
@@ -152,6 +152,11 @@ export function buildIDEContent(agentContent, format, agentName = '') {
         agentContent,
       ];
       return lines.join('\n');
+    }
+
+    case 'toml': {
+      // Gemini CLI uses TOML format for commands
+      return `description = "chati.dev agent — ${agentName}"\n\nprompt = """\n${agentContent}\n"""\n`;
     }
 
     case 'markdown':

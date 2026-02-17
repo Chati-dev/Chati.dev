@@ -198,7 +198,7 @@ export function completeBuild(state) {
  * @param {string} [reason]
  * @returns {BuildState}
  */
-export function failBuild(state, reason) {
+export function failBuild(state, _reason) {
   state.status = BuildStatus.FAILED;
   state.completedAt = new Date().toISOString();
   return state;

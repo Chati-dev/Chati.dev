@@ -185,3 +185,20 @@ This prevents cross-contamination while enabling knowledge sharing.
 ---
 
 *Memory Layer v1.0 — Chati.dev Intelligence Layer*
+
+---
+
+## Cross-CLI Memory Persistence (v3.0.0)
+
+Memory is provider-agnostic. All providers read from and write to the same memory store (`.chati/memories/`).
+
+### Memory Capture Across Providers
+- **Hook-based providers**: Capture via `PreCompact` hook (session-digest.js)
+- **Prompt-based providers**: Capture via explicit instructions in the spawned prompt — the agent is instructed to output a `<chati-memory>` block that the orchestrator parses from stdout
+
+### Memory Injection Across Providers
+- **Hook-based providers**: Injected via PRISM engine hook (prism-engine.js)
+- **Prompt-based providers**: Relevant memories are included in the spawned prompt by the prompt-builder
+
+### Gotchas Auto-Capture
+Gotchas are captured regardless of provider. The auto-capture engine monitors agent stdout for error patterns and tracks frequency. When an error pattern appears 3+ times across any provider combination, a gotcha is auto-created.

@@ -10,7 +10,7 @@ handoff_to: detail-nfr-extraction
 autonomous_gate: true
 criteria:
   - All functional requirements expanded with details
-  - User stories written in Given-When-Then format
+  - Requirements written in Given-When-Then format
   - Data models identified
   - API endpoints outlined
 ---
@@ -30,7 +30,7 @@ Read brief.yaml and extract all requirements and context.
 ### 2. Expand Each Functional Requirement
 For each FR, add:
 - **Description**: Detailed explanation of what it does
-- **User Story**: As a [persona], I want [action] so that [benefit]
+- **Requirement**: As a [persona], I want [action] so that [benefit]
 - **Acceptance Criteria**: Given-When-Then scenarios
 - **Priority**: P0 (must-have), P1 (should-have), P2 (nice-to-have)
 - **Estimated Complexity**: Small (1-3 days), Medium (4-7 days), Large (8+ days)

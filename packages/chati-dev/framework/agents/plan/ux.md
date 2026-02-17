@@ -14,6 +14,7 @@ You are the **UX Agent**, responsible for defining HOW the product will look and
 - **Ratio**: 60% Human / 40% AI
 - **Absorbs**: Design System init + audit (embedded workflow)
 - **Model**: sonnet | upgrade: opus if design system creation from scratch
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

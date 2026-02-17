@@ -10,6 +10,7 @@
   <a href="https://www.npmjs.com/package/chati-dev"><img src="https://img.shields.io/npm/v/chati-dev?color=blue&label=npm" alt="npm"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node.js"></a>
+  <a href="#multi-cli-support"><img src="https://img.shields.io/badge/LLM-Claude%20%7C%20Gemini%20%7C%20Codex%20%7C%20Copilot-blueviolet.svg" alt="Multi-LLM"></a>
   <a href="#internationalization"><img src="https://img.shields.io/badge/i18n-EN%20%7C%20PT%20%7C%20ES%20%7C%20FR-informational.svg" alt="i18n"></a>
   <a href=".github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions Welcome"></a>
 </p>
@@ -39,11 +40,11 @@ AI-assisted development today has three critical issues:
 
 1. **Context Loss** — AI forgets decisions across sessions, leading to inconsistent implementations
 2. **Planning Gaps** — Jumping straight to code without structured requirements leads to rework
-3. **System Leakage** — Users accidentally "fall out" of agent systems into generic AI mode
+3. **Vendor Lock-in** — Most AI dev tools only work with one provider, limiting flexibility
 
 ### The Solution
 
-Chati.dev introduces **Agent-Driven Development**: a pipeline where each agent owns a specific phase, produces validated artifacts, and hands off context to the next agent. The system ensures context is never lost, knowledge persists across sessions, and you never accidentally leave the pipeline.
+Chati.dev introduces **Agent-Driven Development**: a pipeline where each agent owns a specific phase, produces validated artifacts, and hands off context to the next agent. The system ensures context is never lost, knowledge persists across sessions, and you can use any supported AI provider.
 
 ---
 
@@ -52,9 +53,11 @@ Chati.dev introduces **Agent-Driven Development**: a pipeline where each agent o
 ### Prerequisites
 
 - **Node.js** >= 20.0.0 ([download](https://nodejs.org/))
-- **Claude Code** — the CLI for Claude ([install guide](https://docs.anthropic.com/en/docs/claude-code/overview))
-
-Other supported IDEs: VS Code, Cursor, Gemini CLI, GitHub Copilot, AntiGravity (see [Supported IDEs](#supported-ides)).
+- **An AI CLI** — at least one of:
+  - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) (recommended)
+  - [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+  - [Codex CLI](https://github.com/openai/codex)
+  - [GitHub Copilot CLI](https://docs.github.com/en/copilot)
 
 ### 1. Install in your project
 
@@ -64,11 +67,18 @@ Open a terminal in your project directory:
 npx chati-dev init
 ```
 
-The wizard asks your language and project type, then auto-configures everything.
+The wizard guides you through 4 steps:
+
+| Step | What it asks |
+|------|-------------|
+| **Language** | English, Portuguese, Spanish, or French |
+| **Project Type** | Greenfield (new) or Brownfield (existing) |
+| **AI Provider** | Claude, Gemini, Codex, or Copilot — auto-configures optimal models per agent |
+| **Confirm** | Review summary and proceed |
 
 ### 2. Activate the orchestrator
 
-Open Claude Code in the same project directory, then type:
+Open your AI CLI in the same project directory, then type:
 
 ```
 /chati
@@ -110,14 +120,74 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 | Feature | What it means |
 |---------|--------------|
 | **13 Specialized Agents** | Each agent has a defined mission, success criteria, and handoff protocol — not one AI trying to do everything |
-| **Quality Gates** | Every phase is validated before moving forward. Binary pass/fail — no subjective "looks good" |
+| **Multi-CLI Architecture** | Choose your AI provider at install time: Claude, Gemini, Codex, or Copilot. Each agent gets the optimal model for that provider |
+| **Quality Gates** | Every phase is validated before moving forward. 3-tier verdicts: APPROVED, NEEDS_REVISION, or BLOCKED |
 | **Context Persistence** | Sessions survive restarts. Close your IDE, come back next week — the system remembers everything |
 | **Session Lock** | Once activated, you stay inside the system. No accidentally "falling out" into generic AI mode |
 | **Multi-Terminal** | Autonomous agents run in parallel in separate terminals. Detail, Architect, and UX agents work simultaneously |
 | **Memory System** | The system learns from mistakes. Gotchas are captured automatically and recalled when relevant |
+| **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 90%) — with safety net and circuit breaker |
 | **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, GitHub Copilot, and AntiGravity |
 | **4 Languages** | Interface supports English, Portuguese, Spanish, and French. Artifacts are always generated in English |
-| **Supply Chain Security** | Every file is cryptographically signed. Tampered packages are blocked on install |
+| **Supply Chain Security** | Every file is cryptographically signed (Ed25519). Tampered packages are blocked on install |
+
+---
+
+## Multi-CLI Support
+
+Chati.dev is provider-agnostic. You choose your AI provider during installation, and the system auto-configures optimal model assignments for every agent.
+
+### Supported Providers
+
+| Provider | CLI | Deep Reasoning | Lightweight | Status |
+|----------|-----|---------------|-------------|--------|
+| **Claude** | `claude` | Opus | Sonnet / Haiku | Default |
+| **Gemini** | `gemini` | Pro | Flash | Full support |
+| **Codex** | `codex` | Codex | Codex Mini | Full support |
+| **Copilot** | `copilot` | Sonnet 4.5 | GPT-5 | Full support |
+
+### How Model Assignment Works
+
+Each agent is classified by its reasoning needs:
+
+- **Deep reasoning** (Architect, QA, Dev, Detail, Brownfield-WU) → top-tier model
+- **Lightweight** (Brief, Phases, UX, Greenfield-WU, DevOps, Orchestrator) → fast model
+
+When you select a provider, the system maps each agent to the best available model:
+
+```
+Claude:  architect → opus,   brief → sonnet,  greenfield-wu → haiku
+Gemini:  architect → pro,    brief → flash,   greenfield-wu → flash
+Codex:   architect → codex,  brief → codex-mini
+Copilot: architect → claude-sonnet, brief → claude-sonnet
+```
+
+### CLI Invocation Syntax
+
+Each provider uses its own CLI syntax. Chati.dev handles this transparently:
+
+| Provider | Command | Example |
+|----------|---------|---------|
+| Claude | `claude --print --model <id>` | `claude --print --model claude-opus-4-6` |
+| Gemini | `gemini --model <id>` | `gemini --model gemini-2.5-pro` |
+| Codex | `codex exec -m <id>` | `codex exec -m gpt-5.3-codex` |
+| Copilot | `copilot -p --model <id>` | `copilot -p --model claude-sonnet-4.5` |
+
+Prompts are piped via stdin for all providers. You can override individual agent models in `chati.dev/config.yaml` under `agent_overrides`.
+
+---
+
+## Execution Profiles
+
+Three profiles control how much autonomy agents have:
+
+| Profile | Behavior | When to use |
+|---------|----------|-------------|
+| **explore** | Read-only. Agents analyze but don't modify files | Understanding a new codebase |
+| **guided** | Default. Agents propose changes, you approve | Normal development workflow |
+| **autonomous** | Agents execute without confirmation (quality gates >= 90%) | Trusted pipelines with high quality scores |
+
+The system starts in `guided` mode. Transition to `autonomous` requires both QA gates scoring >= 95%. A safety net with 5 triggers (stuck loop, quality drop, scope creep, error cascade, user override) automatically reverts to guided mode when needed.
 
 ---
 
@@ -131,7 +201,7 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 | **PLAN** | Detail, Architect, UX, Phases, Tasks | Create PRD, design architecture, define UX, break work into phases and tasks |
 | **BUILD** | Dev | Implement code task by task, following the plan |
 | **DEPLOY** | DevOps | Handle git operations, deployment, and documentation |
-| **Quality** | QA-Planning, QA-Implementation | Validate plan coherence (≥95%) and code quality (≥95%) between phases |
+| **Quality** | QA-Planning, QA-Implementation | Validate plan coherence (>= 95%) and code quality (>= 95%) between phases |
 
 ### How the Pipeline Works
 
@@ -152,6 +222,7 @@ npx chati-dev status --watch  # Auto-refresh every 5s
        │    requirements into a structured doc  │
        │                                        │
        ├─ Spawns separate terminals ────────────┐
+       │   (using your selected AI provider)    │
        │                                        │
        │    PLAN (autonomous, parallel)         │
        │    Detail ───┐                         │
@@ -162,7 +233,7 @@ npx chati-dev status --watch  # Auto-refresh every 5s
        ├─ Quality Gate ─────────────────────────┐
        │                                        │
        │    QA-Planning validates the plan      │
-       │    Must score ≥ 95% to proceed         │
+       │    Must score >= 95% to proceed        │
        │                                        │
        ├─ Spawns terminal(s) ───────────────────┐
        │                                        │
@@ -183,7 +254,7 @@ npx chati-dev status --watch  # Auto-refresh every 5s
                                          ✓ Done │
 ```
 
-Each spawned terminal runs as a separate `claude -p --model <model>` process with its own context window, write-scope isolation, and structured handoff output.
+Each spawned terminal runs as a separate CLI process with its own context window, write-scope isolation, and structured handoff output. The AI provider and model are selected automatically based on your configuration.
 
 ### Intelligence Layer
 
@@ -197,15 +268,16 @@ Three systems operate transparently behind the pipeline:
 
 ### Constitution
 
-The system is governed by a **17-article Constitution** that enforces agent behavior, quality standards, security, and system integrity:
+The system is governed by a **19-article Constitution** that enforces agent behavior, quality standards, security, and system integrity:
 
 - **Agent Governance** — Every agent has a defined mission, scope, and success criteria
-- **Quality Standards** — Minimum 95% score on quality gates. Binary pass/fail, not subjective
-- **Security** — No secrets in system files. No destructive operations without confirmation
+- **Quality Standards** — Minimum 95% score on quality gates. 3-tier verdicts (APPROVED / NEEDS_REVISION / BLOCKED)
+- **Security** — No secrets in system files. No destructive operations without confirmation. Ed25519 supply chain verification
 - **Mode Governance** — Planning mode can't modify project code. Build mode has full access
 - **Session Lock** — Once activated, all messages route through the orchestrator
-- **Model Governance** — Each agent runs on its designated AI model (Opus, Sonnet, or Haiku)
-- **Execution Modes** — Autonomous and human-in-the-loop with safety net and circuit breaker
+- **Model Governance** — Each agent runs on its designated model, enforced by the CLI adapter
+- **Execution Profiles** — Explore, guided, and autonomous modes with safety net and circuit breaker
+- **Multi-CLI** — Provider-agnostic architecture with adapter pattern and automatic model mapping
 
 ---
 
@@ -216,8 +288,8 @@ The system is governed by a **17-article Constitution** that enforces agent beha
 | **Claude Code** | `.claude/commands/chati.md` → orchestrator |
 | **VS Code** | `.vscode/chati.md` → orchestrator |
 | **Cursor** | `.cursor/rules/chati.md` → orchestrator |
-| **Gemini CLI** | `.gemini/agents/chati.md` → orchestrator |
-| **GitHub Copilot** | `.github/copilot/chati.md` → orchestrator |
+| **Gemini CLI** | `.gemini/commands/chati.toml` → orchestrator |
+| **GitHub Copilot** | `.github/agents/chati.md` → orchestrator |
 | **AntiGravity** | Platform agent config → orchestrator |
 
 All IDEs use a thin router file that points to the same orchestrator. Your project works the same regardless of which IDE you use.
@@ -291,7 +363,6 @@ your-project/
 │   │   ├── quality/              # QA-Planning, QA-Implementation
 │   │   ├── build/                # Dev
 │   │   └── deploy/               # DevOps
-│   ├── tasks/                    # 73 task definitions
 │   ├── workflows/                # 6 workflow blueprints
 │   ├── templates/                # 6 artifact templates
 │   ├── schemas/                  # 5 JSON schemas
@@ -305,7 +376,7 @@ your-project/
 │   ├── data/                     # Entity registry
 │   ├── i18n/                     # EN, PT, ES, FR translations
 │   ├── migrations/               # Version migration scripts
-│   ├── constitution.md           # 17 Articles + Preamble
+│   ├── constitution.md           # 19 Articles + Preamble
 │   └── config.yaml               # System configuration
 └── packages/
     └── chati-dev/                # CLI + runtime engine
@@ -320,9 +391,9 @@ The installer and agent interactions support 4 languages:
 | Language | Code | Status |
 |----------|------|--------|
 | **English** | `en` | Default |
-| **Português** | `pt` | Full support |
-| **Español** | `es` | Full support |
-| **Français** | `fr` | Full support |
+| **Portugues** | `pt` | Full support |
+| **Espanol** | `es` | Full support |
+| **Francais** | `fr` | Full support |
 
 Artifacts are always generated in English for portability and team collaboration.
 

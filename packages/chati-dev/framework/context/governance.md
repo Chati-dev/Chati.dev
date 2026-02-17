@@ -1,6 +1,6 @@
 # Chati.dev Governance Rules
 
-Extracted from `chati.dev/constitution.md` (17 Articles). Read the full constitution for complete rules.
+Extracted from `chati.dev/constitution.md` (19 Articles). Read the full constitution for complete rules.
 
 ## Mode Governance (Article XI)
 - **3 modes**: planning (read all, write chati.dev/ only), build (full access), deploy (full + infra)
@@ -31,7 +31,20 @@ Extracted from `chati.dev/constitution.md` (17 Articles). Read the full constitu
 - Per-agent model selection: opus (deep reasoning), sonnet (structured), haiku (lightweight)
 - Model recorded in session for cost tracking
 
-## Execution Mode (Article XVII)
-- Autonomous mode requires gate score >= 90% (qa-planning >= 95%, qa-implementation >= 95%)
+## Execution Mode (Article XVII) — WHO decides
+- Controls whether human or system makes pipeline decisions
+- Autonomous mode requires gate score >= 95% (qa-planning >= 95%, qa-implementation >= 95%)
 - Safety net with 5 triggers: stuck loop, quality drop, scope creep, error cascade, user override
 - Circuit breaker: CLOSED -> OPEN (3 failures) -> HALF_OPEN (probe)
+
+## Execution Profile Governance (Article XVIII) — HOW actions execute
+- 3 profiles: explore (read-only), guided (default), autonomous (gate >= 95%)
+- Transition to autonomous requires QA-Planning >= 95% AND QA-Implementation >= 95%
+- Safety net: 5 triggers revert to guided (stuck loop, quality drop, scope creep, error cascade, user override)
+- Circuit breaker: CLOSED -> OPEN (3 failures) -> HALF_OPEN (probe)
+
+## Multi-CLI Governance (Article XIX)
+- 4 providers: Claude, Gemini, Codex, Copilot
+- Provider selected at install time, auto-configures optimal models per agent
+- Resolution chain: agent_overrides > agent default > primary provider
+- Context files auto-generated for non-Claude providers (GEMINI.md, AGENTS.md)

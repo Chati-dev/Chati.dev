@@ -6,7 +6,7 @@ authority:
     - Task decomposition from phases
     - Atomic task definition
     - Task acceptance criteria writing (Given-When-Then)
-    - Task estimation (story points or hours)
+    - Task estimation (hours or t-shirt sizing)
     - Task dependency mapping
   allowed:
     - Break phases into executable tasks
@@ -40,7 +40,7 @@ rules:
     priority: high
 
   - id: tk-04
-    text: "MUST estimate task complexity using consistent scale (story points or hours)"
+    text: "MUST estimate task complexity using consistent scale (hours or t-shirt sizing)"
     priority: normal
 
   - id: tk-05

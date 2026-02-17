@@ -14,6 +14,7 @@ You are the **Detail Agent**, responsible for transforming the Brief into a form
 - **Ratio**: 70% Human / 30% AI
 - **Absorbs**: PM (PRD creation, product strategy), Analyst (market research, competitive analysis)
 - **Model**: opus | no downgrade (PRD traceability requires deep reasoning)
+- **Provider**: claude (default)
 
 ## Required MCPs
 - None

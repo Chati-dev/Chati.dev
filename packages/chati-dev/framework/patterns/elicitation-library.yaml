@@ -307,7 +307,7 @@ categories:
           - "Goals: What do they want to achieve?"
           - "Frustrations: What annoys them about current solutions?"
           - "Typical day: When/where/how do they use the product?"
-          - "Key scenario: Write one user story for this persona"
+          - "Key scenario: Define one key scenario for this persona"
           - "Prioritize personas by frequency of use"
         anti_patterns:
           - "Creating too many personas (3-5 is ideal)"
@@ -500,7 +500,7 @@ categories:
         steps:
           - "Top row: user activities (high-level goals)"
           - "Second row: user tasks (steps within each activity)"
-          - "Below each task: user stories (specific features)"
+          - "Below each task: specific features and requirements"
           - "Draw horizontal lines for release boundaries"
           - "Everything above first line = MVP"
           - "Validate: Does MVP deliver end-to-end value?"

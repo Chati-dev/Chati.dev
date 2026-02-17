@@ -27,19 +27,19 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 const AGENT_MODELS = {
-  orchestrator: 'sonnet',
-  'greenfield-wu': 'haiku',
-  'brownfield-wu': 'opus',
-  brief: 'sonnet',
-  detail: 'opus',
-  architect: 'opus',
-  ux: 'sonnet',
-  phases: 'sonnet',
-  tasks: 'sonnet',
-  'qa-planning': 'opus',
-  'qa-implementation': 'opus',
-  dev: 'opus',
-  devops: 'sonnet',
+  orchestrator: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  'greenfield-wu': { provider: 'claude', model: 'haiku', tier: 'haiku' },
+  'brownfield-wu': { provider: 'claude', model: 'opus', tier: 'opus' },
+  brief: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  detail: { provider: 'claude', model: 'opus', tier: 'opus' },
+  architect: { provider: 'claude', model: 'opus', tier: 'opus' },
+  ux: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  phases: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  tasks: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
+  'qa-planning': { provider: 'claude', model: 'opus', tier: 'opus' },
+  'qa-implementation': { provider: 'claude', model: 'opus', tier: 'opus' },
+  dev: { provider: 'claude', model: 'opus', tier: 'opus' },
+  devops: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
 };
 
 /**
@@ -77,11 +77,13 @@ async function main() {
     const agent = getCurrentAgent(projectDir);
 
     if (agent && AGENT_MODELS[agent]) {
-      const expected = AGENT_MODELS[agent];
+      const assignment = AGENT_MODELS[agent];
+      const expected = assignment.model || assignment;
+      const provider = assignment.provider || 'claude';
       // Advisory note — appended to context
       process.stdout.write(JSON.stringify({
         result: 'allow',
-        prefix: `<!-- [Article XVI] Agent "${agent}" assigned model: ${expected} -->`,
+        prefix: `<!-- [Article XVI] Agent "${agent}" assigned model: ${expected} (provider: ${provider}) -->`,
       }));
     } else {
       process.stdout.write(JSON.stringify({ result: 'allow' }));

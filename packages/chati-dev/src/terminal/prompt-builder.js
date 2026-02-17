@@ -14,24 +14,9 @@ import { runPrism } from '../context/engine.js';
 import { loadHandoff, formatHandoff } from '../tasks/handoff.js';
 import { getWriteScope } from './isolation.js';
 
-// Re-read at import time so the prompt builder always uses the correct map
-// without circular dependency issues (the hook file runs main() on import
-// which writes to stdout — we only need the data, so we inline the map).
-const AGENT_MODELS = {
-  orchestrator: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-  'greenfield-wu': { provider: 'claude', model: 'haiku', tier: 'haiku' },
-  'brownfield-wu': { provider: 'claude', model: 'opus', tier: 'opus' },
-  brief: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-  detail: { provider: 'claude', model: 'opus', tier: 'opus' },
-  architect: { provider: 'claude', model: 'opus', tier: 'opus' },
-  ux: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-  phases: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-  tasks: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-  'qa-planning': { provider: 'claude', model: 'opus', tier: 'opus' },
-  'qa-implementation': { provider: 'claude', model: 'opus', tier: 'opus' },
-  dev: { provider: 'claude', model: 'opus', tier: 'opus' },
-  devops: { provider: 'claude', model: 'sonnet', tier: 'sonnet' },
-};
+// Import AGENT_MODELS from model-governance (safe — named export,
+// does not trigger main() which is guarded by fileURLToPath check).
+import { AGENT_MODELS } from '../../framework/hooks/model-governance.js';
 
 /**
  * Map of agent names to their definition file paths (relative to project root).

@@ -303,7 +303,7 @@ session_update:
 
 next_steps:
   - Orchestrator triggers dev agent (autonomous transition)
-  - Dev agent begins Phase 0 (Installer) implementation
+  - Dev agent begins Phase 1 (Installer) implementation
   - QA-Implementation agent on standby for build phase
   - Revisit minor gaps during Phase 1 review
 ```

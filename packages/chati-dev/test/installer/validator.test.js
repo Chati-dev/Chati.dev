@@ -42,10 +42,10 @@ describe('validateInstallation', () => {
     writeFileSync(join(chatiDir, 'agents', 'build', 'dev.md'), agentContent);
     writeFileSync(join(chatiDir, 'agents', 'deploy', 'devops.md'), agentContent);
 
-    // Constitution with 17 articles
+    // Constitution with 19 articles
     let constitution = '# Constitution\n## Preamble\n';
-    const numerals = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII'];
-    for (let i = 1; i <= 17; i++) {
+    const numerals = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX'];
+    for (let i = 1; i <= 19; i++) {
       constitution += `## Article ${numerals[i-1]}: Title\nContent.\n\n`;
     }
     writeFileSync(join(chatiDir, 'constitution.md'), constitution);
@@ -59,12 +59,12 @@ describe('validateInstallation', () => {
     }
 
     // Workflows
-    for (const w of ['greenfield-fullstack.yaml', 'brownfield-fullstack.yaml', 'brownfield-discovery.yaml', 'brownfield-service.yaml', 'brownfield-ui.yaml']) {
+    for (const w of ['greenfield-fullstack.yaml', 'brownfield-fullstack.yaml', 'brownfield-discovery.yaml', 'brownfield-service.yaml', 'brownfield-ui.yaml', 'quick-flow.yaml']) {
       writeFileSync(join(chatiDir, 'workflows', w), 'name: test');
     }
 
     // Templates
-    for (const t of ['prd-tmpl.yaml', 'brownfield-prd-tmpl.yaml', 'fullstack-architecture-tmpl.yaml', 'task-tmpl.yaml', 'qa-gate-tmpl.yaml']) {
+    for (const t of ['prd-tmpl.yaml', 'brownfield-prd-tmpl.yaml', 'fullstack-architecture-tmpl.yaml', 'task-tmpl.yaml', 'qa-gate-tmpl.yaml', 'quick-brief-tmpl.yaml']) {
       writeFileSync(join(chatiDir, 'templates', t), 'name: test');
     }
 

@@ -1,0 +1,16 @@
+description = "Activate Chati.dev orchestrator"
+prompt = """
+CRITICAL — Language Override:
+Read `.chati/session.yaml` field `language` BEFORE anything else.
+ALL responses MUST be in this language (en, pt, es, fr).
+If session.yaml does not exist or has no language field, default to English.
+
+Read and execute the full orchestrator at `chati.dev/orchestrator/chati.md`.
+
+Context to load:
+- `.chati/session.yaml` (session state — includes language)
+- `chati.dev/artifacts/handoffs/` (latest handoff)
+- `chati.dev/config.yaml` (version info)
+
+User input: {{args}}
+"""

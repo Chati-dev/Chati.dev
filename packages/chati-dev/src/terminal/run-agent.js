@@ -160,7 +160,8 @@ async function main() {
 function waitForExit(handle, timeout) {
   return new Promise((resolve, reject) => {
     if (handle.status === 'exited') {
-      return resolve();
+      resolve();
+      return;
     }
 
     const timer = setTimeout(() => {

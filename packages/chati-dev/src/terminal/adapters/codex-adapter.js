@@ -13,29 +13,19 @@
  * @returns {{ command: string, args: string[], stdinPrompt: string|null }}
  */
 export function buildCommand(config, provider) {
-  const args = ['exec'];
+  const args = [...provider.baseArgs];
 
   if (config.model) {
     const resolvedModel = provider.modelMap[config.model] || config.model;
-    args.push('-m', resolvedModel);
+    args.push(provider.modelFlag, resolvedModel);
   }
 
   // Codex exec reads prompt from stdin when `-` is passed
   args.push('-');
 
   return {
-    command: 'codex',
+    command: provider.command,
     args,
     stdinPrompt: config.prompt || null,
   };
-}
-
-/**
- * Build environment variables specific to Codex CLI.
- *
- * @param {import('../spawner.js').SpawnConfig} config
- * @returns {Record<string, string>}
- */
-export function buildEnv(config) {
-  return {};
 }

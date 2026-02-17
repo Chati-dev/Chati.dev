@@ -86,7 +86,7 @@ Chati.dev/
 │   ├── templates/            # Artifact templates
 │   ├── workflows/            # Pipeline blueprints
 │   ├── data/                 # Entity registry
-│   └── constitution.md       # 17 Articles + Preamble
+│   └── constitution.md       # 19 Articles + Preamble
 ├── packages/
 │   └── chati-dev/            # CLI + runtime engine (npm package)
 │       ├── bin/              # Entry point
@@ -100,7 +100,7 @@ Chati.dev/
 ### Testing Changes Locally
 
 ```bash
-# Run unit tests (990 tests)
+# Run unit tests (1040+ tests)
 cd packages/chati-dev
 npm test
 

@@ -45,10 +45,15 @@ Before determining state, check if the user passed a subcommand:
   -> Resume session with full context recovery
   -> Re-activate session lock
 
+/chati providers:
+  -> Display enabled providers and per-agent overrides (see Provider Routing section)
+  -> Stay locked
+
 /chati help:
   -> Display available commands:
      /chati              Start or resume session
      /chati status       Show project dashboard
+     /chati providers    List enabled providers and overrides
      /chati resume       Resume from continuation file
      /chati exit         Save and exit session
      /chati help         Show this help
@@ -338,20 +343,20 @@ Model selection is **enforced by construction**: the orchestrator passes `--mode
 
 ### Model Map (Quick Reference)
 
-| Agent | Default | Upgrade Condition |
-|-------|---------|-------------------|
-| greenfield-wu | haiku | sonnet if multi-stack or enterprise |
-| brownfield-wu | opus | no downgrade |
-| brief | sonnet | opus if enterprise or 10+ integrations |
-| detail | opus | no downgrade |
-| architect | opus | no downgrade |
-| ux | sonnet | opus if design system from scratch |
-| phases | sonnet | opus if 20+ requirements |
-| tasks | sonnet | opus if 50+ tasks |
-| qa-planning | opus | no downgrade |
-| dev | opus | no downgrade |
-| qa-implementation | opus | no downgrade |
-| devops | sonnet | opus if multi-environment or IaC |
+| Agent | Default | Upgrade Condition | Provider |
+|-------|---------|-------------------|----------|
+| greenfield-wu | haiku | sonnet if multi-stack or enterprise | claude (default) |
+| brownfield-wu | opus | no downgrade | claude (default) | gemini (when codebase > 100K LOC) |
+| brief | sonnet | opus if enterprise or 10+ integrations | claude (default) |
+| detail | opus | no downgrade | claude (default) |
+| architect | opus | no downgrade | claude (default) |
+| ux | sonnet | opus if design system from scratch | claude (default) |
+| phases | sonnet | opus if 20+ requirements | claude (default) |
+| tasks | sonnet | opus if 50+ tasks | claude (default) |
+| qa-planning | opus | no downgrade | claude (default) |
+| dev | opus | no downgrade | claude (default) | gemini (when large codebase tasks) |
+| qa-implementation | opus | no downgrade | claude (default) |
+| devops | sonnet | opus if multi-environment or IaC | claude (default) |
 
 ### Enforcement
 
@@ -378,6 +383,81 @@ model_selections:
     actual: opus
     mode: terminal          # terminal | in-conversation
     reason: "no downgrade"
+    timestamp: "2026-..."
+```
+
+---
+
+## Provider Routing
+
+The orchestrator selects the optimal provider for each agent based on the task context, codebase characteristics, and configuration. Provider routing determines WHICH CLI or API backend executes the agent, while model selection determines WHICH model runs within that provider.
+
+### Provider Selection Priority
+
+```
+Resolution order (highest to lowest priority):
+  1. agent_overrides (config.yaml) — explicit per-agent provider override
+  2. Agent default (AGENT_MODELS map) — provider defined in agent Identity section
+  3. Primary provider — the project-level default provider (claude)
+
+Example resolution:
+  config.yaml has: agent_overrides.brownfield-wu.provider = gemini
+  Agent default has: Provider: claude (default) | gemini (when codebase > 100K LOC)
+  Primary provider: claude
+
+  -> Result: gemini (config.yaml override wins)
+
+If no override exists and no agent default specifies a condition match:
+  -> Result: claude (primary provider fallback)
+```
+
+### Provider Fallback
+
+```
+If the selected provider is unavailable (CLI not installed, API unreachable, auth failure):
+  1. Log the failure:
+     provider_fallback:
+       agent: {name}
+       intended_provider: {selected}
+       fallback_provider: claude
+       reason: "{error_message}"
+       timestamp: "{now}"
+  2. Fall back to the primary provider (claude)
+  3. Continue agent execution with fallback provider
+  4. Record the fallback in session.yaml for audit
+
+The primary provider (claude) is always the last-resort fallback.
+Provider fallback NEVER blocks the pipeline — it degrades gracefully.
+```
+
+### Subcommand: /chati providers
+
+```
+When the user types `/chati providers`:
+  Display enabled providers and their status:
+
+  Providers:
+    claude    PRIMARY   Enabled   Claude Code CLI
+    gemini    -         Enabled   Gemini CLI
+    codex     -         Disabled  OpenAI Codex CLI
+
+  Agent Overrides (from config.yaml):
+    brownfield-wu -> gemini (when codebase > 100K LOC)
+    dev           -> gemini (when large codebase tasks)
+
+  To configure: edit chati.dev/config.yaml -> providers section
+```
+
+### Provider Logging
+
+```yaml
+# Appended to session.yaml on each agent activation
+provider_selections:
+  - agent: brownfield-wu
+    resolved_provider: gemini
+    resolution_source: agent_default   # config_override | agent_default | primary
+    reason: "codebase > 100K LOC"
+    model: opus
     timestamp: "2026-..."
 ```
 

@@ -59,7 +59,7 @@ export function analyzeWaves(tasks) {
 
   // Kahn's algorithm with wave grouping
   const waves = [];
-  let remaining = new Set(tasks.map((t) => t.id));
+  const remaining = new Set(tasks.map((t) => t.id));
 
   while (remaining.size > 0) {
     // Find all tasks with no pending dependencies (in-degree 0)

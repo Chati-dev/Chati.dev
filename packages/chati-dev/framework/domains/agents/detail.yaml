@@ -10,7 +10,7 @@ authority:
     - Requirements prioritization (MoSCoW)
   allowed:
     - Expand brief requirements into detailed specifications
-    - Define user stories with acceptance criteria
+    - Define requirements with acceptance criteria
     - Specify performance, security, and scalability requirements
     - Document edge cases and error scenarios
     - Create requirement traceability matrix

@@ -60,7 +60,7 @@ export function showQuickStart(title, steps) {
 export function showSummary(data) {
   console.log();
   for (const [label, value] of Object.entries(data)) {
-    const paddedLabel = label.padEnd(12);
+    const paddedLabel = label.padEnd(16);
     console.log(`  ${dim(paddedLabel)} ${value}`);
   }
 }

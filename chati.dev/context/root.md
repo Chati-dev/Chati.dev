@@ -1,10 +1,10 @@
 # Chati.dev System Context
 
 ## Framework
-- **Version**: 2.1.0
+- **Version**: 3.0.0
 - **Agents**: 13 (12 specialized + orchestrator)
-- **Constitution**: 17 Articles + Preamble
-- **Quality**: 5 pipeline gates + 4-tier validation
+- **Constitution**: 19 Articles + Preamble
+- **Quality**: 5 pipeline gates + 3-tier verdicts (APPROVED / NEEDS_REVISION / BLOCKED)
 
 ## Key References
 - **Session State**: `.chati/session.yaml` (runtime — not committed)

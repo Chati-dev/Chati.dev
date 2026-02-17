@@ -18,26 +18,16 @@
  * @returns {{ command: string, args: string[], stdinPrompt: string|null }}
  */
 export function buildCommand(config, provider) {
-  const args = ['--print', '--dangerously-skip-permissions'];
+  const args = [...provider.baseArgs];
 
   if (config.model) {
     const resolvedModel = provider.modelMap[config.model] || config.model;
-    args.push('--model', resolvedModel);
+    args.push(provider.modelFlag, resolvedModel);
   }
 
   return {
-    command: 'claude',
+    command: provider.command,
     args,
     stdinPrompt: config.prompt || null,
   };
-}
-
-/**
- * Build environment variables specific to Claude Code.
- *
- * @param {SpawnConfig} config
- * @returns {Record<string, string>}
- */
-export function buildEnv(config) {
-  return {};
 }

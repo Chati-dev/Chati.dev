@@ -4,10 +4,16 @@
  * When alternative CLI providers are enabled, generates provider-specific
  * context files (GEMINI.md, AGENTS.md) derived from CLAUDE.md content.
  * Constitution Article XIX — context file generation is automatic.
+ *
+ * Provider conventions (verified Feb 2026):
+ * - Gemini CLI: auto-loads GEMINI.md, uses .gemini/commands/*.toml, no rules/
+ * - Codex CLI:  auto-loads AGENTS.md, no commands/ or rules/ concept
+ * - Copilot CLI: auto-loads AGENTS.md + CLAUDE.md + GEMINI.md natively (no COPILOT.md needed)
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { getEnabledNonClaudeProviders } from '../utils/config-parser.js';
 
 // ---------------------------------------------------------------------------
 // Replacement Maps
@@ -16,14 +22,15 @@ import { join } from 'path';
 /**
  * Text replacements for Gemini CLI context file.
  * Transforms Claude Code-specific references into Gemini CLI equivalents.
+ * Note: Gemini has no rules/ directory — references point to chati.dev/context/.
  */
 const GEMINI_REPLACEMENTS = [
   ['Claude Code', 'Gemini CLI'],
   ['claude code', 'Gemini CLI'],
   ['CLAUDE.md', 'GEMINI.md'],
   ['Claude.md', 'GEMINI.md'],
-  ['.claude/commands/', '.gemini/agents/'],
-  ['.claude/rules/', '.gemini/rules/'],
+  ['.claude/commands/', '.gemini/commands/'],
+  ['.claude/rules/', 'chati.dev/context/'],
   ['.claude/mcp.json', '.gemini/settings.json'],
   ['claude --print', 'gemini --prompt'],
   ['claude -p', 'gemini --prompt'],
@@ -42,15 +49,16 @@ const CODEX_STRIP_PATTERNS = [
 
 /**
  * Text replacements for Codex CLI context file.
+ * Note: Codex has no commands/ or rules/ directories — references point to chati.dev/.
  */
 const CODEX_REPLACEMENTS = [
   ['Claude Code', 'Codex CLI'],
   ['claude code', 'Codex CLI'],
   ['CLAUDE.md', 'AGENTS.md'],
   ['Claude.md', 'AGENTS.md'],
-  ['.claude/commands/', '.codex/agents/'],
-  ['.claude/rules/', '.codex/rules/'],
-  ['.claude/mcp.json', '.codex/mcp.json'],
+  ['.claude/commands/', 'chati.dev/orchestrator/'],
+  ['.claude/rules/', 'chati.dev/context/'],
+  ['.claude/mcp.json', '.codex/config.toml'],
   ['claude --print', 'codex exec'],
   ['claude -p', 'codex exec'],
   ['CLAUDE.local.md', 'AGENTS.local.md'],
@@ -131,6 +139,9 @@ export function generateAgentsMd(content) {
  * CLAUDE.md from the project root, and writes the appropriate context
  * files (GEMINI.md, AGENTS.md) when their providers are active.
  *
+ * Copilot CLI does not need its own context file — it natively reads
+ * AGENTS.md, CLAUDE.md, and GEMINI.md.
+ *
  * @param {string} projectDir - Project root directory
  * @returns {{ generated: string[], skipped: string[], warning: string|null }}
  */
@@ -150,6 +161,7 @@ export function generateContextFiles(projectDir) {
   const enabledProviders = resolveEnabledProviders(projectDir);
 
   // Provider-to-generator mapping
+  // Note: Copilot is intentionally excluded — it reads AGENTS.md + CLAUDE.md + GEMINI.md natively
   const generators = {
     gemini: {
       filename: 'GEMINI.md',
@@ -181,29 +193,11 @@ export function generateContextFiles(projectDir) {
 
 /**
  * Resolve which alternative providers are enabled from config.yaml.
- *
- * Uses lightweight regex-based YAML extraction (no dependency on a
- * full YAML parser) consistent with cli-registry.js patterns.
+ * Delegates to shared config parser utility.
  *
  * @param {string} projectDir - Project root directory
- * @returns {string[]} List of enabled provider names
+ * @returns {string[]} List of enabled non-Claude provider names
  */
 function resolveEnabledProviders(projectDir) {
-  const configPath = join(projectDir, 'chati.dev', 'config.yaml');
-  if (!existsSync(configPath)) {
-    return [];
-  }
-
-  const raw = readFileSync(configPath, 'utf-8');
-  const providers = ['gemini', 'codex', 'copilot'];
-  const enabled = [];
-
-  for (const name of providers) {
-    const match = raw.match(new RegExp(`${name}:[\\s\\S]*?enabled:\\s*(true|false)`, 'm'));
-    if (match && match[1] === 'true') {
-      enabled.push(name);
-    }
-  }
-
-  return enabled;
+  return getEnabledNonClaudeProviders(projectDir);
 }

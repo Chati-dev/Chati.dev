@@ -351,7 +351,7 @@ estimated_total_update_effort:
 
 recommendations:
   - Fix critical lodash vulnerability immediately
-  - Plan React 17→18 migration as dedicated sprint (16 hours)
+  - Plan React 17→18 migration as dedicated phase (16 hours)
   - Remove unused packages (uuid, color) to reduce bloat
   - Replace moment with date-fns for bundle size reduction (523 KB savings)
   - Standardize on single HTTP client (axios)

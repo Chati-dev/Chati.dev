@@ -43,7 +43,8 @@ export function _resetCounter() {
  * @typedef {object} SpawnConfig
  * @property {string} agent           - Agent name (e.g. "architect")
  * @property {string} taskId          - Task identifier
- * @property {string} [model]         - LLM model (haiku/sonnet/opus)
+ * @property {string} [model]         - LLM model tier name (e.g. opus, pro, codex, claude-sonnet)
+ * @property {string} [provider]      - CLI provider name (claude, gemini, codex, copilot)
  * @property {string} [prompt]        - Full prompt string (from prompt-builder, piped via stdin)
  * @property {object} [contextPayload] - Context to inject via env var
  * @property {string[]} [writeScope]   - Override write scope
@@ -114,12 +115,15 @@ export function buildSpawnCommand(config) {
     command = adapterResult.command;
     args = adapterResult.args;
     prompt = adapterResult.stdinPrompt;
-  } catch {
+  } catch (err) {
     // Fallback to claude if provider resolution fails (backwards compatibility)
+    console.error(`[chati] Provider "${providerName}" resolution failed: ${err.message}. Falling back to claude.`);
     command = 'claude';
     args = ['--print', '--dangerously-skip-permissions'];
     if (config.model) {
-      args.push('--model', config.model);
+      const claudeProvider = getProvider('claude');
+      const resolvedModel = claudeProvider.modelMap[config.model] || config.model;
+      args.push('--model', resolvedModel);
     }
     prompt = config.prompt || null;
   }
@@ -157,7 +161,7 @@ export function spawnTerminal(config) {
     process: child,
     agent: config.agent,
     taskId: config.taskId,
-    model: config.model || 'sonnet',
+    model: config.model || 'unknown',
     startedAt: new Date().toISOString(),
     status: 'running',
     exitCode: null,
@@ -166,15 +170,20 @@ export function spawnTerminal(config) {
     timeout,
   };
 
-  // Capture output
+  // Capture output (capped at ~10MB to prevent unbounded memory growth)
+  const MAX_BUFFER_CHUNKS = 10_000;
   if (child.stdout) {
     child.stdout.on('data', (chunk) => {
-      handle.stdout.push(chunk.toString());
+      if (handle.stdout.length < MAX_BUFFER_CHUNKS) {
+        handle.stdout.push(chunk.toString());
+      }
     });
   }
   if (child.stderr) {
     child.stderr.on('data', (chunk) => {
-      handle.stderr.push(chunk.toString());
+      if (handle.stderr.length < MAX_BUFFER_CHUNKS) {
+        handle.stderr.push(chunk.toString());
+      }
     });
   }
 
@@ -188,6 +197,17 @@ export function spawnTerminal(config) {
     handle.exitCode = -1;
     handle.stderr.push(`spawn error: ${err.message}`);
   });
+
+  // Enforce timeout — kill process if it exceeds max execution time
+  const timeoutTimer = setTimeout(() => {
+    if (handle.status === 'running') {
+      handle.stderr.push(`timeout: process exceeded ${timeout}ms limit`);
+      killTerminal(handle);
+    }
+  }, timeout);
+
+  // Clear timer when process exits normally
+  child.on('exit', () => clearTimeout(timeoutTimer));
 
   return handle;
 }

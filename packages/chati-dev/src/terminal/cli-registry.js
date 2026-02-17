@@ -6,9 +6,8 @@
  * truth for multi-CLI governance (Constitution Article XIX).
  */
 
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
 import * as adapters from './adapters/index.js';
+import { parseProviderConfig, parseAgentOverride } from '../utils/config-parser.js';
 
 // ---------------------------------------------------------------------------
 // Provider Definitions
@@ -49,10 +48,10 @@ const PROVIDERS = {
   gemini: {
     name: 'gemini',
     command: 'gemini',
-    baseArgs: ['--prompt'],
+    baseArgs: [],
     modelFlag: '--model',
     stdinSupport: true,
-    hooksSupport: true,
+    hooksSupport: false,
     mcpSupport: true,
     contextFile: 'GEMINI.md',
     modelMap: {
@@ -72,7 +71,7 @@ const PROVIDERS = {
     contextFile: 'AGENTS.md',
     modelMap: {
       codex: 'gpt-5.3-codex',
-      mini: 'gpt-5.1-codex-mini',
+      mini: 'codex-mini-latest',
     },
     adapter: adapters.codex,
   },
@@ -82,12 +81,12 @@ const PROVIDERS = {
     baseArgs: ['-p'],
     modelFlag: '--model',
     stdinSupport: true,
-    hooksSupport: true,
+    hooksSupport: false,
     mcpSupport: true,
     contextFile: null,
     modelMap: {
       'claude-sonnet': 'claude-sonnet-4.5',
-      'gpt-5': 'gpt-5.1',
+      'gpt-5': 'gpt-5',
     },
     adapter: adapters.copilot,
   },
@@ -128,33 +127,7 @@ export function getAllProviders() {
  * @returns {{ primary: string, enabled: string[] }}
  */
 export function loadEnabledProviders(projectDir) {
-  const configPath = join(projectDir, 'chati.dev', 'config.yaml');
-  if (!existsSync(configPath)) {
-    return { primary: 'claude', enabled: ['claude'] };
-  }
-
-  const raw = readFileSync(configPath, 'utf-8');
-
-  // Lightweight YAML extraction (avoid dependency in spawning path)
-  const enabled = [];
-  let primary = 'claude';
-
-  for (const name of Object.keys(PROVIDERS)) {
-    const enabledMatch = raw.match(new RegExp(`${name}:[\\s\\S]*?enabled:\\s*(true|false)`, 'm'));
-    if (enabledMatch && enabledMatch[1] === 'true') {
-      enabled.push(name);
-    }
-    const primaryMatch = raw.match(new RegExp(`${name}:[\\s\\S]*?primary:\\s*(true|false)`, 'm'));
-    if (primaryMatch && primaryMatch[1] === 'true') {
-      primary = name;
-    }
-  }
-
-  // Claude is always enabled as fallback
-  if (!enabled.includes('claude')) {
-    enabled.unshift('claude');
-  }
-
+  const { primary, enabled } = parseProviderConfig(projectDir);
   return { primary, enabled };
 }
 
@@ -170,16 +143,12 @@ export function loadEnabledProviders(projectDir) {
 export function resolveProviderForAgent(agent, projectDir, agentModels) {
   const { primary, enabled } = loadEnabledProviders(projectDir);
 
-  // Check agent_overrides in config.yaml
-  const configPath = join(projectDir, 'chati.dev', 'config.yaml');
-  if (existsSync(configPath)) {
-    const raw = readFileSync(configPath, 'utf-8');
-    const overrideMatch = raw.match(new RegExp(`${agent}:\\s*\\{[^}]*provider:\\s*(\\w+)[^}]*model:\\s*(\\w+)`, 'm'));
-    if (overrideMatch) {
-      const overrideProvider = overrideMatch[1];
-      if (enabled.includes(overrideProvider)) {
-        return { provider: overrideProvider, model: overrideMatch[2] };
-      }
+  // Check agent_overrides in config.yaml (block-style YAML)
+  const { raw } = parseProviderConfig(projectDir);
+  if (raw) {
+    const override = parseAgentOverride(raw, agent);
+    if (override && enabled.includes(override.provider)) {
+      return override;
     }
   }
 
@@ -192,8 +161,10 @@ export function resolveProviderForAgent(agent, projectDir, agentModels) {
     }
   }
 
-  // Fallback to primary
-  return { provider: primary, model: 'sonnet' };
+  // Fallback to primary provider with its default light-tier model
+  const provider = PROVIDERS[primary];
+  const defaultModel = provider ? Object.keys(provider.modelMap)[0] : 'sonnet';
+  return { provider: primary, model: defaultModel };
 }
 
 /**
@@ -206,9 +177,10 @@ export async function isProviderAvailable(name) {
   const provider = PROVIDERS[name];
   if (!provider) return false;
 
-  const { execSync } = await import('child_process');
+  const { execFileSync } = await import('child_process');
   try {
-    execSync(`which ${provider.command}`, { stdio: 'ignore' });
+    const cmd = process.platform === 'win32' ? 'where' : 'which';
+    execFileSync(cmd, [provider.command], { stdio: 'ignore' });
     return true;
   } catch {
     return false;

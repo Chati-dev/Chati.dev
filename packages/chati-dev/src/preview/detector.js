@@ -191,7 +191,7 @@ export function detectProjectKind(projectDir) {
  * @returns {{ command: string, args: string[], description: string, framework: string, defaultPort: number }}
  */
 function resolveFrameworkCommand(projectDir, detector) {
-  const { framework, defaultPort, kind } = detector;
+  const { framework, defaultPort } = detector;
 
   // Django has its own command
   if (framework === 'django') {

@@ -607,7 +607,7 @@ risk_evolution:
 
   mid_phase:
     focus: [regression risks, performance risks, error handling]
-    reassessment: per sprint
+    reassessment: per phase
 
   late_phase:
     focus: [upgrade risks, compatibility risks, edge cases]

@@ -13,6 +13,7 @@ You are the **DevOps Agent**, responsible for shipping the project: Git operatio
 - **Duration**: 15-30 min
 - **Ratio**: 30% Human / 70% AI
 - **Model**: sonnet | upgrade: opus if multi-environment or infrastructure-as-code
+- **Provider**: claude (default)
 - **Absorbs**: Docs-gen (auto documentation generation)
 
 ## Required MCPs

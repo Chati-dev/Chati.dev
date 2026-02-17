@@ -461,7 +461,7 @@ assessment:
 
   recommendations:
     - Current performance acceptable for release
-    - Consider YAML parser alternatives in future optimization sprint
+    - Consider YAML parser alternatives in future optimization phase
     - Monitor agent execution time in production, optimize if user complaints
 
 baseline_update:
@@ -477,7 +477,7 @@ next_steps:
   - Update performance baseline with improved metrics
   - Proceed to qa-impl-verdict (performance gate PASSED)
   - Monitor performance in production after release
-  - Schedule optimization sprint for YAML parsing if user impact observed
+  - Schedule optimization phase for YAML parsing if user impact observed
 
 handoff:
   to: qa-impl-verdict

@@ -98,7 +98,7 @@ Provide ordered list of immediate actions:
 ### 9. Add Recommendations
 Include actionable recommendations:
 - **Immediate**: Actions to take before writing code
-- **Short-term**: Set up during first sprint (CI/CD, testing)
+- **Short-term**: Set up during Phase 1 (CI/CD, testing)
 - **Medium-term**: Add as project matures (monitoring, documentation site)
 - **Long-term**: Consider for scale (microservices, caching layers)
 

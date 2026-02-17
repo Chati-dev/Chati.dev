@@ -27,6 +27,11 @@ describe('read-protection hook', () => {
       assert.equal(result.sensitive, true);
     });
 
+    it('blocks credentials without extension (e.g. ~/.aws/credentials)', () => {
+      const result = isSensitivePath('/project/credentials', CWD);
+      assert.equal(result.sensitive, true);
+    });
+
     it('blocks secrets.yaml', () => {
       const result = isSensitivePath('/project/secrets.yaml', CWD);
       assert.equal(result.sensitive, true);

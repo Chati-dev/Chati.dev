@@ -7,7 +7,7 @@
 
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { GateBase, GateVerdict, determineVerdict } from './gate-base.js';
+import { GateBase, determineVerdict } from './gate-base.js';
 import { loadSession } from '../orchestrator/session-manager.js';
 import { loadHandoff } from '../tasks/handoff.js';
 
