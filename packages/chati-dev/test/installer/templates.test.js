@@ -302,10 +302,10 @@ describe('generateGeminiRouter', () => {
     assert.ok(result.includes('session.yaml'));
   });
 
-  it('does not reference Claude Code', () => {
+  it('includes provider context mapping (CLAUDE.md -> GEMINI.md)', () => {
     const result = generateGeminiRouter();
-    assert.ok(!result.includes('Claude Code'));
-    assert.ok(!result.includes('CLAUDE.md'));
+    assert.ok(result.includes('GEMINI.md'), 'Should map to GEMINI.md');
+    assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 });
 
@@ -333,10 +333,10 @@ describe('generateCopilotAgent', () => {
     assert.ok(result.includes('GitHub Copilot'));
   });
 
-  it('does not reference Claude Code', () => {
+  it('includes provider context mapping (CLAUDE.md -> AGENTS.md)', () => {
     const result = generateCopilotAgent();
-    assert.ok(!result.includes('Claude Code'));
-    assert.ok(!result.includes('CLAUDE.md'));
+    assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
+    assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 });
 
@@ -375,9 +375,9 @@ describe('generateCodexSkill', () => {
     assert.ok(result.includes('$ARGUMENTS'), 'Should include $ARGUMENTS for user input');
   });
 
-  it('does not reference Claude Code', () => {
+  it('includes provider context mapping (CLAUDE.md -> AGENTS.md)', () => {
     const result = generateCodexSkill();
-    assert.ok(!result.includes('Claude Code'));
-    assert.ok(!result.includes('CLAUDE.md'));
+    assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
+    assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 });

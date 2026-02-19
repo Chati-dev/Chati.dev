@@ -180,15 +180,30 @@ ALL responses MUST be in this language. This overrides any global setting.
 
 If session.yaml does not exist or has no language field, default to English.
 
+## CRITICAL — Provider Context Mapping
+
+The orchestrator was written for Claude Code. You are running on **Codex CLI**.
+When the orchestrator references Claude-specific files, use these equivalents:
+
+| Orchestrator says | You use instead |
+|-------------------|-----------------|
+| \`CLAUDE.md\` | \`AGENTS.md\` |
+| \`CLAUDE.local.md\` | \`.chati/session.yaml\` (session state only) |
+| \`.claude/rules/chati/\` | \`chati.dev/context/\` |
+| \`.claude/commands/\` | \`.agents/skills/\` |
+| \`/chati\` | \`$chati\` |
+
+**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
+
 ## Load
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Pass through all context: session state, handoffs, artifacts, and user input.
+Apply the Provider Context Mapping above when following the orchestrator instructions.
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)
-- \`AGENTS.md\` (project context — auto-generated)
+- \`AGENTS.md\` (project context — auto-generated from base content)
 - \`chati.dev/artifacts/handoffs/\` (latest handoff)
 - \`chati.dev/config.yaml\` (version info)
 
@@ -210,10 +225,21 @@ Read \`.chati/session.yaml\` field \`language\` BEFORE anything else.
 ALL responses MUST be in this language (en, pt, es, fr).
 If session.yaml does not exist or has no language field, default to English.
 
+CRITICAL — Provider Context Mapping:
+The orchestrator was written for Claude Code. You are running on Gemini CLI.
+When the orchestrator references Claude-specific files, use these equivalents:
+- CLAUDE.md -> GEMINI.md
+- CLAUDE.local.md -> .chati/session.yaml (session state only)
+- .claude/rules/chati/ -> chati.dev/context/
+- .claude/commands/ -> .gemini/commands/
+NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.
+
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
+Apply the Provider Context Mapping above when following instructions.
 
 Context to load:
 - \`.chati/session.yaml\` (session state — includes language)
+- \`GEMINI.md\` (project context — auto-generated)
 - \`chati.dev/artifacts/handoffs/\` (latest handoff)
 - \`chati.dev/config.yaml\` (version info)
 
@@ -247,11 +273,26 @@ ALL responses MUST be in this language. This overrides any global setting.
 
 If session.yaml does not exist or has no language field, default to English.
 
+## CRITICAL — Provider Context Mapping
+
+The orchestrator was written for Claude Code. You are running on **GitHub Copilot CLI**.
+When the orchestrator references Claude-specific files, use these equivalents:
+
+| Orchestrator says | You use instead |
+|-------------------|-----------------|
+| \`CLAUDE.md\` | \`AGENTS.md\` |
+| \`CLAUDE.local.md\` | \`.chati/session.yaml\` (session state only) |
+| \`.claude/rules/chati/\` | \`chati.dev/context/\` |
+| \`.claude/commands/\` | \`.github/agents/\` |
+| \`/chati\` | \`@chati\` |
+
+**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
+
 ## Load
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Pass through all context: session state, handoffs, artifacts, and user input.
+Apply the Provider Context Mapping above when following the orchestrator instructions.
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)

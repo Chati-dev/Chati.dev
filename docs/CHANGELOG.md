@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.4] - 2026-02-19
+
+### Fixed
+
+- **Installer feedback**: No longer shows "Created .claude/commands/" for non-Claude providers — shows provider-specific path
+- **Provider Context Mapping**: All non-Claude entry points (SKILL.md, TOML, agent.md) include mapping table instructing CLI to replace CLAUDE.md/CLAUDE.local.md/.claude/ with provider equivalents
+- **Codex creating CLAUDE.local.md**: Codex skill explicitly prohibits creating Claude-specific files
+- **Gemini/Copilot context leaks**: Same provider mapping added to Gemini TOML and Copilot agent templates
+
+### Stats
+
+- 1208 tests passing, 0 failures
+
 ## [3.0.3] - 2026-02-19
 
 ### Fixed

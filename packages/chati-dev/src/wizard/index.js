@@ -70,6 +70,9 @@ export async function runWizard(targetDir, options = {}) {
   await stepConfirmation(config);
 
   // Step 5: Installation + Validation
+  const primaryIDE = selectedIDEs[selectedIDEs.length - 1];
+  const primaryIDEName = IDE_CONFIGS[primaryIDE]?.name || primaryIDE;
+
   console.log();
   const installSpinner = createSpinner(t('installer.installing'));
   installSpinner.start();
@@ -80,7 +83,17 @@ export async function runWizard(targetDir, options = {}) {
 
     showStep(t('installer.created_chati'));
     showStep(t('installer.created_framework'));
-    showStep(t('installer.created_commands'));
+
+    // Show provider-specific command creation
+    const commandStepMap = {
+      'claude-code': 'Created .claude/commands/ (thin router)',
+      'gemini-cli': 'Created .gemini/commands/ (TOML command)',
+      'codex-cli': 'Created .agents/skills/chati/ (Codex skill)',
+      'github-copilot': 'Created .github/agents/ (Copilot agent)',
+    };
+    const commandStep = commandStepMap[primaryIDE] || t('installer.created_commands');
+    showStep(commandStep);
+
     showStep(t('installer.installed_constitution'));
     showStep(t('installer.created_session'));
     if (selectedIDEs.includes('claude-code')) {
@@ -118,8 +131,6 @@ export async function runWizard(targetDir, options = {}) {
     p.outro(t('installer.success'));
 
     // Show quick start — same experience across all providers
-    const primaryIDE = selectedIDEs[selectedIDEs.length - 1];
-    const primaryIDEName = IDE_CONFIGS[primaryIDE]?.name || primaryIDE;
     const invokeCmdMap = {
       'github-copilot': '@chati',
       'codex-cli': '$chati',
