@@ -75,21 +75,6 @@ const PROVIDERS = {
     },
     adapter: adapters.codex,
   },
-  copilot: {
-    name: 'copilot',
-    command: 'copilot',
-    baseArgs: ['-p'],
-    modelFlag: '--model',
-    stdinSupport: true,
-    hooksSupport: false,
-    mcpSupport: true,
-    contextFile: null,
-    modelMap: {
-      'claude-sonnet': 'claude-sonnet-4.5',
-      'gpt-5': 'gpt-5',
-    },
-    adapter: adapters.copilot,
-  },
 };
 
 // ---------------------------------------------------------------------------
@@ -99,7 +84,7 @@ const PROVIDERS = {
 /**
  * Get a provider configuration by name.
  *
- * @param {string} name - Provider name (claude, gemini, codex, copilot)
+ * @param {string} name - Provider name (claude, gemini, codex)
  * @returns {ProviderConfig}
  * @throws {Error} When provider is not found
  */

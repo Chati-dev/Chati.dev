@@ -54,12 +54,6 @@ export const IDE_CONFIGS = {
     format: 'toml',
     description: 'Gemini CLI',
   },
-  'github-copilot': {
-    agentsDir: '.github/agents/',
-    extension: '.md',
-    format: 'markdown',
-    description: 'GitHub Copilot',
-  },
 };
 
 // ---------------------------------------------------------------------------

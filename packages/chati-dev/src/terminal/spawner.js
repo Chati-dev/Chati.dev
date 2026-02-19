@@ -86,7 +86,7 @@ export function cleanParentEnv(env) {
  * @property {string} agent           - Agent name (e.g. "architect")
  * @property {string} taskId          - Task identifier
  * @property {string} [model]         - LLM model tier name (e.g. opus, pro, codex, claude-sonnet)
- * @property {string} [provider]      - CLI provider name (claude, gemini, codex, copilot)
+ * @property {string} [provider]      - CLI provider name (claude, gemini, codex)
  * @property {string} [prompt]        - Full prompt string (from prompt-builder, piped via stdin)
  * @property {object} [contextPayload] - Context to inject via env var
  * @property {string[]} [writeScope]   - Override write scope

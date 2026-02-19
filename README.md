@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/chati-dev"><img src="https://img.shields.io/npm/v/chati-dev?color=blue&label=npm" alt="npm"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node.js"></a>
-  <a href="#multi-cli-support"><img src="https://img.shields.io/badge/LLM-Claude%20%7C%20Gemini%20%7C%20Codex%20%7C%20GitHub%20Copilot-blueviolet.svg" alt="Multi-LLM"></a>
+  <a href="#multi-cli-support"><img src="https://img.shields.io/badge/LLM-Claude%20%7C%20Gemini%20%7C%20Codex-blueviolet.svg" alt="Multi-LLM"></a>
   <a href="#internationalization"><img src="https://img.shields.io/badge/i18n-EN%20%7C%20PT%20%7C%20ES%20%7C%20FR-informational.svg" alt="i18n"></a>
   <a href="https://github.com/Chati-dev/Chati.dev/actions/workflows/ci.yml"><img src="https://github.com/Chati-dev/Chati.dev/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href=".github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions Welcome"></a>
@@ -58,7 +58,6 @@ Chati.dev introduces **Agent-Driven Development**: a pipeline where each agent o
   - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) (recommended)
   - [Gemini CLI](https://github.com/google-gemini/gemini-cli)
   - [Codex CLI](https://github.com/openai/codex)
-  - [GitHub Copilot CLI](https://docs.github.com/en/copilot)
 
 ### 1. Install in your project
 
@@ -74,7 +73,7 @@ The wizard guides you through 4 steps:
 |------|-------------|
 | **Language** | English, Portuguese, Spanish, or French |
 | **Project Type** | Greenfield (new) or Brownfield (existing) |
-| **AI Provider** | Claude, Gemini, Codex, or GitHub Copilot — auto-configures optimal models per agent |
+| **AI Provider** | Claude, Gemini, or Codex — auto-configures optimal models per agent |
 | **Confirm** | Review summary and proceed |
 
 ### 2. Activate the orchestrator
@@ -121,14 +120,14 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 | Feature | What it means |
 |---------|--------------|
 | **13 Specialized Agents** | Each agent has a defined mission, success criteria, and handoff protocol — not one AI trying to do everything |
-| **Multi-CLI Architecture** | Choose your AI provider at install time: Claude, Gemini, Codex, or GitHub Copilot. Each agent gets the optimal model for that provider |
+| **Multi-CLI Architecture** | Choose your AI provider at install time: Claude, Gemini, or Codex. Each agent gets the optimal model for that provider |
 | **Quality Gates** | Every phase is validated before moving forward. 3-tier verdicts: APPROVED, NEEDS_REVISION, or BLOCKED |
 | **Context Persistence** | Sessions survive restarts. Close your IDE, come back next week — the system remembers everything |
 | **Session Lock** | Once activated, you stay inside the system. No accidentally "falling out" into generic AI mode |
 | **Multi-Terminal** | Autonomous agents run in parallel in separate terminals. Detail, Architect, and UX agents work simultaneously |
 | **Memory System** | The system learns from mistakes. Gotchas are captured automatically and recalled when relevant |
 | **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 90%) — with safety net and circuit breaker |
-| **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, GitHub Copilot, and AntiGravity |
+| **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, and AntiGravity |
 | **4 Languages** | Interface supports English, Portuguese, Spanish, and French. Artifacts are always generated in English |
 | **Supply Chain Security** | Every file is cryptographically signed (Ed25519). Tampered packages are blocked on install |
 
@@ -145,7 +144,6 @@ Chati.dev is provider-agnostic. You choose your AI provider during installation,
 | **Claude** | `claude` | Opus | Sonnet / Haiku | Default |
 | **Gemini** | `gemini` | Pro | Flash | Full support |
 | **Codex** | `codex` | Codex | Codex Mini | Full support |
-| **GitHub Copilot** | `copilot` | Sonnet 4.5 | GPT-5 | Full support |
 
 ### How Model Assignment Works
 
@@ -160,7 +158,6 @@ When you select a provider, the system maps each agent to the best available mod
 Claude:  architect → opus,   brief → sonnet,  greenfield-wu → haiku
 Gemini:  architect → pro,    brief → flash,   greenfield-wu → flash
 Codex:   architect → codex,  brief → codex-mini
-GitHub Copilot: architect → claude-sonnet, brief → claude-sonnet
 ```
 
 ### CLI Invocation Syntax
@@ -172,7 +169,6 @@ Each provider uses its own CLI syntax. Chati.dev handles this transparently:
 | Claude | `claude --print --model <id>` | `claude --print --model claude-opus-4-6` |
 | Gemini | `gemini --model <id>` | `gemini --model gemini-2.5-pro` |
 | Codex | `codex exec -m <id>` | `codex exec -m gpt-5.3-codex` |
-| GitHub Copilot | `copilot -p --model <id>` | `copilot -p --model claude-sonnet-4.5` |
 
 Prompts are piped via stdin for all providers. You can override individual agent models in `chati.dev/config.yaml` under `agent_overrides`.
 
@@ -290,7 +286,6 @@ The system is governed by a **19-article Constitution** that enforces agent beha
 | **VS Code** | `.vscode/chati.md` → orchestrator |
 | **Cursor** | `.cursor/rules/chati.md` → orchestrator |
 | **Gemini CLI** | `.gemini/commands/chati.toml` → orchestrator |
-| **GitHub Copilot** | `.github/agents/chati.md` → orchestrator |
 | **AntiGravity** | Platform agent config → orchestrator |
 
 All IDEs use a thin router file that points to the same orchestrator. Your project works the same regardless of which IDE you use.

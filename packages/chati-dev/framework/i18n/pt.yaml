@@ -19,7 +19,6 @@ installer:
   llm_provider_claude: "Claude (Anthropic) — Melhor para raciocinio estruturado"
   llm_provider_gemini: "Gemini (Google) — Janela de contexto de 1M tokens"
   llm_provider_codex: "Codex (OpenAI) — Otimizado para geracao de codigo"
-  llm_provider_copilot: "Copilot (GitHub) — Multi-modelo, integrado ao GitHub"
   llm_provider_not_installed: "(CLI nao detectada)"
   llm_provider_label: "Provedor de IA"
   will_install: "Sera instalado:"

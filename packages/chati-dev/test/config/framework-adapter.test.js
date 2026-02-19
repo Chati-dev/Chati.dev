@@ -268,63 +268,6 @@ describe('adaptFrameworkFile — codex', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Copilot provider adaptations
-// ---------------------------------------------------------------------------
-
-describe('adaptFrameworkFile — copilot', () => {
-  const provider = 'copilot';
-
-  it('replaces CLAUDE.local.md with .chati/session.yaml', () => {
-    const content = 'Update CLAUDE.local.md with Session Lock';
-    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', provider);
-    assert.ok(result.includes('.chati/session.yaml'));
-    assert.ok(!result.includes('CLAUDE.local.md'));
-  });
-
-  it('replaces CLAUDE.md with AGENTS.md', () => {
-    const content = '2. Read CLAUDE.md (root)';
-    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', provider);
-    assert.ok(result.includes('AGENTS.md'));
-    assert.ok(!result.includes('CLAUDE.md'));
-  });
-
-  it('replaces Claude Code with GitHub Copilot CLI', () => {
-    const content = 'Claude Code processes with the correct model';
-    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', provider);
-    assert.ok(result.includes('GitHub Copilot CLI'));
-    assert.ok(!result.includes('Claude Code'));
-  });
-
-  it('maps opus to claude-sonnet', () => {
-    const content = '- **Model**: opus\n/model opus';
-    const result = adaptFrameworkFile(content, 'agents/build/dev.md', provider);
-    assert.ok(result.includes('**Model**: claude-sonnet'));
-    assert.ok(result.includes('/model claude-sonnet'));
-  });
-
-  it('maps sonnet to claude-sonnet', () => {
-    const content = '- **Model**: sonnet\n/model sonnet';
-    const result = adaptFrameworkFile(content, 'agents/discover/brief.md', provider);
-    assert.ok(result.includes('**Model**: claude-sonnet'));
-    assert.ok(result.includes('/model claude-sonnet'));
-  });
-
-  it('maps haiku to gpt-5', () => {
-    const content = '- **Model**: haiku\n/model haiku';
-    const result = adaptFrameworkFile(content, 'agents/discover/greenfield-wu.md', provider);
-    assert.ok(result.includes('**Model**: gpt-5'));
-    assert.ok(result.includes('/model gpt-5'));
-  });
-
-  it('replaces provider field in agent Identity', () => {
-    const content = '- **Provider**: claude (default) | copilot (when copilot selected)';
-    const result = adaptFrameworkFile(content, 'agents/build/dev.md', provider);
-    assert.ok(result.includes('copilot (default)'));
-    assert.ok(!result.includes('claude (default)'));
-  });
-});
-
-// ---------------------------------------------------------------------------
 // String replacement ordering (most specific first)
 // ---------------------------------------------------------------------------
 
@@ -358,48 +301,11 @@ describe('adaptFrameworkFile — replacement ordering', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Double-prefix regression (copilot: claude-claude-sonnet bug)
-// ---------------------------------------------------------------------------
-
-describe('adaptFrameworkFile — no double-prefix (copilot)', () => {
-  it('does NOT produce claude-claude-sonnet from opus→claude-sonnet + sonnet if', () => {
-    const content = '- **Model**: sonnet | upgrade: opus if complex routing';
-    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', 'copilot');
-    assert.ok(!result.includes('claude-claude-'), 'Should not have double-prefix');
-    assert.ok(result.includes('claude-sonnet'));
-  });
-
-  it('does NOT produce double-prefix in agent Identity with conditional upgrade', () => {
-    const content = '- **Model**: haiku | upgrade: sonnet if enterprise';
-    const result = adaptFrameworkFile(content, 'agents/discover/greenfield-wu.md', 'copilot');
-    assert.ok(!result.includes('claude-claude-'), 'Should not have double-prefix');
-    assert.ok(result.includes('gpt-5'));
-    assert.ok(result.includes('claude-sonnet if'));
-  });
-
-  it('does NOT produce double-prefix with multiple model refs on same line', () => {
-    const content = '- **Model**: opus | downgrade: sonnet if simple, haiku if trivial';
-    const result = adaptFrameworkFile(content, 'agents/build/dev.md', 'copilot');
-    assert.ok(!result.includes('claude-claude-'), 'Should not have double-prefix');
-  });
-
-  it('handles sequential opus if → sonnet if without compounding', () => {
-    const content = 'Use opus if complex.\nUse sonnet if moderate.\nUse haiku if simple.';
-    const result = adaptFrameworkFile(content, 'constitution.md', 'copilot');
-    assert.ok(!result.includes('claude-claude-'), 'Should not have double-prefix');
-    const lines = result.split('\n');
-    assert.ok(lines[0].includes('claude-sonnet if'));
-    assert.ok(lines[1].includes('claude-sonnet if'));
-    assert.ok(lines[2].includes('gpt-5 if'));
-  });
-});
-
-// ---------------------------------------------------------------------------
 // All providers: comprehensive model mapping via PROVIDER_MODEL_MAPS
 // ---------------------------------------------------------------------------
 
 describe('adaptFrameworkFile — model maps consistency', () => {
-  for (const provider of ['gemini', 'codex', 'copilot']) {
+  for (const provider of ['gemini', 'codex']) {
     const map = PROVIDER_MODEL_MAPS[provider];
 
     it(`${provider}: deep model maps from opus`, () => {
@@ -463,7 +369,7 @@ CLAUDE.local.md is auto-gitignored`;
 
   it('adapts "NEVER act as generic Claude"', () => {
     const content = '4. NEVER act as generic Claude — you ARE the Chati.dev orchestrator';
-    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', 'copilot');
+    const result = adaptFrameworkFile(content, 'orchestrator/chati.md', 'codex');
     assert.ok(result.includes('NEVER act as generic AI assistant'));
     assert.ok(!result.includes('generic Claude'));
   });

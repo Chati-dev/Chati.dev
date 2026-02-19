@@ -44,7 +44,7 @@ Type `/chati` — the orchestrator reads session.yaml, GEMINI.md, and the latest
 - **Version**: 3.0.0
 - **Agents**: 13 (12 specialized + orchestrator)
 - **Constitution**: 19 Articles + Preamble
-- **Multi-CLI**: 4 providers (claude, gemini, codex, copilot) — claude primary, others opt-in
+- **Multi-CLI**: 3 providers (claude, gemini, codex) — claude primary, others opt-in
 - **Quality**: 5 pipeline gates + 3-tier verdicts (APPROVED/NEEDS_REVISION/BLOCKED)
 - **Execution Profiles**: explore, guided (default), autonomous
 - **Language**: Interaction follows user preference; artifacts always in English

@@ -48,14 +48,6 @@ describe('getProvider', () => {
     assert.ok(provider.modelMap.mini);
   });
 
-  it('returns copilot provider config', () => {
-    const provider = getProvider('copilot');
-    assert.equal(provider.name, 'copilot');
-    assert.equal(provider.command, 'copilot');
-    assert.ok(provider.modelMap['claude-sonnet']);
-    assert.ok(provider.modelMap['gpt-5']);
-  });
-
   it('throws for unknown provider', () => {
     assert.throws(
       () => getProvider('unknown-provider'),
@@ -69,14 +61,13 @@ describe('getProvider', () => {
 // ---------------------------------------------------------------------------
 
 describe('getAllProviders', () => {
-  it('returns all 4 providers', () => {
+  it('returns all 3 providers', () => {
     const all = getAllProviders();
     const names = Object.keys(all);
-    assert.equal(names.length, 4);
+    assert.equal(names.length, 3);
     assert.ok(names.includes('claude'));
     assert.ok(names.includes('gemini'));
     assert.ok(names.includes('codex'));
-    assert.ok(names.includes('copilot'));
   });
 
   it('returns a copy (not the original object)', () => {
@@ -133,13 +124,6 @@ describe('PROVIDERS structure', () => {
     assert.equal(Object.keys(map).length, 2);
   });
 
-  it('copilot modelMap has claude-sonnet, gpt-5', () => {
-    const map = PROVIDERS.copilot.modelMap;
-    assert.ok(map['claude-sonnet'], 'Missing claude-sonnet');
-    assert.ok(map['gpt-5'], 'Missing gpt-5');
-    assert.equal(Object.keys(map).length, 2);
-  });
-
   // -------------------------------------------------------------------------
   // Provider-specific value assertions (v3.0.0 fixes)
   // -------------------------------------------------------------------------
@@ -152,10 +136,6 @@ describe('PROVIDERS structure', () => {
     assert.deepEqual(PROVIDERS.codex.baseArgs, ['exec']);
   });
 
-  it('copilot baseArgs includes -p', () => {
-    assert.deepEqual(PROVIDERS.copilot.baseArgs, ['-p']);
-  });
-
   it('claude baseArgs includes --print and --dangerously-skip-permissions', () => {
     assert.deepEqual(PROVIDERS.claude.baseArgs, ['--print', '--dangerously-skip-permissions']);
   });
@@ -164,19 +144,10 @@ describe('PROVIDERS structure', () => {
     assert.equal(PROVIDERS.claude.hooksSupport, true);
     assert.equal(PROVIDERS.gemini.hooksSupport, false);
     assert.equal(PROVIDERS.codex.hooksSupport, false);
-    assert.equal(PROVIDERS.copilot.hooksSupport, false);
   });
 
   it('codex mini model is codex-mini-latest', () => {
     assert.equal(PROVIDERS.codex.modelMap.mini, 'codex-mini-latest');
-  });
-
-  it('copilot gpt-5 maps to gpt-5 (not gpt-5.1)', () => {
-    assert.equal(PROVIDERS.copilot.modelMap['gpt-5'], 'gpt-5');
-  });
-
-  it('copilot claude-sonnet maps to claude-sonnet-4.5', () => {
-    assert.equal(PROVIDERS.copilot.modelMap['claude-sonnet'], 'claude-sonnet-4.5');
   });
 
   it('gemini pro maps to gemini-2.5-pro', () => {
@@ -199,9 +170,6 @@ describe('PROVIDERS structure', () => {
     }
   });
 
-  it('copilot has no contextFile (reads CLAUDE.md natively)', () => {
-    assert.equal(PROVIDERS.copilot.contextFile, null);
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -239,9 +207,6 @@ describe('loadEnabledProviders', () => {
         '    enabled: true',
         '    primary: true',
         '  codex:',
-        '    enabled: false',
-        '    primary: false',
-        '  copilot:',
         '    enabled: false',
         '    primary: false',
       ].join('\n')
@@ -300,9 +265,6 @@ describe('resolveProviderForAgent', () => {
         '    enabled: true',
         '    primary: true',
         '  codex:',
-        '    enabled: false',
-        '    primary: false',
-        '  copilot:',
         '    enabled: false',
         '    primary: false',
         'agent_overrides:',

@@ -65,7 +65,6 @@ body:
         - VS Code
         - Cursor
         - Gemini CLI
-        - GitHub Copilot
         - AntiGravity
         - Other
     validations:

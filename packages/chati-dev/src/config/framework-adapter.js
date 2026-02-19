@@ -57,11 +57,6 @@ const PROVIDER_META = {
     contextFile: 'AGENTS.md',
     localFile: '.chati/session.yaml',
   },
-  copilot: {
-    cliName: 'GitHub Copilot CLI',
-    contextFile: 'AGENTS.md',
-    localFile: '.chati/session.yaml',
-  },
 };
 
 // ---------------------------------------------------------------------------
@@ -187,7 +182,7 @@ function buildReplacementConfig(provider) {
  *
  * @param {string} content - Original file content (Claude Code version)
  * @param {string} filePath - Relative path within chati.dev/ (e.g. 'orchestrator/chati.md')
- * @param {string} provider - Target provider: 'gemini', 'codex', 'copilot'
+ * @param {string} provider - Target provider: 'gemini', 'codex'
  * @returns {string} Adapted content for the target provider
  */
 export function adaptFrameworkFile(content, filePath, provider) {

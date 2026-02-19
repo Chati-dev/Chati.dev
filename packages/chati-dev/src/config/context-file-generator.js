@@ -8,7 +8,6 @@
  * Provider conventions (verified Feb 2026):
  * - Gemini CLI: auto-loads GEMINI.md, uses .gemini/commands/*.toml, no rules/
  * - Codex CLI:  auto-loads AGENTS.md, uses .agents/skills/chati/SKILL.md for $chati
- * - Copilot CLI: auto-loads AGENTS.md + CLAUDE.md + GEMINI.md natively (no COPILOT.md needed)
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
@@ -139,8 +138,6 @@ export function generateAgentsMd(content) {
  * CLAUDE.md from the project root, and writes the appropriate context
  * files (GEMINI.md, AGENTS.md) when their providers are active.
  *
- * Copilot CLI does not need its own context file — it natively reads
- * AGENTS.md, CLAUDE.md, and GEMINI.md.
  *
  * @param {string} projectDir - Project root directory
  * @param {string} [baseContent] - Optional base content (used when CLAUDE.md doesn't exist on disk)
@@ -164,7 +161,6 @@ export function generateContextFiles(projectDir, baseContent = null) {
   const enabledProviders = resolveEnabledProviders(projectDir);
 
   // Provider-to-generator mapping
-  // Note: Copilot is intentionally excluded — it reads AGENTS.md + CLAUDE.md + GEMINI.md natively
   const generators = {
     gemini: {
       filename: 'GEMINI.md',

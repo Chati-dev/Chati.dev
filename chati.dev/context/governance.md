@@ -44,7 +44,7 @@ Extracted from `chati.dev/constitution.md` (19 Articles). Read the full constitu
 - Circuit breaker: CLOSED -> OPEN (3 failures) -> HALF_OPEN (probe)
 
 ## Multi-CLI Governance (Article XIX)
-- 4 providers: Claude, Gemini, Codex, GitHub Copilot
+- 3 providers: Claude, Gemini, Codex
 - Provider selected at install time, auto-configures optimal models per agent
 - Resolution chain: agent_overrides > agent default > primary provider
 - Context files auto-generated for non-Claude providers (GEMINI.md, AGENTS.md)

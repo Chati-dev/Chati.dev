@@ -282,7 +282,7 @@ The pipeline operates in three execution modes that control agent permissions. M
 
 6. Autonomous spawn capability varies by IDE:
    - Full autonomy: Claude Code, AntiGravity, Gemini CLI
-   - Continuation file: Cursor, VS Code, GitHub Copilot (user loads with /chati resume)
+   - Continuation file: Cursor, VS Code (user loads with /chati resume)
 
 **Enforcement: BLOCK** — Bracket violations (injecting L3/L4 in CRITICAL) degrade agent quality.
 
@@ -368,11 +368,10 @@ The orchestrator SHALL select the optimal AI model for each agent to balance qua
 
 8. Model selections are logged in session.yaml under `model_selections[]` for cost tracking and optimization.
 
-9. Four provider categories are recognized for multi-CLI execution:
+9. Three provider categories are recognized for multi-CLI execution:
    - **claude**: Primary provider. Deep reasoning, complex analysis, code generation. Full hook support, MCP support.
    - **gemini**: Large-context provider. Codebase analysis, discovery, document review. 1M token context window. Full hook support, MCP support.
    - **codex**: Rapid-coding provider. Fast code generation, sandbox execution. No hook support, MCP support.
-   - **copilot**: Multi-model provider. Reads CLAUDE.md, GEMINI.md, and AGENTS.md natively. Full hook support, MCP support.
 
 10. Claude is the default and primary provider. Multi-CLI is opt-in via `config.yaml` `providers` section. When only `claude` is enabled, the system behaves identically to v2.x.
 

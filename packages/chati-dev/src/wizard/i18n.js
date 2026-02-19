@@ -24,7 +24,6 @@ const FALLBACK_EN = {
     llm_provider_claude: 'Claude (Anthropic) — Best for structured reasoning',
     llm_provider_gemini: 'Gemini (Google) — 1M token context window',
     llm_provider_codex: 'Codex (OpenAI) — Optimized for code generation',
-    llm_provider_copilot: 'Copilot (GitHub) — Multi-model, GitHub integrated',
     llm_provider_not_installed: '(CLI not detected)',
     llm_provider_label: 'AI Provider',
     will_install: 'Will install:',

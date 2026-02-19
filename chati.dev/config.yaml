@@ -1,8 +1,8 @@
 # chati.dev Configuration
-version: "3.0.1"
+version: "3.2.0"
 installed_at: "2026-02-07T10:00:00Z"
-updated_at: "2026-02-17T00:00:00Z"
-installer_version: "3.0.1"
+updated_at: "2026-02-19T00:00:00Z"
+installer_version: "3.2.0"
 project_type: greenfield
 language: en
 ides: [claude-code]
@@ -18,8 +18,6 @@ providers:
   codex:
     enabled: false
     model_default: codex
-  copilot:
-    enabled: false
 
 # Per-agent provider/model overrides (optional — inherits from AGENT_MODELS default)
 # agent_overrides:

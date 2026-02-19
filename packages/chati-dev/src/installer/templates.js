@@ -80,15 +80,6 @@ export const PROVIDER_MODEL_MAPS = {
       dev: 'codex', 'qa-implementation': 'codex', devops: 'mini',
     },
   },
-  copilot: {
-    deep: 'claude-sonnet', light: 'claude-sonnet', minimal: 'gpt-5',
-    agents: {
-      orchestrator: 'claude-sonnet', 'greenfield-wu': 'gpt-5', 'brownfield-wu': 'claude-sonnet',
-      brief: 'claude-sonnet', detail: 'claude-sonnet', architect: 'claude-sonnet', ux: 'claude-sonnet',
-      phases: 'claude-sonnet', tasks: 'claude-sonnet', 'qa-planning': 'claude-sonnet',
-      dev: 'claude-sonnet', 'qa-implementation': 'claude-sonnet', devops: 'claude-sonnet',
-    },
-  },
 };
 
 /**
@@ -110,7 +101,6 @@ export function generateConfigYaml(config) {
       claude: { enabled: true, primary: provider === 'claude' },
       gemini: { enabled: provider === 'gemini' || selectedIDEs.includes('gemini-cli'), model_default: 'pro', primary: provider === 'gemini' },
       codex: { enabled: provider === 'codex' || selectedIDEs.includes('codex-cli'), model_default: 'codex', primary: provider === 'codex' },
-      copilot: { enabled: provider === 'copilot' || selectedIDEs.includes('github-copilot'), primary: provider === 'copilot' },
     },
   };
 
@@ -227,47 +217,6 @@ Context to load:
 
 User input: {{args}}
 """
-`;
-}
-
-/**
- * Generate GitHub Copilot agent file (.github/agents/chati.md)
- *
- * Copilot CLI uses .github/agents/*.md for custom agents.
- * The user invokes with @chati in the Copilot CLI.
- */
-export function generateCopilotAgent() {
-  return `# Chati.dev Orchestrator
-
-You are the Chati.dev orchestrator agent for GitHub Copilot CLI.
-
-## CRITICAL — Language Override
-
-Read \`.chati/session.yaml\` field \`language\` BEFORE anything else.
-ALL responses MUST be in this language. This overrides any global setting.
-
-| Value | Language |
-|-------|----------|
-| \`en\`  | English |
-| \`pt\`  | Portugues |
-| \`es\`  | Espanol |
-| \`fr\`  | Francais |
-
-If session.yaml does not exist or has no language field, default to English.
-
-## Load
-
-The orchestrator and all agent files are **pre-configured for GitHub Copilot CLI**.
-No translation needed — follow all instructions as written.
-
-Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
-
-**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
-
-**Context to pass:**
-- \`.chati/session.yaml\` (session state — includes language)
-- \`chati.dev/artifacts/handoffs/\` (latest handoff)
-- \`chati.dev/config.yaml\` (version info)
 `;
 }
 

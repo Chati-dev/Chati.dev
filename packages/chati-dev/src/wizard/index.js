@@ -19,7 +19,6 @@ const PROVIDER_TO_IDE = {
   claude: ['claude-code'],
   gemini: ['gemini-cli'],
   codex: ['codex-cli'],
-  copilot: ['github-copilot'],
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -89,7 +88,6 @@ export async function runWizard(targetDir, options = {}) {
       'claude-code': 'Created .claude/commands/ (thin router)',
       'gemini-cli': 'Created .gemini/commands/ (TOML command)',
       'codex-cli': 'Created .agents/skills/chati/ (Codex skill)',
-      'github-copilot': 'Created .github/agents/ (Copilot agent)',
     };
     const commandStep = commandStepMap[primaryIDE] || t('installer.created_commands');
     showStep(commandStep);
@@ -132,7 +130,6 @@ export async function runWizard(targetDir, options = {}) {
 
     // Show quick start — same experience across all providers
     const invokeCmdMap = {
-      'github-copilot': '@chati',
       'codex-cli': '$chati',
     };
     const invokeCmd = invokeCmdMap[primaryIDE] || '/chati';

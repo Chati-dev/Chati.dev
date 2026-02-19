@@ -4,9 +4,6 @@
  * Validates that GEMINI.md and AGENTS.md are correctly derived from
  * CLAUDE.md content with appropriate text replacements, section stripping,
  * and auto-generated headers.
- *
- * Note: COPILOT.md is NOT generated — Copilot CLI natively reads
- * AGENTS.md, CLAUDE.md, and GEMINI.md.
  */
 
 import { describe, it } from 'node:test';

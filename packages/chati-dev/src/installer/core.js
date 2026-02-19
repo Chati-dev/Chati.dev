@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { IDE_CONFIGS } from '../config/ide-configs.js';
 import { generateClaudeMCPConfig } from '../config/mcp-configs.js';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter, generateCopilotAgent } from './templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter } from './templates.js';
 import { generateContextFiles } from '../config/context-file-generator.js';
 import { adaptFrameworkFile, ADAPTABLE_FILES } from '../config/framework-adapter.js';
 import { verifyManifest } from './manifest.js';
@@ -317,13 +317,6 @@ Pass through all context: session state, handoffs, artifacts, and user input.
   } else if (ideKey === 'gemini-cli') {
     // Gemini CLI: TOML command file (native format for /chati command)
     writeFileSync(join(targetDir, '.gemini', 'commands', 'chati.toml'), generateGeminiRouter(), 'utf-8');
-  } else if (ideKey === 'github-copilot') {
-    // GitHub Copilot: agent file (.github/agents/chati.md) for @chati invocation
-    writeFileSync(join(targetDir, '.github', 'agents', 'chati.md'), generateCopilotAgent(), 'utf-8');
-
-    // Copilot instructions file (auto-loaded by Copilot CLI)
-    createDir(dirname(join(targetDir, config.rulesFile)));
-    writeFileSync(join(targetDir, config.rulesFile), generateProviderInstructions(config.name), 'utf-8');
   } else {
     // VS Code, Cursor, AntiGravity — generic rules file
     if (config.rulesFile) {
@@ -335,7 +328,7 @@ Pass through all context: session state, handoffs, artifacts, and user input.
 
 /**
  * Generate provider-agnostic instructions file content.
- * Used for non-Claude IDEs (.github/copilot-instructions.md, .vscode/chati/rules.md, etc.)
+ * Used for non-Claude IDEs (.vscode/chati/rules.md, .cursorrules, etc.)
  */
 function generateProviderInstructions(providerName) {
   return `# Chati.dev System Rules

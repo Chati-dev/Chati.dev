@@ -55,9 +55,6 @@ describe('parseProviderConfig', () => {
         '  codex:',
         '    enabled: false',
         '    primary: false',
-        '  copilot:',
-        '    enabled: false',
-        '    primary: false',
       ].join('\n')
     );
 
@@ -66,7 +63,6 @@ describe('parseProviderConfig', () => {
     assert.ok(result.enabled.includes('claude'));
     assert.ok(result.enabled.includes('gemini'));
     assert.ok(!result.enabled.includes('codex'));
-    assert.ok(!result.enabled.includes('copilot'));
     assert.ok(typeof result.raw === 'string');
   });
 
@@ -109,7 +105,7 @@ describe('parseProviderConfig', () => {
     assert.equal(result.enabled[0], 'claude', 'claude should be first in list');
   });
 
-  it('parses all 4 providers enabled', () => {
+  it('parses all 3 providers enabled', () => {
     const configDir = join(projectDir, 'chati.dev');
     writeFileSync(
       join(configDir, 'config.yaml'),
@@ -124,18 +120,14 @@ describe('parseProviderConfig', () => {
         '  codex:',
         '    enabled: true',
         '    primary: false',
-        '  copilot:',
-        '    enabled: true',
-        '    primary: false',
       ].join('\n')
     );
 
     const result = parseProviderConfig(projectDir);
-    assert.equal(result.enabled.length, 4);
+    assert.equal(result.enabled.length, 3);
     assert.ok(result.enabled.includes('claude'));
     assert.ok(result.enabled.includes('gemini'));
     assert.ok(result.enabled.includes('codex'));
-    assert.ok(result.enabled.includes('copilot'));
   });
 });
 
@@ -229,9 +221,6 @@ describe('getEnabledNonClaudeProviders', () => {
         '  codex:',
         '    enabled: true',
         '    primary: false',
-        '  copilot:',
-        '    enabled: false',
-        '    primary: false',
       ].join('\n')
     );
 
@@ -239,7 +228,6 @@ describe('getEnabledNonClaudeProviders', () => {
     assert.ok(result.includes('gemini'));
     assert.ok(result.includes('codex'));
     assert.ok(!result.includes('claude'), 'should not include claude');
-    assert.ok(!result.includes('copilot'), 'disabled provider should not appear');
   });
 });
 

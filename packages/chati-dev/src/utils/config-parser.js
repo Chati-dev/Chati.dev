@@ -22,7 +22,7 @@ export function parseProviderConfig(projectDir) {
   }
 
   const raw = readFileSync(configPath, 'utf-8');
-  const providers = ['claude', 'gemini', 'codex', 'copilot'];
+  const providers = ['claude', 'gemini', 'codex'];
   const enabled = [];
   let primary = 'claude';
 

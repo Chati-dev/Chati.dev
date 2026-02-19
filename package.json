@@ -32,7 +32,6 @@
     "claude",
     "gemini",
     "codex",
-    "copilot",
     "multi-llm"
   ]
 }

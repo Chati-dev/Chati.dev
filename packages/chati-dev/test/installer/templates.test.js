@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'js-yaml';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter, generateCopilotAgent } from '../../src/installer/templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter } from '../../src/installer/templates.js';
 
 const testConfig = {
   projectName: 'test-project',
@@ -171,7 +171,7 @@ describe('generateConfigYaml with llmProvider', () => {
   });
 
   it('enables selected provider in providers block', () => {
-    for (const provider of ['claude', 'gemini', 'codex', 'copilot']) {
+    for (const provider of ['claude', 'gemini', 'codex']) {
       const config = { ...testConfig, llmProvider: provider };
       const parsed = yaml.load(generateConfigYaml(config));
       assert.equal(parsed.providers[provider].enabled, true, `${provider} should be enabled`);
@@ -180,7 +180,7 @@ describe('generateConfigYaml with llmProvider', () => {
   });
 
   it('generates agent_overrides for non-claude providers', () => {
-    for (const provider of ['gemini', 'codex', 'copilot']) {
+    for (const provider of ['gemini', 'codex']) {
       const config = { ...testConfig, llmProvider: provider };
       const parsed = yaml.load(generateConfigYaml(config));
       assert.ok(parsed.agent_overrides, `${provider} should have agent_overrides`);
@@ -227,30 +227,11 @@ describe('generateConfigYaml with llmProvider', () => {
     assert.ok(models.has('mini'), 'Should have "mini" tier');
   });
 
-  it('uses correct tier names for copilot (claude-sonnet and gpt-5)', () => {
-    const config = { ...testConfig, llmProvider: 'copilot' };
-    const parsed = yaml.load(generateConfigYaml(config));
-    const models = new Set(Object.values(parsed.agent_overrides).map(o => o.model));
-    for (const model of models) {
-      assert.ok(
-        ['claude-sonnet', 'gpt-5'].includes(model),
-        `Unexpected copilot tier: ${model}. Expected "claude-sonnet" or "gpt-5".`
-      );
-    }
-  });
-
   it('enables gemini when gemini-cli is in selectedIDEs', () => {
     const config = { ...testConfig, selectedIDEs: ['gemini-cli'], llmProvider: 'gemini' };
     const parsed = yaml.load(generateConfigYaml(config));
     assert.equal(parsed.providers.gemini.enabled, true);
     assert.equal(parsed.providers.gemini.primary, true);
-  });
-
-  it('enables copilot when github-copilot is in selectedIDEs', () => {
-    const config = { ...testConfig, selectedIDEs: ['github-copilot'], llmProvider: 'copilot' };
-    const parsed = yaml.load(generateConfigYaml(config));
-    assert.equal(parsed.providers.copilot.enabled, true);
-    assert.equal(parsed.providers.copilot.primary, true);
   });
 
   it('enables codex when codex-cli is in selectedIDEs', () => {
@@ -315,43 +296,6 @@ describe('generateGeminiRouter', () => {
 
   it('does NOT contain runtime mapping tables', () => {
     const result = generateGeminiRouter();
-    assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
-    assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
-  });
-});
-
-describe('generateCopilotAgent', () => {
-  it('returns a non-empty markdown string', () => {
-    const result = generateCopilotAgent();
-    assert.ok(typeof result === 'string');
-    assert.ok(result.length > 0);
-    assert.ok(result.startsWith('#'), 'Should start with markdown heading');
-  });
-
-  it('includes language override section', () => {
-    const result = generateCopilotAgent();
-    assert.ok(result.includes('Language Override'));
-    assert.ok(result.includes('session.yaml'));
-  });
-
-  it('references the orchestrator', () => {
-    const result = generateCopilotAgent();
-    assert.ok(result.includes('chati.dev/orchestrator/chati.md'));
-  });
-
-  it('includes GitHub Copilot in the content', () => {
-    const result = generateCopilotAgent();
-    assert.ok(result.includes('GitHub Copilot'));
-  });
-
-  it('states files are pre-configured for GitHub Copilot CLI', () => {
-    const result = generateCopilotAgent();
-    assert.ok(result.includes('pre-configured for GitHub Copilot CLI'), 'Should state pre-configured');
-    assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
-  });
-
-  it('does NOT contain runtime mapping tables', () => {
-    const result = generateCopilotAgent();
     assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
     assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
   });

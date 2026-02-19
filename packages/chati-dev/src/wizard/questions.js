@@ -67,7 +67,6 @@ export async function stepLlmProvider() {
     { name: 'claude', label: t('installer.llm_provider_claude') },
     { name: 'gemini', label: t('installer.llm_provider_gemini') },
     { name: 'codex', label: t('installer.llm_provider_codex') },
-    { name: 'copilot', label: t('installer.llm_provider_copilot') },
   ];
 
   // Check availability of each provider
@@ -110,7 +109,7 @@ export async function stepConfirmation(config) {
   const { projectName, projectType, language, llmProvider, selectedMCPs, selectedIDEs } = config;
 
   const langName = SUPPORTED_LANGUAGES.find(l => l.value === language)?.label || language;
-  const providerNames = { claude: 'Claude (Anthropic)', gemini: 'Gemini (Google)', codex: 'Codex (OpenAI)', copilot: 'Copilot (GitHub)' };
+  const providerNames = { claude: 'Claude (Anthropic)', gemini: 'Gemini (Google)', codex: 'Codex (OpenAI)' };
   const providerDisplay = providerNames[llmProvider] || llmProvider;
   const ideNames = (selectedIDEs || ['claude-code'])
     .map(id => IDE_CONFIGS[id]?.name || id)

@@ -57,7 +57,7 @@
     "ides": {
       "type": "array",
       "items": {
-        "enum": ["claude-code", "vscode", "antigravity", "cursor", "gemini-cli", "github-copilot"]
+        "enum": ["claude-code", "vscode", "antigravity", "cursor", "gemini-cli", "codex-cli"]
       },
       "description": "Configured IDEs"
     },
@@ -169,7 +169,7 @@
           "recommended": { "enum": ["opus", "sonnet", "haiku"], "description": "Recommended model" },
           "actual": { "enum": ["opus", "sonnet", "haiku"], "description": "Model actually used" },
           "reason": { "type": "string", "description": "Why this model was selected (default, upgrade condition, no downgrade)" },
-          "provider": { "type": "string", "description": "CLI provider used (claude, gemini, codex, copilot)" },
+          "provider": { "type": "string", "description": "CLI provider used (claude, gemini, codex)" },
           "timestamp": { "type": "string", "format": "date-time" }
         }
       }

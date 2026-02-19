@@ -1,5 +1,5 @@
 /**
- * IDE Configuration Mapping (6 IDEs)
+ * IDE Configuration Mapping (5 IDEs)
  * Defines where chati.dev agents are deployed per IDE
  */
 export const IDE_CONFIGS = {
@@ -56,15 +56,6 @@ export const IDE_CONFIGS = {
     rulesFile: null,
     mcpConfigFile: '.gemini/settings.json',
     formatNotes: 'TOML command format',
-  },
-  'github-copilot': {
-    name: 'GitHub Copilot',
-    description: 'GitHub AI pair programmer',
-    recommended: false,
-    configPath: '.github/agents/',
-    rulesFile: '.github/copilot-instructions.md',
-    mcpConfigFile: null,
-    formatNotes: 'GitHub Copilot agent format',
   },
 };
 
