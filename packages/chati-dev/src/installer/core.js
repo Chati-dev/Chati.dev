@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { IDE_CONFIGS } from '../config/ide-configs.js';
 import { generateClaudeMCPConfig } from '../config/mcp-configs.js';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateGeminiRouter, generateCopilotAgent } from './templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexRouter, generateGeminiRouter, generateCopilotAgent } from './templates.js';
 import { generateContextFiles } from '../config/context-file-generator.js';
 import { verifyManifest } from './manifest.js';
 
@@ -101,37 +101,31 @@ export async function installFramework(config) {
     await configureIDE(targetDir, ideKey, selectedMCPs);
   }
 
-  // 4. Copy context files to .claude/rules/chati/ (auto-loaded by Claude Code)
-  const contextFiles = ['root.md', 'governance.md', 'protocols.md', 'quality.md'];
-  const claudeRulesDir = join(targetDir, '.claude', 'rules', 'chati');
-  createDir(claudeRulesDir);
-  for (const file of contextFiles) {
-    const src = join(FRAMEWORK_SOURCE, 'context', file);
-    if (existsSync(src)) {
-      copyFileSync(src, join(claudeRulesDir, file));
+  const hasClaude = selectedIDEs.includes('claude-code');
+  const hasNonClaude = selectedIDEs.some(ide => ide !== 'claude-code');
+
+  // 4. Generate base content (used as source for all provider context files)
+  const baseContent = generateClaudeMd({ projectName, projectType, language });
+
+  // 5. Claude Code specific: .claude/rules/chati/, CLAUDE.md, CLAUDE.local.md
+  if (hasClaude) {
+    const contextFiles = ['root.md', 'governance.md', 'protocols.md', 'quality.md'];
+    const claudeRulesDir = join(targetDir, '.claude', 'rules', 'chati');
+    createDir(claudeRulesDir);
+    for (const file of contextFiles) {
+      const src = join(FRAMEWORK_SOURCE, 'context', file);
+      if (existsSync(src)) {
+        copyFileSync(src, join(claudeRulesDir, file));
+      }
     }
+
+    writeFileSync(join(targetDir, 'CLAUDE.md'), baseContent, 'utf-8');
+    writeFileSync(join(targetDir, 'CLAUDE.local.md'), generateClaudeLocalMd(), 'utf-8');
   }
 
-  // 5. Create CLAUDE.md (minimal — framework rules auto-loaded from .claude/rules/chati/)
-  writeFileSync(
-    join(targetDir, 'CLAUDE.md'),
-    generateClaudeMd({ projectName, projectType, language }),
-    'utf-8'
-  );
-
-  // 6. Create CLAUDE.local.md (runtime state — session lock, current agent)
-  writeFileSync(
-    join(targetDir, 'CLAUDE.local.md'),
-    generateClaudeLocalMd(),
-    'utf-8'
-  );
-
-  // 7. Generate context files for non-Claude providers (GEMINI.md, AGENTS.md)
-  // Copilot CLI natively reads AGENTS.md + CLAUDE.md + GEMINI.md — no separate COPILOT.md needed.
-  const hasNonClaudeProvider = (llmProvider && llmProvider !== 'claude') ||
-    selectedIDEs.some(ide => ['gemini-cli', 'github-copilot'].includes(ide));
-  if (hasNonClaudeProvider) {
-    generateContextFiles(targetDir);
+  // 6. Non-Claude providers: generate context files (GEMINI.md, AGENTS.md) from base content
+  if (hasNonClaude) {
+    generateContextFiles(targetDir, baseContent);
   }
 }
 
@@ -307,6 +301,9 @@ Pass through all context: session state, handoffs, artifacts, and user input.
         'utf-8'
       );
     }
+  } else if (ideKey === 'codex-cli') {
+    // Codex CLI: /chati slash command via .codex/commands/
+    writeFileSync(join(targetDir, '.codex', 'commands', 'chati.md'), generateCodexRouter(), 'utf-8');
   } else if (ideKey === 'gemini-cli') {
     // Gemini CLI: TOML command file (native format for /chati command)
     writeFileSync(join(targetDir, '.gemini', 'commands', 'chati.toml'), generateGeminiRouter(), 'utf-8');

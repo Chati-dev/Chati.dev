@@ -93,16 +93,16 @@ describe('installFramework', () => {
 // Multi-CLI provider directory tests — Gemini CLI (TOML format)
 // ---------------------------------------------------------------------------
 
-describe('installFramework with gemini-cli', () => {
+describe('installFramework with gemini-cli (standalone)', () => {
   let tempDir;
   const geminiConfig = {
     projectName: 'gemini-project',
     projectType: 'greenfield',
     language: 'pt',
-    selectedIDEs: ['claude-code', 'gemini-cli'],
+    selectedIDEs: ['gemini-cli'],
     selectedMCPs: [],
     version: '3.0.1',
-    llmProvider: 'claude',
+    llmProvider: 'gemini',
   };
 
   before(async () => {
@@ -143,9 +143,14 @@ describe('installFramework with gemini-cli', () => {
       'Should NOT create rules/ (not a Gemini CLI concept)');
   });
 
-  it('creates .claude/ alongside .gemini/', () => {
-    assert.ok(existsSync(join(tempDir, '.claude', 'commands', 'chati.md')));
-    assert.ok(existsSync(join(tempDir, '.gemini', 'commands', 'chati.toml')));
+  it('does NOT create .claude/ when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, '.claude')),
+      'Should NOT create .claude/ when only gemini-cli is selected');
+  });
+
+  it('does NOT create CLAUDE.md when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, 'CLAUDE.md')),
+      'Should NOT create CLAUDE.md when only gemini-cli is selected');
   });
 
   it('enables gemini provider in config.yaml', () => {
@@ -159,16 +164,16 @@ describe('installFramework with gemini-cli', () => {
 // Multi-CLI provider directory tests — GitHub Copilot (agents/ format)
 // ---------------------------------------------------------------------------
 
-describe('installFramework with github-copilot', () => {
+describe('installFramework with github-copilot (standalone)', () => {
   let tempDir;
   const copilotConfig = {
     projectName: 'copilot-project',
     projectType: 'brownfield',
     language: 'en',
-    selectedIDEs: ['claude-code', 'github-copilot'],
+    selectedIDEs: ['github-copilot'],
     selectedMCPs: [],
     version: '3.0.1',
-    llmProvider: 'claude',
+    llmProvider: 'copilot',
   };
 
   before(async () => {
@@ -216,14 +221,75 @@ describe('installFramework with github-copilot', () => {
       'Should NOT generate COPILOT.md (Copilot reads AGENTS.md + CLAUDE.md + GEMINI.md)');
   });
 
-  it('creates .claude/ alongside .github/', () => {
-    assert.ok(existsSync(join(tempDir, '.claude', 'commands', 'chati.md')));
-    assert.ok(existsSync(join(tempDir, '.github', 'agents', 'chati.md')));
+  it('does NOT create .claude/ when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, '.claude')),
+      'Should NOT create .claude/ when only github-copilot is selected');
+  });
+
+  it('does NOT create CLAUDE.md when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, 'CLAUDE.md')),
+      'Should NOT create CLAUDE.md when only github-copilot is selected');
   });
 
   it('enables copilot provider in config.yaml', () => {
     const configPath = join(tempDir, 'chati.dev', 'config.yaml');
     const content = readFileSync(configPath, 'utf-8');
     assert.ok(content.includes('copilot'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Multi-CLI provider directory tests — Codex CLI (standalone)
+// ---------------------------------------------------------------------------
+
+describe('installFramework with codex-cli (standalone)', () => {
+  let tempDir;
+  const codexConfig = {
+    projectName: 'codex-project',
+    projectType: 'greenfield',
+    language: 'en',
+    selectedIDEs: ['codex-cli'],
+    selectedMCPs: [],
+    version: '3.0.1',
+    llmProvider: 'codex',
+  };
+
+  before(async () => {
+    tempDir = mkdtempSync(join(tmpdir(), 'chati-codex-'));
+    codexConfig.targetDir = tempDir;
+    await installFramework(codexConfig);
+  });
+
+  after(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('creates .codex/commands/ directory', () => {
+    assert.ok(existsSync(join(tempDir, '.codex', 'commands')));
+  });
+
+  it('creates .codex/commands/chati.md (/chati slash command)', () => {
+    const routerPath = join(tempDir, '.codex', 'commands', 'chati.md');
+    assert.ok(existsSync(routerPath), 'Should create chati.md command');
+    const content = readFileSync(routerPath, 'utf-8');
+    assert.ok(content.includes('Thin Router'), 'Should be a thin router');
+    assert.ok(content.includes('orchestrator'), 'Should reference orchestrator');
+    assert.ok(content.includes('AGENTS.md'), 'Should reference AGENTS.md');
+  });
+
+  it('does NOT create .claude/ when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, '.claude')),
+      'Should NOT create .claude/ when only codex-cli is selected');
+  });
+
+  it('does NOT create CLAUDE.md when Claude is not selected', () => {
+    assert.ok(!existsSync(join(tempDir, 'CLAUDE.md')),
+      'Should NOT create CLAUDE.md when only codex-cli is selected');
+  });
+
+  it('enables codex provider in config.yaml', () => {
+    const configPath = join(tempDir, 'chati.dev', 'config.yaml');
+    const content = readFileSync(configPath, 'utf-8');
+    assert.ok(content.includes('codex'));
   });
 });

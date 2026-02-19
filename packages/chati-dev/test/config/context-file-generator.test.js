@@ -38,6 +38,9 @@ const SAMPLE_CLAUDE_MD = [
   'Hooks intercept events and enforce rules.',
   'They run before and after agent execution.',
   '',
+  '## Chati.dev',
+  'Type `/chati` to start.',
+  '',
   '## Pipeline',
   'DISCOVER -> PLAN -> BUILD -> DEPLOY',
   '',
@@ -179,6 +182,11 @@ describe('generateAgentsMd', () => {
   it('does not leave triple blank lines after stripping', () => {
     const result = generateAgentsMd(SAMPLE_CLAUDE_MD);
     assert.ok(!result.includes('\n\n\n'), 'Should not have 3+ consecutive newlines');
+  });
+
+  it('preserves /chati command (Codex supports slash commands)', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD);
+    assert.ok(result.includes('/chati'), 'Should preserve /chati reference (Codex has slash commands)');
   });
 
   it('preserves non-replaced, non-hook content', () => {

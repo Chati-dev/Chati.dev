@@ -8,6 +8,7 @@ export {
   spawnParallelGroup,
   killTerminal,
   getTerminalStatus,
+  cleanParentEnv,
   _resetCounter,
 } from './spawner.js';
 

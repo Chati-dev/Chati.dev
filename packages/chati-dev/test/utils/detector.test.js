@@ -52,7 +52,7 @@ describe('detectInstalledIDEs', () => {
   });
 
   it('contains only known IDE identifiers', () => {
-    const knownIDEs = ['claude-code', 'vscode', 'cursor', 'antigravity', 'gemini-cli', 'github-copilot'];
+    const knownIDEs = ['claude-code', 'vscode', 'cursor', 'antigravity', 'codex-cli', 'gemini-cli', 'github-copilot'];
     const result = detectInstalledIDEs();
     for (const ide of result) {
       assert.ok(knownIDEs.includes(ide), `Unknown IDE: ${ide}`);

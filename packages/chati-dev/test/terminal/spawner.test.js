@@ -10,6 +10,7 @@ import assert from 'node:assert/strict';
 import {
   buildSpawnCommand,
   getTerminalStatus,
+  cleanParentEnv,
   _resetCounter,
 } from '../../src/terminal/spawner.js';
 
@@ -218,6 +219,102 @@ describe('spawner', () => {
       const result = await killTerminal(handle);
       assert.equal(result.killed, false);
       assert.equal(result.exitCode, 0);
+    });
+  });
+
+  describe('cleanParentEnv', () => {
+    it('should remove CLAUDECODE from environment', () => {
+      const env = {
+        PATH: '/usr/bin',
+        HOME: '/home/user',
+        CLAUDECODE: '1',
+      };
+      const cleaned = cleanParentEnv(env);
+      assert.equal(cleaned.CLAUDECODE, undefined);
+      assert.equal(cleaned.PATH, '/usr/bin');
+      assert.equal(cleaned.HOME, '/home/user');
+    });
+
+    it('should remove CLAUDE_CODE_ prefixed variables', () => {
+      const env = {
+        PATH: '/usr/bin',
+        CLAUDE_CODE_ENTRYPOINT: 'claude-vscode',
+        CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING: 'true',
+      };
+      const cleaned = cleanParentEnv(env);
+      assert.equal(cleaned.CLAUDE_CODE_ENTRYPOINT, undefined);
+      assert.equal(cleaned.CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING, undefined);
+      assert.equal(cleaned.PATH, '/usr/bin');
+    });
+
+    it('should remove CLAUDE_AGENT_SDK_ prefixed variables', () => {
+      const env = {
+        PATH: '/usr/bin',
+        CLAUDE_AGENT_SDK_VERSION: '0.2.45',
+      };
+      const cleaned = cleanParentEnv(env);
+      assert.equal(cleaned.CLAUDE_AGENT_SDK_VERSION, undefined);
+      assert.equal(cleaned.PATH, '/usr/bin');
+    });
+
+    it('should preserve CLAUDE_API_KEY and ANTHROPIC_API_KEY', () => {
+      const env = {
+        CLAUDE_API_KEY: 'sk-ant-test-key',
+        ANTHROPIC_API_KEY: 'sk-ant-other-key',
+        CLAUDECODE: '1',
+      };
+      const cleaned = cleanParentEnv(env);
+      assert.equal(cleaned.CLAUDE_API_KEY, 'sk-ant-test-key');
+      assert.equal(cleaned.ANTHROPIC_API_KEY, 'sk-ant-other-key');
+      assert.equal(cleaned.CLAUDECODE, undefined);
+    });
+
+    it('should handle empty environment', () => {
+      const cleaned = cleanParentEnv({});
+      assert.deepEqual(cleaned, {});
+    });
+
+    it('should remove all known Claude Code vars at once', () => {
+      const env = {
+        PATH: '/usr/bin',
+        HOME: '/home/user',
+        CLAUDECODE: '1',
+        CLAUDE_CODE_ENTRYPOINT: 'claude-vscode',
+        CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING: 'true',
+        CLAUDE_AGENT_SDK_VERSION: '0.2.45',
+        CLAUDE_API_KEY: 'sk-ant-preserve-me',
+        CHATI_AGENT: 'dev',
+      };
+      const cleaned = cleanParentEnv(env);
+
+      // Removed
+      assert.equal(cleaned.CLAUDECODE, undefined);
+      assert.equal(cleaned.CLAUDE_CODE_ENTRYPOINT, undefined);
+      assert.equal(cleaned.CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING, undefined);
+      assert.equal(cleaned.CLAUDE_AGENT_SDK_VERSION, undefined);
+
+      // Preserved
+      assert.equal(cleaned.PATH, '/usr/bin');
+      assert.equal(cleaned.HOME, '/home/user');
+      assert.equal(cleaned.CLAUDE_API_KEY, 'sk-ant-preserve-me');
+      assert.equal(cleaned.CHATI_AGENT, 'dev');
+    });
+
+    it('should not mutate the input object', () => {
+      const env = { CLAUDECODE: '1', PATH: '/usr/bin' };
+      const original = { ...env };
+      cleanParentEnv(env);
+      assert.deepEqual(env, original);
+    });
+
+    it('should handle future CLAUDE_CODE_ vars by prefix', () => {
+      const env = {
+        CLAUDE_CODE_SOME_FUTURE_FLAG: 'true',
+        CLAUDE_CODE_ANOTHER_SETTING: 'value',
+      };
+      const cleaned = cleanParentEnv(env);
+      assert.equal(cleaned.CLAUDE_CODE_SOME_FUTURE_FLAG, undefined);
+      assert.equal(cleaned.CLAUDE_CODE_ANOTHER_SETTING, undefined);
     });
   });
 });

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'js-yaml';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateGeminiRouter, generateCopilotAgent } from '../../src/installer/templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexRouter, generateGeminiRouter, generateCopilotAgent } from '../../src/installer/templates.js';
 
 const testConfig = {
   projectName: 'test-project',
@@ -240,17 +240,24 @@ describe('generateConfigYaml with llmProvider', () => {
   });
 
   it('enables gemini when gemini-cli is in selectedIDEs', () => {
-    const config = { ...testConfig, selectedIDEs: ['claude-code', 'gemini-cli'], llmProvider: 'claude' };
+    const config = { ...testConfig, selectedIDEs: ['gemini-cli'], llmProvider: 'gemini' };
     const parsed = yaml.load(generateConfigYaml(config));
     assert.equal(parsed.providers.gemini.enabled, true);
-    assert.equal(parsed.providers.gemini.primary, false);
+    assert.equal(parsed.providers.gemini.primary, true);
   });
 
   it('enables copilot when github-copilot is in selectedIDEs', () => {
-    const config = { ...testConfig, selectedIDEs: ['claude-code', 'github-copilot'], llmProvider: 'claude' };
+    const config = { ...testConfig, selectedIDEs: ['github-copilot'], llmProvider: 'copilot' };
     const parsed = yaml.load(generateConfigYaml(config));
     assert.equal(parsed.providers.copilot.enabled, true);
-    assert.equal(parsed.providers.copilot.primary, false);
+    assert.equal(parsed.providers.copilot.primary, true);
+  });
+
+  it('enables codex when codex-cli is in selectedIDEs', () => {
+    const config = { ...testConfig, selectedIDEs: ['codex-cli'], llmProvider: 'codex' };
+    const parsed = yaml.load(generateConfigYaml(config));
+    assert.equal(parsed.providers.codex.enabled, true);
+    assert.equal(parsed.providers.codex.primary, true);
   });
 
   it('does not enable gemini when only claude-code is in selectedIDEs', () => {
@@ -328,6 +335,42 @@ describe('generateCopilotAgent', () => {
 
   it('does not reference Claude Code', () => {
     const result = generateCopilotAgent();
+    assert.ok(!result.includes('Claude Code'));
+    assert.ok(!result.includes('CLAUDE.md'));
+  });
+});
+
+describe('generateCodexRouter', () => {
+  it('returns a non-empty markdown string', () => {
+    const result = generateCodexRouter();
+    assert.ok(typeof result === 'string');
+    assert.ok(result.length > 0);
+    assert.ok(result.startsWith('#'), 'Should start with markdown heading');
+  });
+
+  it('is a thin router (same pattern as Claude Code)', () => {
+    const result = generateCodexRouter();
+    assert.ok(result.includes('Thin Router'), 'Should be a thin router');
+  });
+
+  it('includes language override section', () => {
+    const result = generateCodexRouter();
+    assert.ok(result.includes('Language Override'));
+    assert.ok(result.includes('session.yaml'));
+  });
+
+  it('references the orchestrator', () => {
+    const result = generateCodexRouter();
+    assert.ok(result.includes('chati.dev/orchestrator/chati.md'));
+  });
+
+  it('references AGENTS.md as context file', () => {
+    const result = generateCodexRouter();
+    assert.ok(result.includes('AGENTS.md'));
+  });
+
+  it('does not reference Claude Code', () => {
+    const result = generateCodexRouter();
     assert.ok(!result.includes('Claude Code'));
     assert.ok(!result.includes('CLAUDE.md'));
   });

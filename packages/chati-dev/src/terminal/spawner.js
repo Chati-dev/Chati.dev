@@ -36,6 +36,48 @@ export function _resetCounter() {
 }
 
 // ---------------------------------------------------------------------------
+// Environment cleaning
+// ---------------------------------------------------------------------------
+
+/**
+ * Environment variable prefixes injected by Claude Code that must NOT
+ * leak into spawned CLI processes.  A spawned `claude --print` that
+ * inherits `CLAUDECODE=1` will refuse to start ("cannot be launched
+ * inside another Claude Code session").
+ *
+ * @type {string[]}
+ */
+const BLOCKED_ENV_PREFIXES = ['CLAUDE_CODE_', 'CLAUDE_AGENT_SDK_'];
+
+/**
+ * Exact environment variable names to strip (no prefix match needed).
+ * @type {string[]}
+ */
+const BLOCKED_ENV_EXACT = ['CLAUDECODE'];
+
+/**
+ * Return a copy of the given environment with Claude Code-specific
+ * variables removed.  This prevents "nested session" errors when
+ * spawning `claude --print` from inside a Claude Code session.
+ *
+ * The function is intentionally conservative — it only removes vars
+ * that are known to be injected by the Claude Code host process.
+ * User-configured vars like CLAUDE_API_KEY are preserved.
+ *
+ * @param {Record<string, string>} env - Source environment (typically process.env)
+ * @returns {Record<string, string>} Cleaned environment (new object)
+ */
+export function cleanParentEnv(env) {
+  const cleaned = {};
+  for (const [key, value] of Object.entries(env)) {
+    if (BLOCKED_ENV_EXACT.includes(key)) continue;
+    if (BLOCKED_ENV_PREFIXES.some(prefix => key.startsWith(prefix))) continue;
+    cleaned[key] = value;
+  }
+  return cleaned;
+}
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
@@ -145,7 +187,7 @@ export function spawnTerminal(config) {
 
   const child = spawn(command, args, {
     cwd,
-    env: { ...process.env, ...env },
+    env: { ...cleanParentEnv(process.env), ...env },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
 

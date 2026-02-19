@@ -39,6 +39,15 @@ export const IDE_CONFIGS = {
     mcpConfigFile: null,
     formatNotes: 'Cursor rules format',
   },
+  'codex-cli': {
+    name: 'Codex CLI',
+    description: 'OpenAI Codex terminal agent',
+    recommended: false,
+    configPath: '.codex/commands/',
+    rulesFile: 'AGENTS.md',
+    mcpConfigFile: null,
+    formatNotes: 'Markdown command format',
+  },
   'gemini-cli': {
     name: 'Gemini CLI',
     description: 'Google AI terminal agent',

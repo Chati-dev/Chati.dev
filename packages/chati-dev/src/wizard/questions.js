@@ -4,6 +4,7 @@ import { detectProjectType } from '../utils/detector.js';
 import { showSummary, showChecklist } from './feedback.js';
 import { brand, dim, success } from '../utils/colors.js';
 import { isProviderAvailable } from '../terminal/cli-registry.js';
+import { IDE_CONFIGS } from '../config/ide-configs.js';
 
 /**
  * Step 1: Language Selection (always in English)
@@ -106,12 +107,14 @@ export async function stepLlmProvider() {
  * Step 4: Confirmation
  */
 export async function stepConfirmation(config) {
-  const { projectName, projectType, language, llmProvider, selectedMCPs } = config;
+  const { projectName, projectType, language, llmProvider, selectedMCPs, selectedIDEs } = config;
 
   const langName = SUPPORTED_LANGUAGES.find(l => l.value === language)?.label || language;
   const providerNames = { claude: 'Claude (Anthropic)', gemini: 'Gemini (Google)', codex: 'Codex (OpenAI)', copilot: 'Copilot (GitHub)' };
   const providerDisplay = providerNames[llmProvider] || llmProvider;
-  const ideNames = 'Claude Code (auto-configured)';
+  const ideNames = (selectedIDEs || ['claude-code'])
+    .map(id => IDE_CONFIGS[id]?.name || id)
+    .join(', ') + ' (auto-configured)';
   const mcpNames = selectedMCPs.length > 0
     ? `${selectedMCPs.join(', ')} (auto-installed)`
     : 'None';

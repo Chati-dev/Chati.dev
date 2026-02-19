@@ -7,7 +7,7 @@
  *
  * Provider conventions (verified Feb 2026):
  * - Gemini CLI: auto-loads GEMINI.md, uses .gemini/commands/*.toml, no rules/
- * - Codex CLI:  auto-loads AGENTS.md, no commands/ or rules/ concept
+ * - Codex CLI:  auto-loads AGENTS.md, uses .codex/commands/*.md for /chati
  * - Copilot CLI: auto-loads AGENTS.md + CLAUDE.md + GEMINI.md natively (no COPILOT.md needed)
  */
 
@@ -143,19 +143,22 @@ export function generateAgentsMd(content) {
  * AGENTS.md, CLAUDE.md, and GEMINI.md.
  *
  * @param {string} projectDir - Project root directory
+ * @param {string} [baseContent] - Optional base content (used when CLAUDE.md doesn't exist on disk)
  * @returns {{ generated: string[], skipped: string[], warning: string|null }}
  */
-export function generateContextFiles(projectDir) {
+export function generateContextFiles(projectDir, baseContent = null) {
   const result = { generated: [], skipped: [], warning: null };
 
-  // Read CLAUDE.md
-  const claudeMdPath = join(projectDir, 'CLAUDE.md');
-  if (!existsSync(claudeMdPath)) {
-    result.warning = 'CLAUDE.md not found — skipping context file generation';
-    return result;
+  // Use provided base content or read CLAUDE.md from disk
+  let claudeContent = baseContent;
+  if (!claudeContent) {
+    const claudeMdPath = join(projectDir, 'CLAUDE.md');
+    if (!existsSync(claudeMdPath)) {
+      result.warning = 'CLAUDE.md not found and no base content provided — skipping context file generation';
+      return result;
+    }
+    claudeContent = readFileSync(claudeMdPath, 'utf-8');
   }
-
-  const claudeContent = readFileSync(claudeMdPath, 'utf-8');
 
   // Determine enabled providers from config.yaml
   const enabledProviders = resolveEnabledProviders(projectDir);

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.2] - 2026-02-19
+
+### Fixed
+
+- **Multi-CLI Provider Isolation**: Selecting Codex/Gemini/Copilot no longer installs Claude Code files (.claude/, CLAUDE.md, CLAUDE.local.md)
+- **Codex CLI as First-Class Citizen**: Added `codex-cli` IDE config, `.codex/commands/chati.md` thin router, proper /chati slash command support
+- **Gemini CLI Standalone**: Gemini-only installs no longer create Claude-specific directories
+- **GitHub Copilot Standalone**: Copilot-only installs no longer create Claude-specific files
+- **Context File Generation**: GEMINI.md and AGENTS.md now generated from in-memory base content (no longer requires CLAUDE.md on disk)
+- **Hardcoded Claude Code Fallback**: Quick Start no longer shows "Claude Code" when non-Claude provider is selected
+- **Dynamic IDE Names**: Confirmation step and dashboard now show provider-specific IDE names
+
+### Added
+
+- `codex-cli` entry in IDE_CONFIGS with `.codex/commands/` config path
+- `generateCodexRouter()` template for Codex CLI thin router
+- Codex CLI handler in `configureIDE()` creating `.codex/commands/chati.md`
+- Provider-specific model maps in config.yaml generation
+- Standalone test suites for Gemini CLI, Codex CLI, and GitHub Copilot installations
+- Codex CLI spawner adapter in terminal module
+
+### Stats
+
+- 14 files changed, 392 insertions, 66 deletions
+- 1206 tests passing, 0 failures
+
 ## [3.0.0] - 2026-02-17
 
 ### Added

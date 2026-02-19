@@ -9,6 +9,18 @@ import { installFramework } from '../installer/core.js';
 import { validateInstallation } from '../installer/validator.js';
 import { t } from './i18n.js';
 import { DEFAULT_MCPS } from '../config/mcp-configs.js';
+import { IDE_CONFIGS } from '../config/ide-configs.js';
+
+/**
+ * Map LLM provider to its primary IDE.
+ * Each provider maps to its own standalone IDE — no cross-contamination.
+ */
+const PROVIDER_TO_IDE = {
+  claude: ['claude-code'],
+  gemini: ['gemini-cli'],
+  codex: ['codex-cli'],
+  copilot: ['github-copilot'],
+};
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VERSION = JSON.parse(readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf-8')).version;
@@ -38,8 +50,8 @@ export async function runWizard(targetDir, options = {}) {
   // Step 3: LLM Provider
   const llmProvider = options.llmProvider || await stepLlmProvider();
 
-  // Auto-configured: Claude Code + default MCPs
-  const selectedIDEs = options.ides || ['claude-code'];
+  // Map provider to its standalone IDE(s)
+  const selectedIDEs = options.ides || PROVIDER_TO_IDE[llmProvider] || ['claude-code'];
   const selectedMCPs = options.mcps || DEFAULT_MCPS;
 
   // Step 4: Confirmation
@@ -71,7 +83,9 @@ export async function runWizard(targetDir, options = {}) {
     showStep(t('installer.created_commands'));
     showStep(t('installer.installed_constitution'));
     showStep(t('installer.created_session'));
-    showStep(t('installer.created_claude_md'));
+    if (selectedIDEs.includes('claude-code')) {
+      showStep(t('installer.created_claude_md'));
+    }
     showStep(t('installer.created_memories'));
     showStep(t('installer.installed_intelligence'));
     showStep(`${t('installer.configured_mcps')} ${selectedMCPs.join(', ')}`);
@@ -103,9 +117,13 @@ export async function runWizard(targetDir, options = {}) {
     console.log();
     p.outro(t('installer.success'));
 
+    // Show quick start — same experience across all providers
+    const primaryIDE = selectedIDEs[selectedIDEs.length - 1];
+    const primaryIDEName = IDE_CONFIGS[primaryIDE]?.name || primaryIDE;
+    const invokeCmd = primaryIDE === 'github-copilot' ? '@chati' : '/chati';
     showQuickStart(t('installer.quick_start_title'), [
-      `${t('installer.quick_start_1')} (Claude Code)`,
-      t('installer.quick_start_2'),
+      `${t('installer.quick_start_1')} (${primaryIDEName})`,
+      `Type: ${invokeCmd}`,
       t('installer.quick_start_3'),
     ]);
 

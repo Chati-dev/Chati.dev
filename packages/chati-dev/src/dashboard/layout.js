@@ -64,7 +64,9 @@ export function buildProjectInfo(data) {
   const state = formatState(project.state);
   const mode = formatMode(session.execution_mode);
   const lang = session.language || 'en';
-  const ide = (session.ides || [])[0] || 'unknown';
+  // Show the provider-specific IDE (last in the list) rather than always claude-code
+  const ides = session.ides || [];
+  const ide = ides[ides.length - 1] || 'unknown';
 
   return [
     brand('│') + `  ${dim('Project:')} ${name}` + ' '.repeat(Math.max(1, 30 - name.length)) + `${dim('Type:')} ${type}` + ' '.repeat(Math.max(1, 18 - type.length)) + brand('│'),
