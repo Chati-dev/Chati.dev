@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-02-19
+
+### Added
+
+- **Framework Adapter**: New `framework-adapter.js` transforms Claude-specific framework files into provider-native versions at install time. Each LLM reads instructions written natively for it — zero runtime translation needed.
+- **Pre-configured orchestrator per provider**: Orchestrator, 12 agent files, constitution, and context files are adapted with correct model names, file references, and CLI names during installation.
+- **59 new framework-adapter tests**: Comprehensive coverage for all 3 non-Claude providers (gemini, codex, copilot), edge cases, replacement ordering, and real-world content patterns.
+
+### Changed
+
+- **Simplified entry points**: Removed runtime mapping tables from Codex SKILL.md, Gemini TOML, and Copilot agent.md. Replaced with "pre-configured for {Provider}" since orchestrator files are now pre-adapted.
+- **ADAPTABLE_FILES**: 16 framework files adapted per provider (orchestrator, 12 agents, constitution, 2 context files).
+
+### Fixed
+
+- **Gemini creating GEMINI.local.md**: All CLAUDE.local.md references pre-replaced with .chati/session.yaml in Gemini orchestrator.
+- **Codex showing "Model recommendation: haiku"**: Model names pre-replaced with codex/mini tiers in Codex orchestrator and agents.
+- **"NEVER act as generic Claude" on all providers**: Pre-replaced with "NEVER act as generic AI assistant" for non-Claude providers.
+- **Inconsistent UX across providers**: LLMs no longer waste cognitive load on mapping tables, leading to more consistent instruction-following.
+
+### Stats
+
+- 1276 tests passing, 0 failures
+
 ## [3.0.6] - 2026-02-19
 
 ### Fixed

@@ -52,7 +52,7 @@ export function generateSessionYaml(config) {
  * Deep reasoning agents (architect, qa, dev, detail, brownfield-wu) get the top model.
  * Lightweight agents (brief, phases, ux, greenfield-wu, devops, orchestrator) get the fast model.
  */
-const PROVIDER_MODEL_MAPS = {
+export const PROVIDER_MODEL_MAPS = {
   claude: {
     deep: 'opus', light: 'sonnet', minimal: 'haiku',
     agents: {
@@ -180,46 +180,18 @@ ALL responses MUST be in this language. This overrides any global setting.
 
 If session.yaml does not exist or has no language field, default to English.
 
-## CRITICAL — Provider Context Mapping
-
-The orchestrator was written for Claude Code. You are running on **Codex CLI**.
-When the orchestrator references Claude-specific files, use these equivalents:
-
-| Orchestrator says | You use instead |
-|-------------------|-----------------|
-| \`CLAUDE.md\` | \`AGENTS.md\` |
-| \`CLAUDE.local.md\` | \`.chati/session.yaml\` (session state only) |
-| \`.claude/rules/chati/\` | \`chati.dev/context/\` |
-| \`.claude/commands/\` | \`.agents/skills/\` |
-| \`/chati\` | \`$chati\` |
-
-**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
-
-## CRITICAL — Model Name Mapping
-
-The orchestrator and agents reference Claude model names. Replace them with Codex equivalents:
-
-| Orchestrator says | You use instead |
-|-------------------|-----------------|
-| \`opus\` | \`codex\` |
-| \`sonnet\` | \`mini\` |
-| \`haiku\` | \`mini\` |
-| \`/model opus\` | \`/model codex\` |
-| \`/model sonnet\` | \`/model mini\` |
-| \`/model haiku\` | \`/model mini\` |
-
-When the orchestrator displays a model recommendation (e.g. "Model recommendation: haiku"),
-translate the model name using the table above before showing it to the user.
-
 ## Load
+
+The orchestrator and all agent files are **pre-configured for Codex CLI**.
+No translation needed — follow all instructions as written.
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Apply the Provider Context Mapping AND Model Name Mapping above when following the orchestrator instructions.
+**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)
-- \`AGENTS.md\` (project context — auto-generated from base content)
+- \`AGENTS.md\` (project context)
 - \`chati.dev/artifacts/handoffs/\` (latest handoff)
 - \`chati.dev/config.yaml\` (version info)
 
@@ -237,37 +209,21 @@ export function generateGeminiRouter() {
   return `description = "Activate Chati.dev orchestrator"
 prompt = """
 CRITICAL — Language Override:
-Read \`.chati/session.yaml\` field \`language\` BEFORE anything else.
+Read .chati/session.yaml field "language" BEFORE anything else.
 ALL responses MUST be in this language (en, pt, es, fr).
 If session.yaml does not exist or has no language field, default to English.
 
-CRITICAL — Provider Context Mapping:
-The orchestrator was written for Claude Code. You are running on Gemini CLI.
-When the orchestrator references Claude-specific files, use these equivalents:
-- CLAUDE.md -> GEMINI.md
-- CLAUDE.local.md -> .chati/session.yaml (session state only)
-- .claude/rules/chati/ -> chati.dev/context/
-- .claude/commands/ -> .gemini/commands/
+The orchestrator and all agent files are pre-configured for Gemini CLI.
+No translation needed — follow all instructions as written.
+
+Read and execute the full orchestrator at chati.dev/orchestrator/chati.md.
 NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.
 
-CRITICAL — Model Name Mapping:
-The orchestrator and agents reference Claude model names. Replace them with Gemini equivalents:
-- opus -> pro
-- sonnet -> flash
-- haiku -> flash
-- /model opus -> /model pro
-- /model sonnet -> /model flash
-- /model haiku -> /model flash
-When displaying model recommendations, translate names using the mapping above.
-
-Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
-Apply the Provider Context Mapping AND Model Name Mapping above when following instructions.
-
 Context to load:
-- \`.chati/session.yaml\` (session state — includes language)
-- \`GEMINI.md\` (project context — auto-generated)
-- \`chati.dev/artifacts/handoffs/\` (latest handoff)
-- \`chati.dev/config.yaml\` (version info)
+- .chati/session.yaml (session state — includes language)
+- GEMINI.md (project context)
+- chati.dev/artifacts/handoffs/ (latest handoff)
+- chati.dev/config.yaml (version info)
 
 User input: {{args}}
 """
@@ -299,42 +255,14 @@ ALL responses MUST be in this language. This overrides any global setting.
 
 If session.yaml does not exist or has no language field, default to English.
 
-## CRITICAL — Provider Context Mapping
-
-The orchestrator was written for Claude Code. You are running on **GitHub Copilot CLI**.
-When the orchestrator references Claude-specific files, use these equivalents:
-
-| Orchestrator says | You use instead |
-|-------------------|-----------------|
-| \`CLAUDE.md\` | \`AGENTS.md\` |
-| \`CLAUDE.local.md\` | \`.chati/session.yaml\` (session state only) |
-| \`.claude/rules/chati/\` | \`chati.dev/context/\` |
-| \`.claude/commands/\` | \`.github/agents/\` |
-| \`/chati\` | \`@chati\` |
-
-**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
-
-## CRITICAL — Model Name Mapping
-
-The orchestrator and agents reference Claude model names. Replace them with Copilot equivalents:
-
-| Orchestrator says | You use instead |
-|-------------------|-----------------|
-| \`opus\` | \`claude-sonnet\` |
-| \`sonnet\` | \`claude-sonnet\` |
-| \`haiku\` | \`gpt-5\` |
-| \`/model opus\` | \`/model claude-sonnet\` |
-| \`/model sonnet\` | \`/model claude-sonnet\` |
-| \`/model haiku\` | \`/model gpt-5\` |
-
-When the orchestrator displays a model recommendation (e.g. "Model recommendation: haiku"),
-translate the model name using the table above before showing it to the user.
-
 ## Load
+
+The orchestrator and all agent files are **pre-configured for GitHub Copilot CLI**.
+No translation needed — follow all instructions as written.
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Apply the Provider Context Mapping AND Model Name Mapping above when following the orchestrator instructions.
+**NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)

@@ -70,7 +70,17 @@ Before determining state, check if the user passed a subcommand:
 -> First run. Go to Step 4 (New Project Setup)
 ```
 
-**If session.yaml has active project:**
+**If session.yaml has project BUT current_agent is empty AND all agents are "pending":**
+```
+-> Fresh install (installer created session.yaml but no agent has run yet).
+-> Skip directly to Step 4d (Route to First Agent).
+-> Use project.type from session.yaml (already set by installer).
+-> Use language from session.yaml (already set by installer).
+-> Do NOT ask project type or language again — installer already collected these.
+-> Do NOT present options — immediately activate the first agent.
+```
+
+**If session.yaml has active project (current_agent is set OR at least one agent is not "pending"):**
 ```
 -> Resume session. Go to Step 5 (Session Resume)
 ```
@@ -155,9 +165,18 @@ user_level_confidence: 0.0
 ```
 
 #### 3d. Route to First Agent
+
+This step is reached either from Step 4 (full setup) OR directly from Step 3 (fresh install).
+In fresh install case, project.type and language are already in session.yaml — use them directly.
+
 ```
-If greenfield -> Read chati.dev/agents/discover/greenfield-wu.md -> Activate
-If brownfield -> Read chati.dev/agents/discover/brownfield-wu.md -> Activate
+1. Update session.yaml: current_agent = greenfield-wu | brownfield-wu (based on project.type)
+2. Activate Session Lock (see Session Lock Protocol)
+3. If greenfield -> Read chati.dev/agents/discover/greenfield-wu.md -> Activate IMMEDIATELY
+   If brownfield -> Read chati.dev/agents/discover/brownfield-wu.md -> Activate IMMEDIATELY
+4. The agent starts its work right away — no "Continue with X?" prompt needed
+   For greenfield-wu: begin asking the user about their project vision
+   For brownfield-wu: begin analyzing the existing codebase
 ```
 
 ### Step 5: Session Resume

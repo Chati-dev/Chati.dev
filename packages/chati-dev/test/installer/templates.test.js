@@ -302,18 +302,21 @@ describe('generateGeminiRouter', () => {
     assert.ok(result.includes('session.yaml'));
   });
 
-  it('includes provider context mapping (CLAUDE.md -> GEMINI.md)', () => {
+  it('states files are pre-configured for Gemini CLI', () => {
     const result = generateGeminiRouter();
-    assert.ok(result.includes('GEMINI.md'), 'Should map to GEMINI.md');
+    assert.ok(result.includes('pre-configured for Gemini CLI'), 'Should state pre-configured');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 
-  it('includes model name mapping (opus -> pro, sonnet/haiku -> flash)', () => {
+  it('references GEMINI.md as context file', () => {
     const result = generateGeminiRouter();
-    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
-    assert.ok(result.includes('opus -> pro'), 'Should map opus to pro');
-    assert.ok(result.includes('sonnet -> flash'), 'Should map sonnet to flash');
-    assert.ok(result.includes('haiku -> flash'), 'Should map haiku to flash');
+    assert.ok(result.includes('GEMINI.md'), 'Should reference GEMINI.md');
+  });
+
+  it('does NOT contain runtime mapping tables', () => {
+    const result = generateGeminiRouter();
+    assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
+    assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
   });
 });
 
@@ -341,17 +344,16 @@ describe('generateCopilotAgent', () => {
     assert.ok(result.includes('GitHub Copilot'));
   });
 
-  it('includes provider context mapping (CLAUDE.md -> AGENTS.md)', () => {
+  it('states files are pre-configured for GitHub Copilot CLI', () => {
     const result = generateCopilotAgent();
-    assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
+    assert.ok(result.includes('pre-configured for GitHub Copilot CLI'), 'Should state pre-configured');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 
-  it('includes model name mapping (opus/sonnet -> claude-sonnet, haiku -> gpt-5)', () => {
+  it('does NOT contain runtime mapping tables', () => {
     const result = generateCopilotAgent();
-    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
-    assert.ok(result.includes('claude-sonnet'), 'Should map to claude-sonnet');
-    assert.ok(result.includes('gpt-5'), 'Should map haiku to gpt-5');
+    assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
+    assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
   });
 });
 
@@ -390,16 +392,15 @@ describe('generateCodexSkill', () => {
     assert.ok(result.includes('$ARGUMENTS'), 'Should include $ARGUMENTS for user input');
   });
 
-  it('includes provider context mapping (CLAUDE.md -> AGENTS.md)', () => {
+  it('states files are pre-configured for Codex CLI', () => {
     const result = generateCodexSkill();
-    assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
+    assert.ok(result.includes('pre-configured for Codex CLI'), 'Should state pre-configured');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
 
-  it('includes model name mapping (opus -> codex, sonnet/haiku -> mini)', () => {
+  it('does NOT contain runtime mapping tables', () => {
     const result = generateCodexSkill();
-    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
-    assert.ok(result.includes('`codex`'), 'Should map opus to codex');
-    assert.ok(result.includes('`mini`'), 'Should map sonnet/haiku to mini');
+    assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
+    assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
   });
 });

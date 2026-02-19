@@ -5,6 +5,7 @@ import { IDE_CONFIGS } from '../config/ide-configs.js';
 import { generateClaudeMCPConfig } from '../config/mcp-configs.js';
 import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter, generateCopilotAgent } from './templates.js';
 import { generateContextFiles } from '../config/context-file-generator.js';
+import { adaptFrameworkFile, ADAPTABLE_FILES } from '../config/framework-adapter.js';
 import { verifyManifest } from './manifest.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -86,8 +87,8 @@ export async function installFramework(config) {
     createDir(join(memoriesBase, dir));
   }
 
-  // Copy framework files from source
-  copyFrameworkFiles(frameworkDir);
+  // Copy framework files from source (adapted for non-Claude providers)
+  copyFrameworkFiles(frameworkDir, llmProvider || 'claude');
 
   // Write config.yaml
   writeFileSync(
@@ -132,7 +133,7 @@ export async function installFramework(config) {
 /**
  * Copy framework files from the Chati.dev source directory
  */
-function copyFrameworkFiles(destDir) {
+function copyFrameworkFiles(destDir, provider = 'claude') {
   if (!existsSync(FRAMEWORK_SOURCE)) return;
 
   const filesToCopy = [
@@ -241,7 +242,15 @@ function copyFrameworkFiles(destDir) {
 
     if (existsSync(src)) {
       createDir(dirname(dest));
-      copyFileSync(src, dest);
+
+      if (provider !== 'claude' && ADAPTABLE_FILES.has(file)) {
+        // Non-Claude provider: read, adapt, write
+        const content = readFileSync(src, 'utf-8');
+        writeFileSync(dest, adaptFrameworkFile(content, file, provider), 'utf-8');
+      } else {
+        // Claude or non-adaptable: direct copy
+        copyFileSync(src, dest);
+      }
     }
   }
 }

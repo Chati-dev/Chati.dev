@@ -158,6 +158,25 @@ describe('installFramework with gemini-cli (standalone)', () => {
     const content = readFileSync(configPath, 'utf-8');
     assert.ok(content.includes('gemini'));
   });
+
+  it('adapts orchestrator for Gemini (no CLAUDE.md references)', () => {
+    const orchPath = join(tempDir, 'chati.dev', 'orchestrator', 'chati.md');
+    if (!existsSync(orchPath)) return;
+    const content = readFileSync(orchPath, 'utf-8');
+    assert.ok(!content.includes('CLAUDE.md'), 'Orchestrator should not reference CLAUDE.md');
+    assert.ok(!content.includes('CLAUDE.local.md'), 'Orchestrator should not reference CLAUDE.local.md');
+    assert.ok(content.includes('GEMINI.md'), 'Should reference GEMINI.md');
+    assert.ok(content.includes('Gemini CLI'), 'Should reference Gemini CLI');
+  });
+
+  it('adapts orchestrator model names for Gemini (pro/flash, not opus/sonnet)', () => {
+    const orchPath = join(tempDir, 'chati.dev', 'orchestrator', 'chati.md');
+    if (!existsSync(orchPath)) return;
+    const content = readFileSync(orchPath, 'utf-8');
+    assert.ok(!content.includes('/model opus'), 'Should not have /model opus');
+    assert.ok(!content.includes('/model sonnet'), 'Should not have /model sonnet');
+    assert.ok(!content.includes('/model haiku'), 'Should not have /model haiku');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -236,6 +255,16 @@ describe('installFramework with github-copilot (standalone)', () => {
     const content = readFileSync(configPath, 'utf-8');
     assert.ok(content.includes('copilot'));
   });
+
+  it('adapts orchestrator for Copilot (no CLAUDE.md references)', () => {
+    const orchPath = join(tempDir, 'chati.dev', 'orchestrator', 'chati.md');
+    if (!existsSync(orchPath)) return;
+    const content = readFileSync(orchPath, 'utf-8');
+    assert.ok(!content.includes('CLAUDE.md'), 'Orchestrator should not reference CLAUDE.md');
+    assert.ok(!content.includes('CLAUDE.local.md'), 'Orchestrator should not reference CLAUDE.local.md');
+    assert.ok(content.includes('AGENTS.md'), 'Should reference AGENTS.md');
+    assert.ok(content.includes('GitHub Copilot CLI'), 'Should reference GitHub Copilot CLI');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -297,5 +326,31 @@ describe('installFramework with codex-cli (standalone)', () => {
     const configPath = join(tempDir, 'chati.dev', 'config.yaml');
     const content = readFileSync(configPath, 'utf-8');
     assert.ok(content.includes('codex'));
+  });
+
+  it('adapts orchestrator for Codex (no CLAUDE.md references)', () => {
+    const orchPath = join(tempDir, 'chati.dev', 'orchestrator', 'chati.md');
+    if (!existsSync(orchPath)) return; // skip if source missing
+    const content = readFileSync(orchPath, 'utf-8');
+    assert.ok(!content.includes('CLAUDE.md'), 'Orchestrator should not reference CLAUDE.md');
+    assert.ok(!content.includes('CLAUDE.local.md'), 'Orchestrator should not reference CLAUDE.local.md');
+    assert.ok(content.includes('AGENTS.md'), 'Should reference AGENTS.md');
+    assert.ok(content.includes('Codex CLI'), 'Should reference Codex CLI');
+  });
+
+  it('adapts orchestrator model names for Codex (codex/mini, not opus/sonnet)', () => {
+    const orchPath = join(tempDir, 'chati.dev', 'orchestrator', 'chati.md');
+    if (!existsSync(orchPath)) return;
+    const content = readFileSync(orchPath, 'utf-8');
+    assert.ok(!content.includes('/model opus'), 'Should not have /model opus');
+    assert.ok(!content.includes('/model sonnet'), 'Should not have /model sonnet');
+    assert.ok(!content.includes('/model haiku'), 'Should not have /model haiku');
+  });
+
+  it('adapts agent files for Codex', () => {
+    const devPath = join(tempDir, 'chati.dev', 'agents', 'build', 'dev.md');
+    if (!existsSync(devPath)) return;
+    const content = readFileSync(devPath, 'utf-8');
+    assert.ok(!content.includes('Claude Code'), 'Agent should not reference Claude Code');
   });
 });
