@@ -307,6 +307,14 @@ describe('generateGeminiRouter', () => {
     assert.ok(result.includes('GEMINI.md'), 'Should map to GEMINI.md');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
   });
+
+  it('includes model name mapping (opus -> pro, sonnet/haiku -> flash)', () => {
+    const result = generateGeminiRouter();
+    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
+    assert.ok(result.includes('opus -> pro'), 'Should map opus to pro');
+    assert.ok(result.includes('sonnet -> flash'), 'Should map sonnet to flash');
+    assert.ok(result.includes('haiku -> flash'), 'Should map haiku to flash');
+  });
 });
 
 describe('generateCopilotAgent', () => {
@@ -337,6 +345,13 @@ describe('generateCopilotAgent', () => {
     const result = generateCopilotAgent();
     assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
+  });
+
+  it('includes model name mapping (opus/sonnet -> claude-sonnet, haiku -> gpt-5)', () => {
+    const result = generateCopilotAgent();
+    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
+    assert.ok(result.includes('claude-sonnet'), 'Should map to claude-sonnet');
+    assert.ok(result.includes('gpt-5'), 'Should map haiku to gpt-5');
   });
 });
 
@@ -379,5 +394,12 @@ describe('generateCodexSkill', () => {
     const result = generateCodexSkill();
     assert.ok(result.includes('AGENTS.md'), 'Should map to AGENTS.md');
     assert.ok(result.includes('NEVER create or reference CLAUDE.md'), 'Should prohibit CLAUDE.md creation');
+  });
+
+  it('includes model name mapping (opus -> codex, sonnet/haiku -> mini)', () => {
+    const result = generateCodexSkill();
+    assert.ok(result.includes('Model Name Mapping'), 'Should have model mapping section');
+    assert.ok(result.includes('`codex`'), 'Should map opus to codex');
+    assert.ok(result.includes('`mini`'), 'Should map sonnet/haiku to mini');
   });
 });

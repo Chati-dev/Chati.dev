@@ -195,11 +195,27 @@ When the orchestrator references Claude-specific files, use these equivalents:
 
 **NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
 
+## CRITICAL — Model Name Mapping
+
+The orchestrator and agents reference Claude model names. Replace them with Codex equivalents:
+
+| Orchestrator says | You use instead |
+|-------------------|-----------------|
+| \`opus\` | \`codex\` |
+| \`sonnet\` | \`mini\` |
+| \`haiku\` | \`mini\` |
+| \`/model opus\` | \`/model codex\` |
+| \`/model sonnet\` | \`/model mini\` |
+| \`/model haiku\` | \`/model mini\` |
+
+When the orchestrator displays a model recommendation (e.g. "Model recommendation: haiku"),
+translate the model name using the table above before showing it to the user.
+
 ## Load
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Apply the Provider Context Mapping above when following the orchestrator instructions.
+Apply the Provider Context Mapping AND Model Name Mapping above when following the orchestrator instructions.
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)
@@ -234,8 +250,18 @@ When the orchestrator references Claude-specific files, use these equivalents:
 - .claude/commands/ -> .gemini/commands/
 NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.
 
+CRITICAL — Model Name Mapping:
+The orchestrator and agents reference Claude model names. Replace them with Gemini equivalents:
+- opus -> pro
+- sonnet -> flash
+- haiku -> flash
+- /model opus -> /model pro
+- /model sonnet -> /model flash
+- /model haiku -> /model flash
+When displaying model recommendations, translate names using the mapping above.
+
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
-Apply the Provider Context Mapping above when following instructions.
+Apply the Provider Context Mapping AND Model Name Mapping above when following instructions.
 
 Context to load:
 - \`.chati/session.yaml\` (session state — includes language)
@@ -288,11 +314,27 @@ When the orchestrator references Claude-specific files, use these equivalents:
 
 **NEVER create or reference CLAUDE.md, CLAUDE.local.md, or .claude/ directories.**
 
+## CRITICAL — Model Name Mapping
+
+The orchestrator and agents reference Claude model names. Replace them with Copilot equivalents:
+
+| Orchestrator says | You use instead |
+|-------------------|-----------------|
+| \`opus\` | \`claude-sonnet\` |
+| \`sonnet\` | \`claude-sonnet\` |
+| \`haiku\` | \`gpt-5\` |
+| \`/model opus\` | \`/model claude-sonnet\` |
+| \`/model sonnet\` | \`/model claude-sonnet\` |
+| \`/model haiku\` | \`/model gpt-5\` |
+
+When the orchestrator displays a model recommendation (e.g. "Model recommendation: haiku"),
+translate the model name using the table above before showing it to the user.
+
 ## Load
 
 Read and execute the full orchestrator at \`chati.dev/orchestrator/chati.md\`.
 
-Apply the Provider Context Mapping above when following the orchestrator instructions.
+Apply the Provider Context Mapping AND Model Name Mapping above when following the orchestrator instructions.
 
 **Context to pass:**
 - \`.chati/session.yaml\` (session state — includes language)
