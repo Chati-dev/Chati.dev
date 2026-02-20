@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/chati-dev"><img src="https://img.shields.io/npm/v/chati-dev?color=blue&label=npm" alt="npm"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Elastic%202.0-blue.svg" alt="License: Elastic 2.0"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg" alt="Node.js"></a>
   <a href="#multi-cli-support"><img src="https://img.shields.io/badge/LLM-Claude%20%7C%20Gemini%20%7C%20Codex-blueviolet.svg" alt="Multi-LLM"></a>
   <a href="#internationalization"><img src="https://img.shields.io/badge/i18n-EN%20%7C%20PT%20%7C%20ES%20%7C%20FR-informational.svg" alt="i18n"></a>
@@ -448,7 +448,7 @@ For security concerns, see our [Security Policy](.github/SECURITY.md).
 
 ## License
 
-[MIT](LICENSE)
+[Elastic License 2.0](LICENSE) — free to use for any purpose; you may not offer it as a hosted/managed service to third parties or remove licensing notices.
 
 ---
 

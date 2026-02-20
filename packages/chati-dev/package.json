@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "AI-Powered Multi-Agent Orchestration System — Structured vibe coding for Full Stack Development",
   "type": "module",
   "bin": {
@@ -45,7 +45,7 @@
     "fullstack"
   ],
   "author": "Chati.dev",
-  "license": "MIT",
+  "license": "Elastic-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Chati-dev/Chati.dev.git",

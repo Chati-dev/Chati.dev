@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.5] - 2026-02-20
+
+### Changed
+
+- **License**: Migrated from MIT to Elastic License 2.0. Free to use for any purpose; cannot be offered as a hosted/managed service to third parties or have licensing notices removed.
+
+### Stats
+
+- 1311 tests passing, 0 failures
+
+## [3.2.4] - 2026-02-20
+
+### Changed
+
+- **CHANGELOG**: Added missing entries for v3.0.1, v3.2.0, v3.2.1, v3.2.2, v3.2.3.
+- **README**: Fixed execution profile threshold (90% → 95%), fixed language name accents (Português, Español, Français), expanded multi-CLI activation tables and project structure.
+
+### Stats
+
+- 1311 tests passing, 0 failures
+
 ## [3.2.3] - 2026-02-20
 
 ### Fixed
