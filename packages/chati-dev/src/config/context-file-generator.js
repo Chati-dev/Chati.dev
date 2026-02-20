@@ -63,6 +63,7 @@ const CODEX_REPLACEMENTS = [
   ['claude --print', 'codex exec'],
   ['claude -p', 'codex exec'],
   ['CLAUDE.local.md', 'AGENTS.override.md'],
+  ['/chati', '$chati'],
 ];
 
 // ---------------------------------------------------------------------------

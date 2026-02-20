@@ -10,13 +10,13 @@
 
 ## Quick Start
 1. Open your IDE (Codex CLI recommended)
-2. Type: `@chati`
+2. Type: `$chati`
 3. The orchestrator will guide you through the process
 
 ## Session Lock
-**Status: INACTIVE** — Type `@chati` to activate.
+**Status: INACTIVE** — Type `$chati` to activate.
 
-When active, ALL messages are routed through the Chati.dev orchestrator. The user stays inside the system until they explicitly exit with `@chati exit`.
+When active, ALL messages are routed through the Chati.dev orchestrator. The user stays inside the system until they explicitly exit with `$chati exit`.
 
 <!-- SESSION-LOCK:INACTIVE -->
 
@@ -38,7 +38,7 @@ DEPLOY:   DevOps
 ```
 
 ## How to Resume
-Type `@chati` — the orchestrator reads session.yaml, AGENTS.md, and the latest handoff to determine where you left off and what comes next.
+Type `$chati` — the orchestrator reads session.yaml, AGENTS.md, and the latest handoff to determine where you left off and what comes next.
 
 ## Framework
 - **Version**: 3.0.0

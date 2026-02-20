@@ -16,7 +16,7 @@
 ## Session Lock
 **Status: INACTIVE** — Type `/chati` to activate.
 
-When active, ALL messages are routed through the Chati.dev orchestrator. The user stays inside the system until they explicitly exit with `@chati exit`.
+When active, ALL messages are routed through the Chati.dev orchestrator. The user stays inside the system until they explicitly exit with `/chati exit`.
 
 <!-- SESSION-LOCK:INACTIVE -->
 

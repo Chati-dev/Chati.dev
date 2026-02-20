@@ -103,6 +103,11 @@ function buildReplacementConfig(provider) {
     ['/model haiku', `/model ${minimal}`],
   ];
 
+  // Codex CLI uses $chati for skill invocation, not /chati
+  if (provider === 'codex') {
+    strings.push(['/chati', '$chati']);
+  }
+
   // --- Regex patterns for model names in structured contexts ---
   const patterns = [
     // Identity section: **Model**: opus | ...

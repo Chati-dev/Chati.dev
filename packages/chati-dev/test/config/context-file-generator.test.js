@@ -211,9 +211,10 @@ describe('generateAgentsMd', () => {
     assert.ok(!result.includes('\n\n\n'), 'Should not have 3+ consecutive newlines');
   });
 
-  it('preserves /chati command (Codex supports slash commands)', () => {
+  it('converts /chati to $chati (Codex uses $ for skill invocation)', () => {
     const result = generateAgentsMd(SAMPLE_CLAUDE_MD);
-    assert.ok(result.includes('/chati'), 'Should preserve /chati reference (Codex has slash commands)');
+    assert.ok(result.includes('$chati'), 'Should convert /chati to $chati for Codex');
+    assert.ok(!result.includes('/chati'), 'Should not preserve /chati in Codex context');
   });
 
   it('preserves non-replaced, non-hook content', () => {
