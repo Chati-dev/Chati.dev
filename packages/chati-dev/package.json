@@ -1,6 +1,6 @@
 {
   "name": "chati-dev",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "AI-Powered Multi-Agent Orchestration System — Structured vibe coding for Full Stack Development",
   "type": "module",
   "bin": {

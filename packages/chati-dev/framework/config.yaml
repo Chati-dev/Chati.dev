@@ -1,8 +1,8 @@
 # chati.dev Configuration
-version: "3.2.1"
+version: "3.2.2"
 installed_at: "2026-02-07T10:00:00Z"
 updated_at: "2026-02-20T00:00:00Z"
-installer_version: "3.2.1"
+installer_version: "3.2.2"
 project_type: greenfield
 language: en
 ides: [claude-code]
