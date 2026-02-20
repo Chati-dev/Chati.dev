@@ -243,3 +243,148 @@ _No decisions yet. Start with /chati._
 _Auto-updated by Chati.dev orchestrator_
 `;
 }
+
+/**
+ * Generate Gemini CLI session lock (.gemini/session-lock.md)
+ * Equivalent to CLAUDE.local.md — imported via @import in GEMINI.md.
+ */
+export function generateGeminiSessionLock() {
+  return `# Chati.dev Runtime State
+
+## Session Lock
+**Status: INACTIVE** — Type \`/chati\` to activate.
+
+<!-- SESSION-LOCK:INACTIVE -->
+
+## Current State
+- **Agent**: None (ready to start)
+- **Pipeline**: Pre-start
+- **Mode**: interactive
+
+## Recent Decisions
+_No decisions yet. Start with /chati._
+
+---
+_Auto-updated by Chati.dev orchestrator_
+`;
+}
+
+/**
+ * Generate Codex CLI session lock (AGENTS.override.md)
+ * Codex auto-loads this as an override to AGENTS.md.
+ */
+export function generateAgentsOverrideMd() {
+  return `# Chati.dev Runtime State
+
+## Session Lock
+**Status: INACTIVE** — Type \`$chati\` to activate.
+
+<!-- SESSION-LOCK:INACTIVE -->
+
+## Current State
+- **Agent**: None (ready to start)
+- **Pipeline**: Pre-start
+- **Mode**: interactive
+
+## Recent Decisions
+_No decisions yet. Start with $chati._
+
+---
+_Auto-updated by Chati.dev orchestrator_
+`;
+}
+
+/**
+ * Generate Codex CLI constitution guard rules (.codex/rules/constitution-guard.rules)
+ * Starlark execution policy that blocks destructive commands and secret writes.
+ */
+export function generateCodexConstitutionGuardRules() {
+  return `# Chati.dev Constitution Guard — Codex CLI Execution Policy
+# Article XI: Block destructive commands and secret writes
+
+# Destructive commands that require explicit user approval
+deny_commands = [
+    "rm -rf",
+    "git reset --hard",
+    "git push --force",
+    "git push -f",
+    "git clean -fd",
+    "DROP TABLE",
+    "DROP DATABASE",
+    "TRUNCATE TABLE",
+    "chmod 777",
+]
+
+# Patterns that indicate secret/credential writes
+deny_write_patterns = [
+    "API_KEY=",
+    "SECRET_KEY=",
+    "PASSWORD=",
+    "TOKEN=",
+    "PRIVATE_KEY=",
+    "aws_secret_access_key",
+    "-----BEGIN RSA PRIVATE KEY-----",
+    "-----BEGIN OPENSSH PRIVATE KEY-----",
+]
+
+# Files that should never be written to
+deny_write_files = [
+    ".env",
+    ".env.local",
+    ".env.production",
+    "credentials.json",
+    "service-account.json",
+]
+
+# Allow list — these are safe even though they match patterns
+allow_write_files = [
+    ".env.example",
+    ".env.template",
+    ".env.sample",
+]
+`;
+}
+
+/**
+ * Generate Codex CLI read protection rules (.codex/rules/read-protection.rules)
+ * Starlark execution policy that blocks reading sensitive files.
+ */
+export function generateCodexReadProtectionRules() {
+  return `# Chati.dev Read Protection — Codex CLI Execution Policy
+# Article XI: Protect sensitive files from being read
+
+# Files that should never be read
+deny_read_files = [
+    ".env",
+    ".env.local",
+    ".env.production",
+    ".env.staging",
+]
+
+# File extensions that indicate sensitive content
+deny_read_extensions = [
+    ".pem",
+    ".key",
+    ".p12",
+    ".pfx",
+    ".jks",
+]
+
+# Paths that should never be read
+deny_read_paths = [
+    "credentials.json",
+    "service-account.json",
+    ".git/config",
+    ".ssh/",
+    ".aws/credentials",
+    ".npmrc",
+]
+
+# Allow list — these are safe even though they match patterns
+allow_read_files = [
+    ".env.example",
+    ".env.template",
+    ".env.sample",
+]
+`;
+}

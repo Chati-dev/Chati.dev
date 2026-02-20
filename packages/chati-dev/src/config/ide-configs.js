@@ -47,15 +47,19 @@ export const IDE_CONFIGS = {
     rulesFile: 'AGENTS.md',
     mcpConfigFile: null,
     formatNotes: 'Codex skill format (SKILL.md with YAML frontmatter)',
+    rulesPath: '.codex/rules/',
+    overrideFile: 'AGENTS.override.md',
   },
   'gemini-cli': {
     name: 'Gemini CLI',
     description: 'Google AI terminal agent',
     recommended: false,
     configPath: '.gemini/commands/',
-    rulesFile: null,
+    rulesFile: 'GEMINI.md',
     mcpConfigFile: '.gemini/settings.json',
     formatNotes: 'TOML command format',
+    contextPath: '.gemini/context/',
+    hooksPath: '.gemini/hooks/',
   },
 };
 

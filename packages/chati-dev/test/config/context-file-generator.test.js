@@ -76,10 +76,10 @@ describe('generateGeminiMd', () => {
     assert.ok(result.includes('do not edit manually'));
   });
 
-  it('replaces .claude/rules/ with chati.dev/context/ (Gemini has no rules/)', () => {
+  it('replaces .claude/rules/ with .gemini/context/', () => {
     const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
     assert.ok(!result.includes('.claude/rules/'), 'Should not contain ".claude/rules/"');
-    assert.ok(result.includes('chati.dev/context/'), 'Should contain "chati.dev/context/"');
+    assert.ok(result.includes('.gemini/context/'), 'Should contain ".gemini/context/"');
   });
 
   it('replaces .claude/mcp.json with .gemini/settings.json', () => {
@@ -94,10 +94,10 @@ describe('generateGeminiMd', () => {
     assert.ok(result.includes('gemini --prompt'), 'Should contain "gemini --prompt"');
   });
 
-  it('replaces CLAUDE.local.md with GEMINI.local.md', () => {
+  it('replaces CLAUDE.local.md with .gemini/session-lock.md', () => {
     const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
     assert.ok(!result.includes('CLAUDE.local.md'), 'Should not contain "CLAUDE.local.md"');
-    assert.ok(result.includes('GEMINI.local.md'), 'Should contain "GEMINI.local.md"');
+    assert.ok(result.includes('.gemini/session-lock.md'), 'Should contain ".gemini/session-lock.md"');
   });
 
   it('preserves non-replaced content', () => {
@@ -105,6 +105,36 @@ describe('generateGeminiMd', () => {
     assert.ok(result.includes('# MyProject'));
     assert.ok(result.includes('## Pipeline'));
     assert.ok(result.includes('DISCOVER -> PLAN -> BUILD -> DEPLOY'));
+  });
+
+  // --- @import directives (context parity) ---
+
+  it('includes 5 @import directives', () => {
+    const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
+    const imports = result.match(/@import /g);
+    assert.equal(imports.length, 5, 'Should have 5 @import directives');
+  });
+
+  it('@imports include .gemini/context/ files', () => {
+    const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
+    assert.ok(result.includes('@import .gemini/context/root.md'));
+    assert.ok(result.includes('@import .gemini/context/governance.md'));
+    assert.ok(result.includes('@import .gemini/context/protocols.md'));
+    assert.ok(result.includes('@import .gemini/context/quality.md'));
+  });
+
+  it('@imports include .gemini/session-lock.md', () => {
+    const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
+    assert.ok(result.includes('@import .gemini/session-lock.md'));
+  });
+
+  it('@import directives are at the end of the file', () => {
+    const result = generateGeminiMd(SAMPLE_CLAUDE_MD);
+    const lines = result.trim().split('\n');
+    const lastLines = lines.slice(-5);
+    for (const line of lastLines) {
+      assert.ok(line.startsWith('@import '), `Last lines should be @import: "${line}"`);
+    }
   });
 });
 
@@ -164,10 +194,10 @@ describe('generateAgentsMd', () => {
     assert.ok(result.includes('codex exec'), 'Should contain "codex exec"');
   });
 
-  it('replaces CLAUDE.local.md with AGENTS.local.md', () => {
+  it('replaces CLAUDE.local.md with AGENTS.override.md', () => {
     const result = generateAgentsMd(SAMPLE_CLAUDE_MD);
     assert.ok(!result.includes('CLAUDE.local.md'), 'Should not contain "CLAUDE.local.md"');
-    assert.ok(result.includes('AGENTS.local.md'), 'Should contain "AGENTS.local.md"');
+    assert.ok(result.includes('AGENTS.override.md'), 'Should contain "AGENTS.override.md"');
   });
 
   it('replaces .claude/mcp.json with .codex/config.toml', () => {
@@ -191,5 +221,77 @@ describe('generateAgentsMd', () => {
     assert.ok(result.includes('# MyProject'));
     assert.ok(result.includes('## Pipeline'));
     assert.ok(result.includes('DISCOVER -> PLAN -> BUILD -> DEPLOY'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// generateAgentsMd with inline contextFiles
+// ---------------------------------------------------------------------------
+
+describe('generateAgentsMd with inline contextFiles', () => {
+  const SAMPLE_CONTEXT_FILES = {
+    root: '# System Context\n## Framework\n- **Version**: 3.0.0\n- References CLAUDE.md for context',
+    governance: '# Governance Rules\n## Mode Governance\n- planning: write to chati.dev/ only\n- Claude Code processes',
+    protocols: '# Protocols\n## Self-Validation\nEvery agent validates output\n## CLAUDE.local.md references',
+    quality: '# Quality Standards\n## Gate Thresholds\n- qa-planning: 95%',
+  };
+
+  it('includes governance content when contextFiles provided', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(result.includes('Governance Rules'), 'Should include governance content');
+    assert.ok(result.includes('Mode Governance'), 'Should include mode governance details');
+  });
+
+  it('includes protocols content when contextFiles provided', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(result.includes('Protocols'), 'Should include protocols');
+    assert.ok(result.includes('Self-Validation'), 'Should include self-validation protocol');
+  });
+
+  it('includes quality content when contextFiles provided', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(result.includes('Quality Standards'), 'Should include quality');
+    assert.ok(result.includes('95%'), 'Should include threshold values');
+  });
+
+  it('adapts inline context for Codex (replaces Claude refs)', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(!result.includes('Claude Code processes'), 'Should replace Claude Code refs in inline context');
+    assert.ok(result.includes('Codex CLI'), 'Should contain Codex CLI in inline context');
+  });
+
+  it('replaces CLAUDE.md refs in inline context', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    // After the auto-generated header comment, no CLAUDE.md refs should remain in body
+    const afterHeader = result.replace(/^<!--.*-->\n\n?/, '');
+    assert.ok(!afterHeader.includes('CLAUDE.md'), 'Inline context should not reference CLAUDE.md');
+  });
+
+  it('replaces CLAUDE.local.md refs in inline context', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(!result.includes('CLAUDE.local.md'), 'Inline context should not reference CLAUDE.local.md');
+  });
+
+  it('separates inline sections with ---', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    assert.ok(result.includes('---'), 'Should have --- separators for inline sections');
+  });
+
+  it('total output is under 32 KiB (Codex limit)', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, SAMPLE_CONTEXT_FILES);
+    const sizeKiB = Buffer.byteLength(result, 'utf-8') / 1024;
+    assert.ok(sizeKiB < 32, `Output should be under 32 KiB, got ${sizeKiB.toFixed(1)} KiB`);
+  });
+
+  it('backward compat: no contextFiles = no inline sections', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD);
+    assert.ok(!result.includes('Governance Rules'), 'Without contextFiles, should not have inline governance');
+    assert.ok(!result.includes('Quality Standards'), 'Without contextFiles, should not have inline quality');
+  });
+
+  it('null contextFiles = backward compat', () => {
+    const result = generateAgentsMd(SAMPLE_CLAUDE_MD, null);
+    const resultNoArg = generateAgentsMd(SAMPLE_CLAUDE_MD);
+    assert.equal(result, resultNoArg, 'null contextFiles should produce same output as no argument');
   });
 });

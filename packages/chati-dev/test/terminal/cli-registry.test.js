@@ -140,9 +140,9 @@ describe('PROVIDERS structure', () => {
     assert.deepEqual(PROVIDERS.claude.baseArgs, ['--print', '--dangerously-skip-permissions']);
   });
 
-  it('only claude has hooksSupport: true', () => {
+  it('claude and gemini have hooksSupport: true, codex false', () => {
     assert.equal(PROVIDERS.claude.hooksSupport, true);
-    assert.equal(PROVIDERS.gemini.hooksSupport, false);
+    assert.equal(PROVIDERS.gemini.hooksSupport, true);
     assert.equal(PROVIDERS.codex.hooksSupport, false);
   });
 

@@ -50,12 +50,12 @@ const PROVIDER_META = {
   gemini: {
     cliName: 'Gemini CLI',
     contextFile: 'GEMINI.md',
-    localFile: '.chati/session.yaml',
+    localFile: '.gemini/session-lock.md',
   },
   codex: {
     cliName: 'Codex CLI',
     contextFile: 'AGENTS.md',
-    localFile: '.chati/session.yaml',
+    localFile: 'AGENTS.override.md',
   },
 };
 

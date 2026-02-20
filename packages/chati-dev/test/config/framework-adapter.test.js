@@ -101,10 +101,10 @@ describe('adaptFrameworkFile — edge cases', () => {
 describe('adaptFrameworkFile — gemini', () => {
   const provider = 'gemini';
 
-  it('replaces CLAUDE.local.md with .chati/session.yaml', () => {
+  it('replaces CLAUDE.local.md with .gemini/session-lock.md', () => {
     const content = 'Read CLAUDE.local.md for session state';
     const result = adaptFrameworkFile(content, 'orchestrator/chati.md', provider);
-    assert.ok(result.includes('.chati/session.yaml'));
+    assert.ok(result.includes('.gemini/session-lock.md'));
     assert.ok(!result.includes('CLAUDE.local.md'));
   });
 
@@ -208,10 +208,10 @@ describe('adaptFrameworkFile — gemini', () => {
 describe('adaptFrameworkFile — codex', () => {
   const provider = 'codex';
 
-  it('replaces CLAUDE.local.md with .chati/session.yaml', () => {
+  it('replaces CLAUDE.local.md with AGENTS.override.md', () => {
     const content = 'Read CLAUDE.local.md for session state';
     const result = adaptFrameworkFile(content, 'orchestrator/chati.md', provider);
-    assert.ok(result.includes('.chati/session.yaml'));
+    assert.ok(result.includes('AGENTS.override.md'));
     assert.ok(!result.includes('CLAUDE.local.md'));
   });
 
@@ -275,11 +275,11 @@ describe('adaptFrameworkFile — replacement ordering', () => {
   it('replaces CLAUDE.local.md before CLAUDE.md (no partial match)', () => {
     const content = 'CLAUDE.local.md state and CLAUDE.md context';
     const result = adaptFrameworkFile(content, 'orchestrator/chati.md', 'gemini');
-    assert.ok(result.includes('.chati/session.yaml'));
+    assert.ok(result.includes('.gemini/session-lock.md'));
     assert.ok(result.includes('GEMINI.md'));
     // Make sure CLAUDE.local.md wasn't partially replaced as GEMINI.md.local.md
     assert.ok(!result.includes('GEMINI.md.local.md'));
-    assert.ok(!result.includes('.chati/session.yaml.md'));
+    assert.ok(!result.includes('.gemini/session-lock.md.md'));
   });
 
   it('replaces "Claude Code CLI" before "Claude Code"', () => {
@@ -350,7 +350,7 @@ describe('adaptFrameworkFile — real-world patterns', () => {
 When the session is active, CLAUDE.local.md MUST contain this block:
 CLAUDE.local.md is auto-gitignored`;
     const result = adaptFrameworkFile(content, 'orchestrator/chati.md', 'gemini');
-    assert.ok(result.includes('.chati/session.yaml'));
+    assert.ok(result.includes('.gemini/session-lock.md'));
     assert.ok(!result.includes('CLAUDE.local.md'));
   });
 

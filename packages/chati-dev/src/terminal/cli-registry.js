@@ -51,7 +51,7 @@ const PROVIDERS = {
     baseArgs: [],
     modelFlag: '--model',
     stdinSupport: true,
-    hooksSupport: false,
+    hooksSupport: true,
     mcpSupport: true,
     contextFile: 'GEMINI.md',
     modelMap: {

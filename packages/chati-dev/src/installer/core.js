@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { IDE_CONFIGS } from '../config/ide-configs.js';
 import { generateClaudeMCPConfig } from '../config/mcp-configs.js';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter } from './templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter, generateGeminiSessionLock, generateAgentsOverrideMd, generateCodexConstitutionGuardRules, generateCodexReadProtectionRules } from './templates.js';
 import { generateContextFiles } from '../config/context-file-generator.js';
 import { adaptFrameworkFile, ADAPTABLE_FILES } from '../config/framework-adapter.js';
 import { verifyManifest } from './manifest.js';
@@ -128,6 +128,9 @@ export async function installFramework(config) {
   if (hasNonClaude) {
     generateContextFiles(targetDir, baseContent);
   }
+
+  // 7. Update .gitignore with runtime session lock files
+  updateGitignore(targetDir, selectedIDEs);
 }
 
 /**
@@ -314,9 +317,42 @@ Pass through all context: session state, handoffs, artifacts, and user input.
     // Codex CLI: chati skill via .agents/skills/chati/SKILL.md (invoke with $chati)
     createDir(join(targetDir, '.agents', 'skills', 'chati'));
     writeFileSync(join(targetDir, '.agents', 'skills', 'chati', 'SKILL.md'), generateCodexSkill(), 'utf-8');
+
+    // Session lock override file (equivalent to CLAUDE.local.md)
+    writeFileSync(join(targetDir, 'AGENTS.override.md'), generateAgentsOverrideMd(), 'utf-8');
+
+    // Starlark execution policies (equivalent to Claude hooks for constitution guard + read protection)
+    createDir(join(targetDir, '.codex', 'rules'));
+    writeFileSync(join(targetDir, '.codex', 'rules', 'constitution-guard.rules'), generateCodexConstitutionGuardRules(), 'utf-8');
+    writeFileSync(join(targetDir, '.codex', 'rules', 'read-protection.rules'), generateCodexReadProtectionRules(), 'utf-8');
   } else if (ideKey === 'gemini-cli') {
     // Gemini CLI: TOML command file (native format for /chati command)
     writeFileSync(join(targetDir, '.gemini', 'commands', 'chati.toml'), generateGeminiRouter(), 'utf-8');
+
+    // Context files via @import (equivalent to .claude/rules/chati/)
+    const geminiContextDir = join(targetDir, '.gemini', 'context');
+    createDir(geminiContextDir);
+    const contextFileNames = ['root.md', 'governance.md', 'protocols.md', 'quality.md'];
+    for (const file of contextFileNames) {
+      const src = join(FRAMEWORK_SOURCE, 'context', file);
+      if (existsSync(src)) {
+        const content = readFileSync(src, 'utf-8');
+        writeFileSync(join(geminiContextDir, file), adaptFrameworkFile(content, `context/${file}`, 'gemini'), 'utf-8');
+      }
+    }
+
+    // Session lock (equivalent to CLAUDE.local.md, imported via @import in GEMINI.md)
+    writeFileSync(join(targetDir, '.gemini', 'session-lock.md'), generateGeminiSessionLock(), 'utf-8');
+
+    // Hooks (6 governance hooks — equivalent to Claude Code hooks)
+    const geminiHooksDir = join(targetDir, '.gemini', 'hooks');
+    createDir(geminiHooksDir);
+    const { generateAllGeminiHooks, generateGeminiSettings } = await import('../config/gemini-hooks-generator.js');
+    const hooks = generateAllGeminiHooks();
+    for (const [filename, hookContent] of Object.entries(hooks)) {
+      writeFileSync(join(geminiHooksDir, filename), hookContent, 'utf-8');
+    }
+    writeFileSync(join(targetDir, '.gemini', 'settings.json'), generateGeminiSettings(), 'utf-8');
   } else {
     // VS Code, Cursor, AntiGravity — generic rules file
     if (config.rulesFile) {
@@ -362,6 +398,42 @@ DEPLOY:   DevOps
 - BUILD: chati.dev/agents/build/ (1 agent)
 - DEPLOY: chati.dev/agents/deploy/ (1 agent)
 `;
+}
+
+/**
+ * Append chati.dev runtime entries to .gitignore.
+ * Session lock files are runtime-only and should never be committed.
+ */
+function updateGitignore(targetDir, selectedIDEs) {
+  const entries = [
+    '',
+    '# Chati.dev runtime files (session lock — not committed)',
+    '.chati/memories/*/session/',
+  ];
+
+  if (selectedIDEs.includes('claude-code')) {
+    entries.push('CLAUDE.local.md');
+  }
+  if (selectedIDEs.includes('gemini-cli')) {
+    entries.push('.gemini/session-lock.md');
+  }
+  if (selectedIDEs.includes('codex-cli')) {
+    entries.push('AGENTS.override.md');
+  }
+
+  entries.push('');
+
+  const gitignorePath = join(targetDir, '.gitignore');
+  const marker = '# Chati.dev runtime files';
+
+  if (existsSync(gitignorePath)) {
+    const existing = readFileSync(gitignorePath, 'utf-8');
+    // Don't duplicate if already present
+    if (existing.includes(marker)) return;
+    writeFileSync(gitignorePath, existing.trimEnd() + '\n' + entries.join('\n'), 'utf-8');
+  } else {
+    writeFileSync(gitignorePath, entries.join('\n'), 'utf-8');
+  }
 }
 
 /**

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'js-yaml';
-import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter } from '../../src/installer/templates.js';
+import { generateSessionYaml, generateConfigYaml, generateClaudeMd, generateClaudeLocalMd, generateCodexSkill, generateGeminiRouter, generateGeminiSessionLock, generateAgentsOverrideMd, generateCodexConstitutionGuardRules, generateCodexReadProtectionRules } from '../../src/installer/templates.js';
 
 const testConfig = {
   projectName: 'test-project',
@@ -346,5 +346,127 @@ describe('generateCodexSkill', () => {
     const result = generateCodexSkill();
     assert.ok(!result.includes('Model Name Mapping'), 'Should NOT have model mapping table');
     assert.ok(!result.includes('Provider Context Mapping'), 'Should NOT have context mapping table');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Gemini session lock
+// ---------------------------------------------------------------------------
+
+describe('generateGeminiSessionLock', () => {
+  it('includes SESSION-LOCK marker', () => {
+    const result = generateGeminiSessionLock();
+    assert.ok(result.includes('SESSION-LOCK:INACTIVE'));
+  });
+
+  it('includes runtime state fields', () => {
+    const result = generateGeminiSessionLock();
+    assert.ok(result.includes('Agent'));
+    assert.ok(result.includes('Pipeline'));
+    assert.ok(result.includes('Mode'));
+  });
+
+  it('references /chati command (Gemini uses same command)', () => {
+    const result = generateGeminiSessionLock();
+    assert.ok(result.includes('/chati'), 'Should reference /chati');
+  });
+
+  it('starts with inactive session', () => {
+    const result = generateGeminiSessionLock();
+    assert.ok(result.includes('INACTIVE'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Codex session lock (AGENTS.override.md)
+// ---------------------------------------------------------------------------
+
+describe('generateAgentsOverrideMd', () => {
+  it('includes SESSION-LOCK marker', () => {
+    const result = generateAgentsOverrideMd();
+    assert.ok(result.includes('SESSION-LOCK:INACTIVE'));
+  });
+
+  it('references $chati command (Codex skill syntax)', () => {
+    const result = generateAgentsOverrideMd();
+    assert.ok(result.includes('$chati'), 'Should reference $chati');
+  });
+
+  it('starts with inactive session', () => {
+    const result = generateAgentsOverrideMd();
+    assert.ok(result.includes('INACTIVE'));
+  });
+
+  it('includes runtime state fields', () => {
+    const result = generateAgentsOverrideMd();
+    assert.ok(result.includes('Agent'));
+    assert.ok(result.includes('Pipeline'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Codex Starlark execution policies
+// ---------------------------------------------------------------------------
+
+describe('generateCodexConstitutionGuardRules', () => {
+  it('returns non-empty content', () => {
+    const result = generateCodexConstitutionGuardRules();
+    assert.ok(typeof result === 'string');
+    assert.ok(result.length > 100);
+  });
+
+  it('includes destructive command patterns', () => {
+    const result = generateCodexConstitutionGuardRules();
+    assert.ok(result.includes('rm -rf'));
+    assert.ok(result.includes('git reset --hard'));
+    assert.ok(result.includes('DROP TABLE'));
+  });
+
+  it('includes secret write patterns', () => {
+    const result = generateCodexConstitutionGuardRules();
+    assert.ok(result.includes('API_KEY'));
+    assert.ok(result.includes('PRIVATE_KEY'));
+  });
+
+  it('includes allow list for safe files', () => {
+    const result = generateCodexConstitutionGuardRules();
+    assert.ok(result.includes('.env.example'));
+    assert.ok(result.includes('.env.template'));
+  });
+
+  it('references Article XI', () => {
+    const result = generateCodexConstitutionGuardRules();
+    assert.ok(result.includes('Article XI'));
+  });
+});
+
+describe('generateCodexReadProtectionRules', () => {
+  it('returns non-empty content', () => {
+    const result = generateCodexReadProtectionRules();
+    assert.ok(typeof result === 'string');
+    assert.ok(result.length > 100);
+  });
+
+  it('blocks .env files', () => {
+    const result = generateCodexReadProtectionRules();
+    assert.ok(result.includes('.env'));
+    assert.ok(result.includes('.env.local'));
+  });
+
+  it('blocks sensitive extensions', () => {
+    const result = generateCodexReadProtectionRules();
+    assert.ok(result.includes('.pem'));
+    assert.ok(result.includes('.key'));
+  });
+
+  it('blocks sensitive paths', () => {
+    const result = generateCodexReadProtectionRules();
+    assert.ok(result.includes('credentials.json'));
+    assert.ok(result.includes('.git/config'));
+  });
+
+  it('includes allow list', () => {
+    const result = generateCodexReadProtectionRules();
+    assert.ok(result.includes('.env.example'));
   });
 });

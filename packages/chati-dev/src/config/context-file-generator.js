@@ -29,11 +29,12 @@ const GEMINI_REPLACEMENTS = [
   ['CLAUDE.md', 'GEMINI.md'],
   ['Claude.md', 'GEMINI.md'],
   ['.claude/commands/', '.gemini/commands/'],
-  ['.claude/rules/', 'chati.dev/context/'],
+  ['.claude/rules/chati/', '.gemini/context/'],
+  ['.claude/rules/', '.gemini/context/'],
   ['.claude/mcp.json', '.gemini/settings.json'],
   ['claude --print', 'gemini --prompt'],
   ['claude -p', 'gemini --prompt'],
-  ['CLAUDE.local.md', 'GEMINI.local.md'],
+  ['CLAUDE.local.md', '.gemini/session-lock.md'],
 ];
 
 /**
@@ -56,11 +57,12 @@ const CODEX_REPLACEMENTS = [
   ['CLAUDE.md', 'AGENTS.md'],
   ['Claude.md', 'AGENTS.md'],
   ['.claude/commands/', 'chati.dev/orchestrator/'],
+  ['.claude/rules/chati/', 'chati.dev/context/'],
   ['.claude/rules/', 'chati.dev/context/'],
   ['.claude/mcp.json', '.codex/config.toml'],
   ['claude --print', 'codex exec'],
   ['claude -p', 'codex exec'],
-  ['CLAUDE.local.md', 'AGENTS.local.md'],
+  ['CLAUDE.local.md', 'AGENTS.override.md'],
 ];
 
 // ---------------------------------------------------------------------------
@@ -68,10 +70,24 @@ const CODEX_REPLACEMENTS = [
 // ---------------------------------------------------------------------------
 
 /**
+ * @import directives appended to GEMINI.md.
+ * Gemini CLI resolves @import automatically, loading the full governance
+ * context chain + session lock — equivalent to Claude Code's rules/ + CLAUDE.local.md.
+ */
+const GEMINI_IMPORTS = [
+  '@import .gemini/context/root.md',
+  '@import .gemini/context/governance.md',
+  '@import .gemini/context/protocols.md',
+  '@import .gemini/context/quality.md',
+  '@import .gemini/session-lock.md',
+];
+
+/**
  * Generate GEMINI.md content from CLAUDE.md content.
  *
  * Adapts the content by replacing Claude Code-specific references with
- * Gemini CLI equivalents. Preserves structure and formatting.
+ * Gemini CLI equivalents, then appends @import directives so Gemini CLI
+ * auto-loads governance rules and session lock (context parity with Claude).
  *
  * @param {string} content - Raw CLAUDE.md content
  * @returns {string} Adapted content for GEMINI.md
@@ -89,7 +105,10 @@ export function generateGeminiMd(content) {
     '',
   ].join('\n');
 
-  return header + result;
+  // Append @import directives for context parity
+  const imports = '\n' + GEMINI_IMPORTS.join('\n') + '\n';
+
+  return header + result + imports;
 }
 
 /**
@@ -97,12 +116,14 @@ export function generateGeminiMd(content) {
  *
  * Simplifies the content for Codex CLI: strips hook references,
  * replaces CLI-specific paths, and produces a leaner context file
- * focused on code execution.
+ * focused on code execution. When contextFiles are provided, inlines
+ * governance/protocols/quality for full context parity with Claude Code.
  *
  * @param {string} content - Raw CLAUDE.md content
+ * @param {object} [contextFiles] - Optional inline context { root, governance, protocols, quality }
  * @returns {string} Adapted content for AGENTS.md
  */
-export function generateAgentsMd(content) {
+export function generateAgentsMd(content, contextFiles = null) {
   let result = content;
 
   // Strip hook-related sections (Codex has no hooks support)
@@ -124,12 +145,38 @@ export function generateAgentsMd(content) {
     '',
   ].join('\n');
 
-  return header + result;
+  result = header + result;
+
+  // Inline context files for full governance parity (Codex has no @import)
+  if (contextFiles) {
+    const sections = [];
+    for (const [name, fileContent] of Object.entries(contextFiles)) {
+      if (fileContent) {
+        // Adapt context for Codex (replace Claude-specific refs)
+        let adapted = fileContent;
+        for (const [search, replace] of CODEX_REPLACEMENTS) {
+          adapted = adapted.replaceAll(search, replace);
+        }
+        sections.push(adapted.trim());
+      }
+    }
+    if (sections.length > 0) {
+      result += '\n---\n\n' + sections.join('\n\n---\n\n') + '\n';
+    }
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
 // Orchestrator
 // ---------------------------------------------------------------------------
+
+/**
+ * Context file names that provide governance parity across CLIs.
+ * These are read from chati.dev/context/ and inlined into AGENTS.md for Codex.
+ */
+const CONTEXT_FILES = ['root.md', 'governance.md', 'protocols.md', 'quality.md'];
 
 /**
  * Generate context files for all enabled alternative providers.
@@ -138,6 +185,8 @@ export function generateAgentsMd(content) {
  * CLAUDE.md from the project root, and writes the appropriate context
  * files (GEMINI.md, AGENTS.md) when their providers are active.
  *
+ * For Codex, governance context files are inlined into AGENTS.md to provide
+ * the same rules awareness that Claude gets from .claude/rules/chati/.
  *
  * @param {string} projectDir - Project root directory
  * @param {string} [baseContent] - Optional base content (used when CLAUDE.md doesn't exist on disk)
@@ -160,15 +209,18 @@ export function generateContextFiles(projectDir, baseContent = null) {
   // Determine enabled providers from config.yaml
   const enabledProviders = resolveEnabledProviders(projectDir);
 
+  // Read context files for inline injection (Codex)
+  const contextFiles = readContextFilesFromDisk(projectDir);
+
   // Provider-to-generator mapping
   const generators = {
     gemini: {
       filename: 'GEMINI.md',
-      generate: generateGeminiMd,
+      generate: (content) => generateGeminiMd(content),
     },
     codex: {
       filename: 'AGENTS.md',
-      generate: generateAgentsMd,
+      generate: (content) => generateAgentsMd(content, contextFiles),
     },
   };
 
@@ -184,6 +236,30 @@ export function generateContextFiles(projectDir, baseContent = null) {
   }
 
   return result;
+}
+
+/**
+ * Read context files from chati.dev/context/ for inline injection.
+ * Returns null if no context files found (backward compat).
+ *
+ * @param {string} projectDir - Project root directory
+ * @returns {object|null} { root, governance, protocols, quality } or null
+ */
+function readContextFilesFromDisk(projectDir) {
+  const contextDir = join(projectDir, 'chati.dev', 'context');
+  if (!existsSync(contextDir)) return null;
+
+  const files = {};
+  let found = false;
+  for (const file of CONTEXT_FILES) {
+    const filePath = join(contextDir, file);
+    if (existsSync(filePath)) {
+      const key = file.replace('.md', '');
+      files[key] = readFileSync(filePath, 'utf-8');
+      found = true;
+    }
+  }
+  return found ? files : null;
 }
 
 // ---------------------------------------------------------------------------
