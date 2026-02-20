@@ -80,11 +80,15 @@ The wizard guides you through 4 steps:
 
 Open your AI CLI in the same project directory, then type:
 
-```
-/chati
-```
+| CLI | Command | Notes |
+|-----|---------|-------|
+| **Claude Code** | `/chati` | Slash command (native) |
+| **Gemini CLI** | `/chati` | TOML custom command |
+| **Codex CLI** | `$chati` | Skill invocation (Codex uses `$` for skills, not `/`) |
 
 The orchestrator loads your session, detects where you left off, and routes you to the right agent. You stay inside the system until you explicitly exit.
+
+> **Codex CLI note:** You can also just describe what you want (e.g., "start chati" or "plan my project") and Codex will auto-invoke the skill based on its description.
 
 ### 3. Follow the pipeline
 
@@ -108,10 +112,13 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 
 ### Exit & Resume
 
-```
-/chati exit     # Save session and exit
-/chati          # Resume exactly where you left off
-```
+| CLI | Exit | Resume |
+|-----|------|--------|
+| **Claude Code** | `/chati exit` | `/chati` |
+| **Gemini CLI** | `/chati exit` | `/chati` |
+| **Codex CLI** | `$chati exit` | `$chati` |
+
+The system saves your full session state — pipeline position, current agent, decisions, and context. You resume exactly where you left off, even across days or machines.
 
 ---
 
@@ -126,8 +133,8 @@ npx chati-dev status --watch  # Auto-refresh every 5s
 | **Session Lock** | Once activated, you stay inside the system. No accidentally "falling out" into generic AI mode |
 | **Multi-Terminal** | Autonomous agents run in parallel in separate terminals. Detail, Architect, and UX agents work simultaneously |
 | **Memory System** | The system learns from mistakes. Gotchas are captured automatically and recalled when relevant |
-| **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 90%) — with safety net and circuit breaker |
-| **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, and AntiGravity |
+| **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 95%) — with safety net and circuit breaker |
+| **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, Codex CLI, and AntiGravity |
 | **4 Languages** | Interface supports English, Portuguese, Spanish, and French. Artifacts are always generated in English |
 | **Supply Chain Security** | Every file is cryptographically signed (Ed25519). Tampered packages are blocked on install |
 
@@ -182,7 +189,7 @@ Three profiles control how much autonomy agents have:
 |---------|----------|-------------|
 | **explore** | Read-only. Agents analyze but don't modify files | Understanding a new codebase |
 | **guided** | Default. Agents propose changes, you approve | Normal development workflow |
-| **autonomous** | Agents execute without confirmation (quality gates >= 90%) | Trusted pipelines with high quality scores |
+| **autonomous** | Agents execute without confirmation (quality gates >= 95%) | Trusted pipelines with high quality scores |
 
 The system starts in `guided` mode. Transition to `autonomous` requires both QA gates scoring >= 95%. A safety net with 5 triggers (stuck loop, quality drop, scope creep, error cascade, user override) automatically reverts to guided mode when needed.
 
@@ -203,7 +210,7 @@ The system starts in `guided` mode. Transition to `autonomous` requires both QA 
 ### How the Pipeline Works
 
 ```
- You type /chati
+ You activate the orchestrator (/chati or $chati)
        │
        ▼
  ┌──────────────────────────────────────────────┐
@@ -280,13 +287,14 @@ The system is governed by a **19-article Constitution** that enforces agent beha
 
 ## Supported IDEs
 
-| IDE | How it connects |
-|-----|----------------|
-| **Claude Code** | `.claude/commands/chati.md` → orchestrator |
-| **VS Code** | `.vscode/chati.md` → orchestrator |
-| **Cursor** | `.cursor/rules/chati.md` → orchestrator |
-| **Gemini CLI** | `.gemini/commands/chati.toml` → orchestrator |
-| **AntiGravity** | Platform agent config → orchestrator |
+| IDE | How it connects | Activation |
+|-----|----------------|------------|
+| **Claude Code** | `.claude/commands/chati.md` → orchestrator | `/chati` |
+| **Gemini CLI** | `.gemini/commands/chati.toml` → orchestrator | `/chati` |
+| **Codex CLI** | `.agents/skills/chati/SKILL.md` → orchestrator | `$chati` |
+| **VS Code** | `.vscode/chati.md` → orchestrator | Extension-dependent |
+| **Cursor** | `.cursor/rules/chati.md` → orchestrator | Extension-dependent |
+| **AntiGravity** | Platform agent config → orchestrator | Platform-dependent |
 
 All IDEs use a thin router file that points to the same orchestrator. Your project works the same regardless of which IDE you use.
 
@@ -323,23 +331,27 @@ All IDEs use a thin router file that points to the same orchestrator. Your proje
 
 ### Inside an Active Session
 
-| Command | Description |
-|---------|-------------|
-| `/chati` | Start or resume session |
-| `/chati status` | Show pipeline progress |
-| `/chati help` | Show available commands |
-| `/chati resume` | Resume from continuation file |
-| `/chati exit` | Save session and exit |
+| Action | Claude Code / Gemini | Codex CLI |
+|--------|---------------------|-----------|
+| Start or resume session | `/chati` | `$chati` |
+| Show pipeline progress | `/chati status` | `$chati status` |
+| Show available commands | `/chati help` | `$chati help` |
+| Resume from continuation | `/chati resume` | `$chati resume` |
+| Save session and exit | `/chati exit` | `$chati exit` |
 
 ---
 
 ## Project Structure
+
+The structure below shows the Claude Code layout (default). Gemini and Codex get equivalent files in their native locations.
 
 ```
 your-project/
 ├── .chati/
 │   ├── session.yaml              # Session state (auto-managed, gitignored)
 │   └── memories/                 # Memory storage (gitignored)
+│
+│── # ─── Claude Code ───────────────────
 ├── .claude/
 │   ├── commands/
 │   │   └── chati.md              # Thin router → orchestrator
@@ -350,7 +362,26 @@ your-project/
 │           ├── protocols.md      # Universal protocols
 │           └── quality.md        # Quality standards
 ├── CLAUDE.md                     # Project context (auto-generated)
-├── CLAUDE.local.md               # Runtime state (gitignored)
+├── CLAUDE.local.md               # Runtime state / session lock (gitignored)
+│
+│── # ─── Gemini CLI (when selected) ────
+├── .gemini/
+│   ├── commands/
+│   │   └── chati.toml            # TOML command → orchestrator
+│   ├── context/                  # 4 framework context files (@imported by GEMINI.md)
+│   ├── hooks/                    # 6 hooks (BeforeModel, BeforeTool, PreCompress)
+│   ├── settings.json             # Hook configuration
+│   └── session-lock.md           # Runtime state / session lock (gitignored)
+├── GEMINI.md                     # Project context with @import chain
+│
+│── # ─── Codex CLI (when selected) ─────
+├── .agents/skills/chati/
+│   └── SKILL.md                  # Skill definition → orchestrator
+├── .codex/rules/                 # Starlark execution policies (constitution-guard, read-protection)
+├── AGENTS.md                     # Project context with inline governance
+├── AGENTS.override.md            # Runtime state / session lock (gitignored)
+│
+│── # ─── Framework ─────────────────────
 ├── chati.dev/
 │   ├── orchestrator/             # Main orchestrator
 │   ├── agents/                   # 13 agent definitions
@@ -364,8 +395,8 @@ your-project/
 │   ├── schemas/                  # 5 JSON schemas
 │   ├── intelligence/             # PRISM, RECALL, COMPASS specs
 │   ├── domains/                  # Per-agent and per-workflow configs
-│   ├── hooks/                    # 6 Claude Code hooks
-│   ├── context/                  # Context files (deployed to .claude/rules/)
+│   ├── hooks/                    # 6 shared hooks (used by Claude + Gemini)
+│   ├── context/                  # Context files (deployed per provider)
 │   ├── frameworks/               # Decision heuristics
 │   ├── quality-gates/            # Planning & implementation gates
 │   ├── patterns/                 # Elicitation patterns
@@ -387,9 +418,9 @@ The installer and agent interactions support 4 languages:
 | Language | Code | Status |
 |----------|------|--------|
 | **English** | `en` | Default |
-| **Portugues** | `pt` | Full support |
-| **Espanol** | `es` | Full support |
-| **Francais** | `fr` | Full support |
+| **Português** | `pt` | Full support |
+| **Español** | `es` | Full support |
+| **Français** | `fr` | Full support |
 
 Artifacts are always generated in English for portability and team collaboration.
 

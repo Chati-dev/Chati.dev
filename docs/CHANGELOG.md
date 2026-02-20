@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.3] - 2026-02-20
+
+### Fixed
+
+- **Gemini CLI hooks format**: Rewrote `generateGeminiSettings()` to output correct object format keyed by event name. Was producing an array that Gemini CLI rejected with "Expected object, received array".
+- **Codex path corruption**: Changed `/chati` → `$chati` replacement from naive string replacement to regex with negative lookbehind `(?<![/\w])`. Prevents corrupting file paths like `orchestrator/chati.md` → `orchestrator$chati.md`.
+
+### Stats
+
+- 1311 tests passing, 0 failures
+
+## [3.2.2] - 2026-02-20
+
+### Changed
+
+- **README**: Multi-CLI activation tables, project structure expanded for all 3 providers, per-provider command reference.
+
+### Stats
+
+- 1308 tests passing, 0 failures
+
+## [3.2.1] - 2026-02-20
+
+### Added
+
+- **CLI Parity**: Gemini CLI and Codex CLI now receive the same premium experience as Claude Code — governance rules, hooks/policies, session lock, and context files.
+- **Gemini CLI hooks**: 6 thin wrapper hooks (BeforeModel, BeforeTool, PreCompress) importing shared logic from `chati.dev/hooks/`.
+- **Codex CLI execution policies**: 2 Starlark rules files (constitution-guard, read-protection) for native enforcement.
+- **Gemini context via @import**: GEMINI.md now uses `@import` directives to load 4 context files + session lock.
+- **Codex inline governance**: AGENTS.md includes governance, protocols, and quality standards inline.
+- **Session lock parity**: `.gemini/session-lock.md` and `AGENTS.override.md` provide runtime state equivalent to `CLAUDE.local.md`.
+
+### Stats
+
+- 1308 tests passing, 0 failures
+
+## [3.2.0] - 2026-02-19
+
+### Changed
+
+- **Removed GitHub Copilot provider**: Consolidated from 4 providers to 3 (Claude, Gemini, Codex). Copilot's hook system was too limited for governance parity.
+- Removed copilot-adapter, copilot IDE config, copilot-specific templates, and 27 related tests.
+
+### Stats
+
+- 1284 tests passing, 0 failures
+
 ## [3.1.1] - 2026-02-19
 
 ### Fixed
@@ -151,6 +198,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constitution: 19 Articles + Preamble (v3.0.0)
 - Multi-CLI: 4 providers supported (claude, gemini, codex, copilot)
 - Claude Code remains primary and fully functional — multi-CLI is opt-in
+
+---
+
+## [3.0.1] - 2026-02-17
+
+### Fixed
+
+- **Full consistency audit**: State-to-governance mapping, session schema defaults, cross-reference validation across all 13 agents.
+- **LICENSE separation**: Dedicated LICENSE files for root and package directories.
+
+### Stats
+
+- 1157 tests passing, 0 failures
 
 ---
 

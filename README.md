@@ -133,7 +133,7 @@ The system saves your full session state — pipeline position, current agent, d
 | **Session Lock** | Once activated, you stay inside the system. No accidentally "falling out" into generic AI mode |
 | **Multi-Terminal** | Autonomous agents run in parallel in separate terminals. Detail, Architect, and UX agents work simultaneously |
 | **Memory System** | The system learns from mistakes. Gotchas are captured automatically and recalled when relevant |
-| **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 90%) — with safety net and circuit breaker |
+| **Execution Profiles** | Three profiles — explore (read-only), guided (default), autonomous (gate >= 95%) — with safety net and circuit breaker |
 | **IDE-Agnostic** | Works with Claude Code, VS Code, Cursor, Gemini CLI, Codex CLI, and AntiGravity |
 | **4 Languages** | Interface supports English, Portuguese, Spanish, and French. Artifacts are always generated in English |
 | **Supply Chain Security** | Every file is cryptographically signed (Ed25519). Tampered packages are blocked on install |
@@ -189,7 +189,7 @@ Three profiles control how much autonomy agents have:
 |---------|----------|-------------|
 | **explore** | Read-only. Agents analyze but don't modify files | Understanding a new codebase |
 | **guided** | Default. Agents propose changes, you approve | Normal development workflow |
-| **autonomous** | Agents execute without confirmation (quality gates >= 90%) | Trusted pipelines with high quality scores |
+| **autonomous** | Agents execute without confirmation (quality gates >= 95%) | Trusted pipelines with high quality scores |
 
 The system starts in `guided` mode. Transition to `autonomous` requires both QA gates scoring >= 95%. A safety net with 5 triggers (stuck loop, quality drop, scope creep, error cascade, user override) automatically reverts to guided mode when needed.
 
@@ -418,9 +418,9 @@ The installer and agent interactions support 4 languages:
 | Language | Code | Status |
 |----------|------|--------|
 | **English** | `en` | Default |
-| **Portugues** | `pt` | Full support |
-| **Espanol** | `es` | Full support |
-| **Francais** | `fr` | Full support |
+| **Português** | `pt` | Full support |
+| **Español** | `es` | Full support |
+| **Français** | `fr` | Full support |
 
 Artifacts are always generated in English for portability and team collaboration.
 
