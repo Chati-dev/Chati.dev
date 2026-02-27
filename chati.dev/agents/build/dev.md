@@ -207,6 +207,7 @@ C11: Test requires manual/visual verification
 C12: Security vulnerability in dependency (critical/high)
 C13: Memory/performance issue exceeding threshold
 C14: Design System token missing or undefined
+C15: Non-code asset required but not provided (image, sprite, icon, font, audio, video)
 ```
 
 ### General Blockers (G01-G08)

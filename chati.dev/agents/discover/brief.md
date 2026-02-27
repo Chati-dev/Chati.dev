@@ -163,6 +163,7 @@ Actions:
     [✓/✗] References and competitors
     [✓/✗] What we're NOT building (negative scope)
     [✓/✗] Dependencies and integrations
+    [✓/✗] Non-code assets (images, sprites, icons, fonts, audio, video — if applicable)
 
     Anything important we haven't discussed yet?"
 

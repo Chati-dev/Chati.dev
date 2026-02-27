@@ -61,7 +61,7 @@
     },
     "blocker": {
       "type": ["string", "null"],
-      "description": "Blocker code (C01-C14, G01-G08) if status is blocked"
+      "description": "Blocker code (C01-C15, G01-G08) if status is blocked"
     },
     "completed_at": {
       "type": ["string", "null"],

@@ -839,7 +839,7 @@ To activate autonomous mode:
   1. User explicitly requests it
   2. Orchestrator updates session.yaml: execution_mode: autonomous
   3. Dev agent receives mode and operates accordingly
-  4. Blockers from taxonomy (C01-C14, G01-G08) always stop execution
+  4. Blockers from taxonomy (C01-C15, G01-G08) always stop execution
 ```
 
 ---
@@ -1202,7 +1202,7 @@ Level 4 - Graceful Degradation:
 - Auto-resolve simple deviations (redirect to correct agent)
 - Pause only on:
   - Quality gate failure (score < 95%)
-  - Critical blockers (C01-C14)
+  - Critical blockers (C01-C15)
   - Mode override requests
   - 3+ consecutive agent failures
 - Report progress periodically (after each agent completion)

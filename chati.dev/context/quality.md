@@ -24,5 +24,5 @@ Scores within 5 points below threshold trigger REVIEW (human confirmation requir
 - **Testability**: Every criterion is objectively verifiable
 
 ## Blocker Taxonomy
-- **C01-C14**: Code blockers (technical)
+- **C01-C15**: Code blockers (technical)
 - **G01-G08**: General blockers (process, communication, dependency)
