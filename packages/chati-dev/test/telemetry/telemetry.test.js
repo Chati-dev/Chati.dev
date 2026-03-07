@@ -12,6 +12,7 @@ import yaml from 'js-yaml';
 import {
   TELEMETRY_EVENTS,
   validateEvent,
+  EVENT_PROPERTY_RULES,
 } from '../../src/telemetry/schema.js';
 
 import {
@@ -36,8 +37,8 @@ import { sendEvents } from '../../src/telemetry/sender.js';
 // ---------------------------------------------------------------------------
 
 describe('telemetry schema', () => {
-  it('TELEMETRY_EVENTS contains exactly 6 event types', () => {
-    assert.equal(TELEMETRY_EVENTS.length, 6);
+  it('TELEMETRY_EVENTS contains exactly 9 event types', () => {
+    assert.equal(TELEMETRY_EVENTS.length, 9);
   });
 
   it('TELEMETRY_EVENTS includes all planned types', () => {
@@ -48,6 +49,9 @@ describe('telemetry schema', () => {
       'pipeline_completed',
       'circuit_breaker_triggered',
       'error_occurred',
+      'session_started',
+      'session_completed',
+      'token_usage',
     ];
     assert.deepEqual(TELEMETRY_EVENTS, expected);
   });
@@ -93,6 +97,92 @@ describe('telemetry schema', () => {
     });
     assert.equal(result.valid, false);
     assert.ok(result.errors.some(e => e.includes('filesystem path')));
+  });
+
+  it('validateEvent accepts valid session_started event', () => {
+    const result = validateEvent({
+      type: 'session_started',
+      properties: { sessionId: 'abc-123', pipelineType: 'standard', mode: 'planning' },
+    });
+    assert.equal(result.valid, true);
+  });
+
+  it('validateEvent rejects session_started missing required props', () => {
+    const result = validateEvent({
+      type: 'session_started',
+      properties: { sessionId: 'abc-123' },
+    });
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some(e => e.includes('Missing required')));
+  });
+
+  it('validateEvent accepts valid token_usage event', () => {
+    const result = validateEvent({
+      type: 'token_usage',
+      properties: {
+        sessionId: 's1', agent: 'brief', provider: 'claude', model: 'sonnet',
+        inputTokens: 100, outputTokens: 200, totalTokens: 300, estimatedCostUsd: 0.01,
+      },
+    });
+    assert.equal(result.valid, true);
+  });
+
+  it('validateEvent rejects token_usage with negative numeric', () => {
+    const result = validateEvent({
+      type: 'token_usage',
+      properties: {
+        sessionId: 's1', agent: 'brief', provider: 'claude', model: 'sonnet',
+        inputTokens: -1, outputTokens: 100, totalTokens: 100, estimatedCostUsd: 0.01,
+      },
+    });
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some(e => e.includes('non-negative number')));
+  });
+
+  it('validateEvent accepts valid session_completed event', () => {
+    const result = validateEvent({
+      type: 'session_completed',
+      properties: {
+        sessionId: 's1', pipelineType: 'standard', mode: 'build',
+        finalStage: 'deploy', duration: 60000, agentCount: 8, success: true,
+      },
+    });
+    assert.equal(result.valid, true);
+  });
+
+  it('PII regex catches snake_case variant file_path', () => {
+    const result = validateEvent({
+      type: 'agent_completed',
+      properties: { agent: 'brief', file_path: '/some/path' },
+    });
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some(e => e.includes('PII field')));
+  });
+
+  it('PII regex catches api_key variant', () => {
+    const result = validateEvent({
+      type: 'agent_completed',
+      properties: { agent: 'brief', api_key: 'sk-xxx' },
+    });
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some(e => e.includes('PII field')));
+  });
+
+  it('PII regex catches case-insensitive PASSWORD', () => {
+    const result = validateEvent({
+      type: 'agent_completed',
+      properties: { agent: 'brief', PASSWORD: 'secret123' },
+    });
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some(e => e.includes('PII field')));
+  });
+
+  it('EVENT_PROPERTY_RULES defines rules for 3 new event types', () => {
+    assert.ok(EVENT_PROPERTY_RULES.session_started);
+    assert.ok(EVENT_PROPERTY_RULES.session_completed);
+    assert.ok(EVENT_PROPERTY_RULES.token_usage);
+    assert.equal(EVENT_PROPERTY_RULES.session_started.required.length, 3);
+    assert.equal(EVENT_PROPERTY_RULES.token_usage.numeric.length, 4);
   });
 
   it('event properties do not contain PII in normal usage', () => {

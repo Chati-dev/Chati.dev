@@ -117,6 +117,12 @@ async function main() {
   try {
     await waitForExit(handle, timeout);
   } catch (err) {
+    telemetryTrack('error_occurred', {
+      errorType: 'agent_failure',
+      agent: args.agent,
+      provider: promptResult.provider || args.provider || 'claude',
+      phase: sessionState?.phase || 'unknown',
+    });
     outputError(`Terminal execution failed: ${err.message}`);
     process.exit(2);
   }
@@ -155,6 +161,20 @@ async function main() {
     retryCount: 0,
     pipelineType: sessionState?.isQuickFlow ? 'quick-flow' : 'standard',
   });
+
+  // Track token usage if cost data is available
+  if (costRecord.inputTokens !== undefined) {
+    telemetryTrack('token_usage', {
+      sessionId: sessionState?.sessionId || 'unknown',
+      agent: args.agent,
+      provider: costRecord.provider,
+      model: costRecord.model || 'unknown',
+      inputTokens: costRecord.inputTokens || 0,
+      outputTokens: costRecord.outputTokens || 0,
+      totalTokens: (costRecord.inputTokens || 0) + (costRecord.outputTokens || 0),
+      estimatedCostUsd: costRecord.cost || 0,
+    });
+  }
 
   // Parse the handoff from stdout
   const parsed = parseAgentOutput(stdout);

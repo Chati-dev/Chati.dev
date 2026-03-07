@@ -3,10 +3,13 @@ import { readFileSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { logBanner } from '../utils/logger.js';
-import { stepLanguage, stepProjectType, stepIDESelection, stepProviderSelection, stepEditorSelection, stepPrimaryProvider, stepConfirmation, stepTermsOfUse } from './questions.js';
+import { stepLanguage, stepProjectType, stepProviderSelection, stepEditorSelection, stepPrimaryProvider, stepConfirmation, stepTermsOfUse } from './questions.js';
 import { createSpinner, showStep, showValidation, showQuickStart } from './feedback.js';
 import { installFramework } from '../installer/core.js';
 import { validateInstallation } from '../installer/validator.js';
+import { initCollector, track as telemetryTrack, flush as telemetryFlush } from '../telemetry/collector.js';
+import { sendEvents } from '../telemetry/sender.js';
+import { getTelemetryConfig } from '../telemetry/config.js';
 import { t } from './i18n.js';
 import { DEFAULT_MCPS } from '../config/mcp-configs.js';
 import { IDE_CONFIGS, IDE_TO_PROVIDER } from '../config/ide-configs.js';
@@ -84,6 +87,8 @@ export async function runWizard(targetDir, options = {}) {
   // Installation + Validation
   const primaryIDE = selectedIDEs.find(ide => IDE_TO_PROVIDER[ide] === primaryProvider) || selectedIDEs[0];
   const primaryIDEName = IDE_CONFIGS[primaryIDE]?.name || primaryIDE;
+
+  const installStart = Date.now();
 
   console.log();
   const installSpinner = createSpinner(t('installer.installing'));
@@ -165,6 +170,22 @@ export async function runWizard(targetDir, options = {}) {
     }
 
     showQuickStart(t('installer.quick_start_title'), quickStartSteps);
+
+    // Track installation telemetry
+    initCollector(config.telemetryEnabled);
+    telemetryTrack('installation_completed', {
+      providers: cliProviders,
+      editors: selectedEditors,
+      projectType,
+      language,
+      primaryProvider,
+      installDuration: Date.now() - installStart,
+    });
+    const installEvents = telemetryFlush();
+    if (installEvents.length > 0) {
+      const tConfig = getTelemetryConfig(targetDir);
+      sendEvents(installEvents, { ...tConfig, version: VERSION });
+    }
 
     return { success: true, config, validation };
   } catch (err) {

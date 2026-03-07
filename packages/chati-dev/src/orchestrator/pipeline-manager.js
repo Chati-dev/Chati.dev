@@ -67,9 +67,18 @@ export function initPipeline(options = {}) {
   // Initialize telemetry collector based on project config
   initCollector(isTelemetryEnabled(resolvedDir));
 
+  const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  telemetryTrack('session_started', {
+    sessionId,
+    pipelineType: 'full',
+    mode,
+  });
+
   return {
     phase: mode,
     isGreenfield,
+    sessionId,
     targetDir: resolvedDir,
     chatiVersion: getCurrentVersion(resolvedDir) || 'unknown',
     startedAt: new Date().toISOString(),
@@ -121,10 +130,19 @@ export function initQuickFlowPipeline(options = {}) {
   // Initialize telemetry collector based on project config
   initCollector(isTelemetryEnabled(resolvedDir));
 
+  const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  telemetryTrack('session_started', {
+    sessionId,
+    pipelineType: 'quick-flow',
+    mode,
+  });
+
   return {
     phase: mode,
     isGreenfield,
     isQuickFlow: true,
+    sessionId,
     targetDir: resolvedDir,
     chatiVersion: getCurrentVersion(resolvedDir) || 'unknown',
     startedAt: new Date().toISOString(),
@@ -162,10 +180,19 @@ export function initStandardFlowPipeline(options = {}) {
   // Initialize telemetry collector based on project config
   initCollector(isTelemetryEnabled(resolvedDir));
 
+  const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+  telemetryTrack('session_started', {
+    sessionId,
+    pipelineType: 'standard',
+    mode,
+  });
+
   return {
     phase: mode,
     isGreenfield,
     isStandardFlow: true,
+    sessionId,
     targetDir: resolvedDir,
     chatiVersion: getCurrentVersion(resolvedDir) || 'unknown',
     startedAt: new Date().toISOString(),
@@ -267,12 +294,23 @@ export function advancePipeline(pipelineState, completedAgent, results = {}) {
 
       // Pipeline complete
       newState.completedAt = new Date().toISOString();
+      const pipelineType1 = newState.isQuickFlow ? 'quick-flow' : newState.isStandardFlow ? 'standard' : 'full';
+      const totalDuration1 = Date.now() - new Date(newState.startedAt).getTime();
       telemetryTrack('pipeline_completed', {
-        pipelineType: newState.isQuickFlow ? 'quick-flow' : newState.isStandardFlow ? 'standard' : 'full',
-        totalDuration: Date.now() - new Date(newState.startedAt).getTime(),
+        pipelineType: pipelineType1,
+        totalDuration: totalDuration1,
         agentsRun: newState.completedAgents.length,
         finalStatus: 'completed',
         deviationCount: (newState.modeTransitions || []).length,
+      });
+      telemetryTrack('session_completed', {
+        sessionId: newState.sessionId || 'unknown',
+        pipelineType: pipelineType1,
+        mode: newState.phase === 'deploy' ? 'deploy' : 'build',
+        finalStage: newState.phase,
+        duration: totalDuration1,
+        agentCount: newState.completedAgents.length,
+        success: true,
       });
       const flushedEvents = telemetryFlush();
       if (flushedEvents.length > 0) {
@@ -328,12 +366,23 @@ export function advancePipeline(pipelineState, completedAgent, results = {}) {
 
     // Pipeline complete
     newState.completedAt = new Date().toISOString();
+    const pipelineType2 = newState.isQuickFlow ? 'quick-flow' : newState.isStandardFlow ? 'standard' : 'full';
+    const totalDuration2 = Date.now() - new Date(newState.startedAt).getTime();
     telemetryTrack('pipeline_completed', {
-      pipelineType: newState.isQuickFlow ? 'quick-flow' : newState.isStandardFlow ? 'standard' : 'full',
-      totalDuration: Date.now() - new Date(newState.startedAt).getTime(),
+      pipelineType: pipelineType2,
+      totalDuration: totalDuration2,
       agentsRun: newState.completedAgents.length,
       finalStatus: 'completed',
       deviationCount: (newState.modeTransitions || []).length,
+    });
+    telemetryTrack('session_completed', {
+      sessionId: newState.sessionId || 'unknown',
+      pipelineType: pipelineType2,
+      mode: newState.phase === 'deploy' ? 'deploy' : 'build',
+      finalStage: newState.phase,
+      duration: totalDuration2,
+      agentCount: newState.completedAgents.length,
+      success: true,
     });
     const flushedEvents2 = telemetryFlush();
     if (flushedEvents2.length > 0) {
